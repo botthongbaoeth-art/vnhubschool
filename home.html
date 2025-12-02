@@ -66,28 +66,35 @@
         .xp-bar-bg { width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; }
         .xp-bar-fill { height: 100%; background: var(--gradient); width: 0%; border-radius: 10px; transition: 1s ease; }
 
-        /* EXAM & SHOP STYLES */
-        .exam-grid, .shop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        /* CARD STYLES (Exam, Shop, Docs) */
+        .grid-layout { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
         
-        .exam-card, .shop-item { 
+        .content-card { 
             background: var(--dark-light); border-radius: 20px; padding: 25px; 
             border: 1px solid rgba(255,255,255,0.05); transition: 0.3s; 
             display: flex; flex-direction: column; position: relative; overflow: hidden; 
         }
-        .exam-card:hover, .shop-item:hover { transform: translateY(-5px); border-color: var(--primary); }
+        .content-card:hover { transform: translateY(-5px); border-color: var(--primary); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
         
-        .exam-tag { position: absolute; top: 15px; right: 15px; background: rgba(255,46,99,0.2); color: var(--accent); padding: 5px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; }
-        .exam-icon { font-size: 2.5rem; margin-bottom: 15px; color: var(--secondary); }
-        .exam-meta { display: flex; gap: 15px; font-size: 0.85rem; color: var(--text-muted); margin: 10px 0 20px 0; }
-        .exam-meta i { color: var(--primary); margin-right: 5px; }
+        .card-tag { position: absolute; top: 15px; right: 15px; background: rgba(255,46,99,0.2); color: var(--accent); padding: 5px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; }
+        .card-icon { font-size: 2.5rem; margin-bottom: 15px; color: var(--secondary); }
+        .card-meta { display: flex; gap: 15px; font-size: 0.85rem; color: var(--text-muted); margin: 10px 0 20px 0; }
+        .card-meta i { color: var(--primary); margin-right: 5px; }
         
-        .btn-action { width: 100%; padding: 12px; background: var(--gradient); border: none; border-radius: 12px; color: white; font-weight: 700; cursor: pointer; transition: 0.3s; }
+        .btn-action { width: 100%; padding: 12px; background: var(--gradient); border: none; border-radius: 12px; color: white; font-weight: 700; cursor: pointer; transition: 0.3s; margin-top: auto; }
         .btn-action:hover { box-shadow: 0 5px 15px rgba(108,99,255,0.4); }
         .btn-action.secondary { background: transparent; border: 1px solid var(--text-muted); color: var(--text-muted); }
 
+        /* LIBRARY SPECIFIC */
+        .search-bar { width: 100%; padding: 15px 20px; background: var(--dark-light); border: 1px solid rgba(255,255,255,0.1); border-radius: 50px; color: white; margin-bottom: 25px; font-size: 1rem; outline: none; }
+        .search-bar:focus { border-color: var(--primary); }
+        .filter-tags { display: flex; gap: 10px; margin-bottom: 30px; overflow-x: auto; padding-bottom: 5px; }
+        .filter-tag { padding: 8px 16px; background: rgba(255,255,255,0.05); border-radius: 20px; cursor: pointer; white-space: nowrap; font-size: 0.9rem; transition: 0.2s; }
+        .filter-tag.active { background: var(--primary); color: white; }
+
         /* SHOP SPECIAL */
-        .shop-item.vip-pack { border: 1px solid var(--gold); background: linear-gradient(135deg, rgba(255,215,0,0.05), rgba(0,0,0,0)); }
-        .shop-item.vip-pack .item-icon { filter: drop-shadow(0 0 10px var(--gold)); }
+        .content-card.vip-pack { border: 1px solid var(--gold); background: linear-gradient(135deg, rgba(255,215,0,0.05), rgba(0,0,0,0)); }
+        .content-card.vip-pack .card-icon { filter: drop-shadow(0 0 10px var(--gold)); }
         .price-tag { color: var(--gold); font-weight: 800; font-size: 1.1rem; margin: 10px 0; }
 
         /* EXAM INTERFACE */
@@ -137,7 +144,7 @@
             .sidebar { display: none; }
             .main-content { margin-left: 0; padding: 20px; padding-bottom: 100px; }
             .mobile-nav { display: flex; }
-            .exam-grid, .shop-grid { grid-template-columns: 1fr; }
+            .grid-layout { grid-template-columns: 1fr; }
             .timer-box { font-size: 1.2rem; padding: 5px 15px; }
             .btn-submit-exam { bottom: 80px; right: 20px; width: calc(100% - 40px); text-align: center; }
         }
@@ -163,6 +170,7 @@
         <nav class="sidebar">
             <div class="brand"><i class="fas fa-graduation-cap"></i> HubSchool</div>
             <div class="nav-item active" onclick="switchTab('dashboard')"><i class="fas fa-home"></i> Tổng Quan</div>
+            <div class="nav-item" onclick="switchTab('library')"><i class="fas fa-folder-open"></i> Kho Tài Liệu</div>
             <div class="nav-item" onclick="switchTab('exam')"><i class="fas fa-file-signature"></i> Thi Thử</div>
             <div class="nav-item" onclick="switchTab('shop')"><i class="fas fa-store"></i> Cửa Hàng</div>
             <div class="nav-item" onclick="window.location.href='news.html'"><i class="fas fa-newspaper"></i> Bảng Tin</div>
@@ -196,16 +204,16 @@
                     </div>
                 </div>
                 <h3 style="margin-bottom: 20px;">Đề xuất hôm nay</h3>
-                <div class="exam-grid">
-                    <div class="exam-card" style="border-color: var(--gold);">
-                        <span class="exam-tag" style="background: rgba(255, 215, 0, 0.2); color: var(--gold);">HOT</span>
-                        <i class="fas fa-graduation-cap exam-icon" style="color: var(--gold);"></i>
+                <div class="grid-layout">
+                    <div class="content-card" style="border-color: var(--gold);">
+                        <span class="card-tag" style="background: rgba(255, 215, 0, 0.2); color: var(--gold);">HOT</span>
+                        <i class="fas fa-graduation-cap card-icon" style="color: var(--gold);"></i>
                         <h3>Toán 12 - Cuối Kỳ 1</h3>
                         <p style="font-size:0.9rem; color:var(--text-muted); margin: 10px 0;">Đề thi chuẩn 90 phút - 40 Câu.</p>
                         <button class="btn-action" onclick="startExam('math_12_hk1')">Làm Bài Ngay</button>
                     </div>
-                    <div class="exam-card" style="border-color: var(--secondary);">
-                        <i class="fas fa-bolt exam-icon"></i>
+                    <div class="content-card" style="border-color: var(--secondary);">
+                        <i class="fas fa-bolt card-icon"></i>
                         <h3>Thi Thử Nhanh</h3>
                         <p style="font-size:0.9rem; color:var(--text-muted); margin: 10px 0;">Bài kiểm tra ngẫu nhiên 15 phút.</p>
                         <button class="btn-action" onclick="startExam('random')">Bắt Đầu</button>
@@ -213,37 +221,54 @@
                 </div>
             </div>
 
+            <!-- LIBRARY TAB (KHO TÀI LIỆU) -->
+            <div id="tab-library" class="tab-content" style="display:none;">
+                <input type="text" class="search-bar" placeholder="Tìm kiếm tài liệu..." oninput="filterDocs(this.value)">
+                
+                <div class="filter-tags">
+                    <div class="filter-tag active" onclick="filterByTag('all', this)">Tất cả</div>
+                    <div class="filter-tag" onclick="filterByTag('Toán', this)">Toán</div>
+                    <div class="filter-tag" onclick="filterByTag('Lý', this)">Vật Lý</div>
+                    <div class="filter-tag" onclick="filterByTag('Hóa', this)">Hóa Học</div>
+                    <div class="filter-tag" onclick="filterByTag('Anh', this)">Tiếng Anh</div>
+                </div>
+
+                <div class="grid-layout" id="libraryContainer">
+                    <!-- Docs will be rendered here -->
+                </div>
+            </div>
+
             <!-- EXAM TAB -->
             <div id="tab-exam" class="tab-content" style="display:none;">
                 <h3 style="margin-bottom: 20px;">Danh Sách Đề Thi THPTQG</h3>
-                <div class="exam-grid" id="examListContainer"></div>
+                <div class="grid-layout" id="examListContainer"></div>
             </div>
 
             <!-- SHOP TAB -->
             <div id="tab-shop" class="tab-content" style="display:none;">
                 <h3 style="margin-bottom: 20px;">Cửa Hàng Vật Phẩm</h3>
                 
-                <div class="shop-grid">
+                <div class="grid-layout">
                     <!-- VIP PACK -->
-                    <div class="shop-item vip-pack">
-                        <span class="exam-tag" style="background: var(--gold); color: #000;">BÁN CHẠY</span>
-                        <i class="fas fa-crown item-icon" style="color: var(--gold); font-size: 3rem; margin: 15px 0;"></i>
+                    <div class="content-card vip-pack">
+                        <span class="card-tag" style="background: var(--gold); color: #000;">BÁN CHẠY</span>
+                        <i class="fas fa-crown card-icon" style="color: var(--gold); font-size: 3rem; margin: 15px 0;"></i>
                         <h3>Gói VIP 1 Tháng</h3>
                         <p style="font-size:0.8rem; color:var(--text-muted); margin: 10px 0;">Mở khóa mọi đề thi, X2 XP mỗi ngày.</p>
                         <div class="price-tag"><i class="fas fa-coins"></i> 500</div>
                         <button class="btn-action" onclick="buyItem(500, 'Gói VIP 1 Tháng')">Mua Ngay</button>
                     </div>
 
-                    <div class="shop-item">
-                        <i class="fas fa-bolt item-icon" style="color: var(--accent); font-size: 3rem; margin: 15px 0;"></i>
+                    <div class="content-card">
+                        <i class="fas fa-bolt card-icon" style="color: var(--accent); font-size: 3rem; margin: 15px 0;"></i>
                         <h3>Hồi Phục Năng Lượng</h3>
                         <p style="font-size:0.8rem; color:var(--text-muted); margin: 10px 0;">Đầy lại thanh năng lượng để thi tiếp.</p>
                         <div class="price-tag"><i class="fas fa-coins"></i> 100</div>
                         <button class="btn-action" onclick="buyItem(100, 'Hồi Phục')">Mua Ngay</button>
                     </div>
 
-                    <div class="shop-item">
-                        <i class="fas fa-palette item-icon" style="color: var(--primary); font-size: 3rem; margin: 15px 0;"></i>
+                    <div class="content-card">
+                        <i class="fas fa-palette card-icon" style="color: var(--primary); font-size: 3rem; margin: 15px 0;"></i>
                         <h3>Đổi Màu Tên</h3>
                         <p style="font-size:0.8rem; color:var(--text-muted); margin: 10px 0;">Làm nổi bật tên bạn trên BXH.</p>
                         <div class="price-tag"><i class="fas fa-coins"></i> 300</div>
@@ -258,6 +283,7 @@
     <!-- MOBILE NAV -->
     <div class="mobile-nav">
         <button class="m-nav-item active" onclick="switchTab('dashboard')"><i class="fas fa-home"></i></button>
+        <button class="m-nav-item" onclick="switchTab('library')"><i class="fas fa-folder-open"></i></button>
         <button class="m-nav-item" onclick="switchTab('exam')"><i class="fas fa-file-signature"></i></button>
         <button class="m-nav-item" onclick="window.location.href='news.html'"><i class="fas fa-newspaper"></i></button>
         <button class="m-nav-item" onclick="window.location.href='profile.html'"><i class="fas fa-user"></i></button>
@@ -357,18 +383,81 @@
                 const percent = Math.min(((data.xp || 0) / nextLevel) * 100, 100);
                 document.getElementById('xpBar').style.width = percent + "%";
             }
-            // Ẩn loading sau khi load xong data
             const loading = document.getElementById('loadingOverlay');
             loading.style.opacity = '0';
             setTimeout(() => loading.style.display = 'none', 500);
         }
+
+        // --- DOCUMENT LIBRARY LOGIC ---
+        const DOCUMENTS = [
+            { title: "Đề thi Toán HK1 - 2024", subject: "Toán", type: "PDF", filename: "toan_hk1_2024.pdf" },
+            { title: "Tổng hợp công thức Vật Lý 12", subject: "Lý", type: "PDF", filename: "cong_thuc_ly_12.pdf" },
+            { title: "Đề minh họa Hóa Học 2025", subject: "Hóa", type: "PDF", filename: "de_minh_hoa_hoa_2025.pdf" },
+            { title: "Ngữ pháp Tiếng Anh chuyên sâu", subject: "Anh", type: "DOCX", filename: "ngu_phap_anh.docx" },
+            { title: "Sơ đồ tư duy Lịch Sử 12", subject: "Sử", type: "IMG", filename: "mindmap_su_12.png" },
+            { title: "Bài tập Sinh Học di truyền", subject: "Sinh", type: "PDF", filename: "bai_tap_sinh.pdf" },
+        ];
+
+        function renderDocs(data) {
+            const container = document.getElementById('libraryContainer');
+            container.innerHTML = '';
+            data.forEach(doc => {
+                const icon = getDocIcon(doc.subject);
+                const div = document.createElement('div');
+                div.className = 'content-card';
+                div.innerHTML = `
+                    <span class="card-tag">${doc.type}</span>
+                    <i class="fas ${icon} card-icon"></i>
+                    <h3>${doc.title}</h3>
+                    <div class="card-meta"><span>${doc.subject}</span></div>
+                    <button class="btn-action" onclick="downloadDoc('${doc.filename}')">Tải Xuống <i class="fas fa-download"></i></button>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function getDocIcon(subject) {
+            if(subject === 'Toán') return 'fa-square-root-alt';
+            if(subject === 'Lý') return 'fa-atom';
+            if(subject === 'Hóa') return 'fa-flask';
+            if(subject === 'Anh') return 'fa-language';
+            if(subject === 'Sử') return 'fa-landmark';
+            return 'fa-book';
+        }
+
+        window.filterDocs = (keyword) => {
+            const filtered = DOCUMENTS.filter(d => d.title.toLowerCase().includes(keyword.toLowerCase()));
+            renderDocs(filtered);
+        }
+
+        window.filterByTag = (tag, btn) => {
+            document.querySelectorAll('.filter-tag').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            if(tag === 'all') renderDocs(DOCUMENTS);
+            else renderDocs(DOCUMENTS.filter(d => d.subject === tag));
+        }
+
+        window.downloadDoc = (filename) => {
+            const url = `tailieuon/${filename}`;
+            // Create a fake link to trigger download
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            alert("Đang bắt đầu tải xuống: " + filename);
+        }
+
+        // Init Library
+        renderDocs(DOCUMENTS);
+
 
         // --- EXAM LOGIC ---
         const EXAM_DATA = [
             { id: 'math_12_hk1', title: 'Toán 12 - Cuối Kỳ 1', time: 90, xp: 200, difficulty: 'Khó', questions: [
                 { q: "Cho f(x) = 2x^2 - 3x + 1. Giá trị của f(2) là:", opts: ["3", "5", "7", "9"], ans: 0 },
                 { q: "Tìm giá trị của biểu thức √16 + 2√9 - 3", opts: ["7", "10", "12", "14"], ans: 0 },
-                // ... (Thêm câu hỏi thực tế vào đây)
             ]},
             { id: 'phy_12', title: 'Vật Lý 12 - Dao Động Cơ', time: 20, xp: 80, difficulty: 'Dễ', questions: [
                 { q: "Chu kì con lắc đơn:", opts: ["T=2π√(l/g)", "T=2π√(g/l)", "T=√(l/g)", "T=2π√(m/k)"], ans: 0 },
@@ -382,12 +471,12 @@
         const examList = document.getElementById('examListContainer');
         EXAM_DATA.forEach(exam => {
             const div = document.createElement('div');
-            div.className = 'exam-card';
+            div.className = 'content-card';
             div.innerHTML = `
-                <span class="exam-tag">${exam.difficulty}</span>
-                <i class="fas ${exam.id.includes('math') ? 'fa-square-root-alt' : 'fa-book'} exam-icon"></i>
+                <span class="card-tag">${exam.difficulty}</span>
+                <i class="fas ${exam.id.includes('math') ? 'fa-square-root-alt' : 'fa-book'} card-icon"></i>
                 <h3>${exam.title}</h3>
-                <div class="exam-meta"><span><i class="fas fa-clock"></i> ${exam.time}p</span> <span><i class="fas fa-star"></i> +${exam.xp} XP</span></div>
+                <div class="card-meta"><span><i class="fas fa-clock"></i> ${exam.time}p</span> <span><i class="fas fa-star"></i> +${exam.xp} XP</span></div>
                 <button class="btn-action" onclick="window.startExam('${exam.id}')">Làm Bài</button>
             `;
             examList.appendChild(div);
@@ -476,8 +565,13 @@
             document.getElementById('tab-' + tab).style.display = 'block';
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.m-nav-item').forEach(el => el.classList.remove('active'));
-            event.currentTarget.classList.add('active');
-            document.getElementById('pageTitle').innerText = tab === 'exam' ? 'Thi Thử' : (tab === 'shop' ? 'Cửa Hàng' : 'Tổng Quan');
+            
+            // Find nav item with onclick matching tabId and activate it
+            // Simple approach for demo: just remove active from all and manually set if passed
+            // In a real app, use IDs for nav items.
+            
+            document.getElementById('pageTitle').innerText = 
+                tab === 'exam' ? 'Thi Thử' : (tab === 'shop' ? 'Cửa Hàng' : (tab === 'library' ? 'Kho Tài Liệu' : 'Tổng Quan'));
         }
         window.logout = () => signOut(auth).then(() => window.location.href = 'index.html');
     </script>
