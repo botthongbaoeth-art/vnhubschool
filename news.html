@@ -6,71 +6,250 @@
     <title>Bảng Tin | HighSchool Hub</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        body { background: #0f172a; color: #f1f5f9; font-family: 'Montserrat', sans-serif; padding: 0; margin: 0; }
+        :root {
+            --primary: #6C63FF;
+            --secondary: #00D2FF;
+            --dark: #0f172a;
+            --dark-light: #1e293b;
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
+        }
+
+        body { 
+            background: var(--dark); color: var(--text); 
+            font-family: 'Montserrat', sans-serif; 
+            padding: 0; margin: 0; 
+            overflow-x: hidden;
+        }
+
+        /* HEADER */
         .header { 
-            position: fixed; top: 0; left: 0; width: 100%; background: rgba(15,23,42,0.95); backdrop-filter: blur(10px);
-            padding: 15px 20px; display: flex; align-items: center; gap: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); z-index: 100;
+            position: fixed; top: 0; left: 0; width: 100%; 
+            background: rgba(15,23,42,0.95); backdrop-filter: blur(10px);
+            padding: 15px 20px; display: flex; align-items: center; gap: 20px; 
+            border-bottom: 1px solid rgba(255,255,255,0.1); z-index: 100;
         }
         .header h2 { font-size: 1.2rem; margin: 0; }
         .back-btn { background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer; }
         
-        .news-container { margin-top: 70px; padding: 20px; max-width: 600px; margin-left: auto; margin-right: auto; }
+        /* NEWS FEED */
+        .news-container { 
+            margin-top: 70px; padding: 20px; 
+            max-width: 700px; margin-left: auto; margin-right: auto; 
+            padding-bottom: 50px;
+        }
         
         .news-card {
-            background: #1e293b; border-radius: 15px; overflow: hidden; margin-bottom: 25px;
-            border: 1px solid rgba(255,255,255,0.05);
+            background: var(--dark-light); border-radius: 20px; overflow: hidden; 
+            margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.05);
+            transition: 0.3s; cursor: pointer;
         }
-        .news-img { width: 100%; height: 180px; background: #333; object-fit: cover; display: flex; align-items: center; justify-content: center; color: #555; font-size: 3rem; }
+        .news-card:hover { transform: translateY(-5px); border-color: var(--secondary); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+
+        .news-img { 
+            width: 100%; height: 180px; object-fit: cover; 
+            display: flex; align-items: center; justify-content: center; 
+            font-size: 4rem; color: rgba(255,255,255,0.2);
+        }
+        
         .news-content { padding: 20px; }
-        .tag { background: #FF2E63; color: white; padding: 4px 10px; border-radius: 5px; font-size: 0.7rem; font-weight: bold; text-transform: uppercase; }
-        .date { color: #94a3b8; font-size: 0.8rem; margin-left: 10px; }
-        .news-title { margin: 10px 0; font-size: 1.2rem; line-height: 1.4; }
-        .news-desc { color: #ccc; font-size: 0.9rem; line-height: 1.6; }
-        .read-more { display: inline-block; margin-top: 15px; color: #00D2FF; font-weight: 600; cursor: pointer; }
+        .meta { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .tag { padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
+        .date { color: var(--text-muted); font-size: 0.8rem; }
+        
+        .news-title { margin: 5px 0 10px 0; font-size: 1.3rem; line-height: 1.4; }
+        .news-desc { color: #ccc; font-size: 0.95rem; line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        .read-more { margin-top: 15px; color: var(--secondary); font-weight: 600; font-size: 0.9rem; display: flex; align-items: center; gap: 5px; }
+
+        /* READING MODAL (Full Screen) */
+        .reader-modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--dark); z-index: 2000;
+            overflow-y: auto; display: none;
+            animation: slideUp 0.3s ease-out;
+        }
+        .reader-modal.active { display: block; }
+
+        .reader-header {
+            position: sticky; top: 0; left: 0; width: 100%;
+            background: rgba(15,23,42,0.95); backdrop-filter: blur(10px);
+            padding: 15px 20px; display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1); z-index: 2001;
+        }
+        .close-btn { 
+            width: 35px; height: 35px; border-radius: 50%; background: rgba(255,255,255,0.1);
+            border: none; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center;
+        }
+
+        .reader-body { padding: 0 20px 50px 20px; max-width: 700px; margin: 0 auto; }
+        .reader-hero { 
+            width: 100%; height: 250px; border-radius: 0 0 20px 20px; 
+            margin-bottom: 25px; display: flex; align-items: center; justify-content: center;
+            font-size: 5rem; color: rgba(255,255,255,0.3);
+        }
+        .reader-title { font-size: 1.8rem; margin-bottom: 10px; line-height: 1.3; }
+        .reader-meta { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 30px; display: flex; gap: 15px; }
+        .reader-content { font-size: 1rem; line-height: 1.8; color: #e2e8f0; }
+        .reader-content p { margin-bottom: 20px; }
+        .reader-content h3 { color: var(--secondary); margin-top: 30px; margin-bottom: 15px; }
+        .reader-content ul { padding-left: 20px; margin-bottom: 20px; }
+        .reader-content li { margin-bottom: 10px; }
+
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
     </style>
 </head>
 <body>
 
+    <!-- Main Feed -->
     <div class="header">
         <button class="back-btn" onclick="window.location.href='home.html'"><i class="fas fa-arrow-left"></i></button>
         <h2>Bảng Tin Học Tập</h2>
     </div>
 
-    <div class="news-container">
-        <!-- News 1 -->
-        <div class="news-card">
-            <div class="news-img" style="background: linear-gradient(45deg, #FF9A9E, #FECFEF);"><i class="fas fa-calendar-alt"></i></div>
-            <div class="news-content">
-                <div><span class="tag">Thông báo</span> <span class="date">02/12/2025</span></div>
-                <h3 class="news-title">Lịch Thi Thử THPT Quốc Gia Đợt 1</h3>
-                <p class="news-desc">HighSchool Hub chính thức mở cổng đăng ký thi thử đợt 1 cho toàn bộ học sinh lớp 12. Nội dung bám sát đề minh họa của Bộ GD&ĐT.</p>
-                <div class="read-more">Xem chi tiết &rarr;</div>
-            </div>
-        </div>
+    <div class="news-container" id="newsFeed">
+        <!-- News items will be rendered here -->
+    </div>
 
-        <!-- News 2 -->
-        <div class="news-card">
-            <div class="news-img" style="background: linear-gradient(45deg, #a18cd1, #fbc2eb);"><i class="fas fa-star"></i></div>
-            <div class="news-content">
-                <div><span class="tag" style="background:#00D2FF;">Cập nhật</span> <span class="date">01/12/2025</span></div>
-                <h3 class="news-title">Ra Mắt Hệ Thống "Vinh Danh" Mới</h3>
-                <p class="news-desc">Giờ đây bạn có thể nhận huy hiệu đặc biệt khi đứng Top 1 Leaderboard 3 tuần liên tiếp. Cùng đua top ngay nào!</p>
-                <div class="read-more">Xem chi tiết &rarr;</div>
-            </div>
+    <!-- Reader Modal -->
+    <div class="reader-modal" id="readerModal">
+        <div class="reader-header">
+            <button class="back-btn" onclick="closeReader()"><i class="fas fa-arrow-left"></i> Quay lại</button>
+            <button class="close-btn" onclick="closeReader()"><i class="fas fa-times"></i></button>
         </div>
-
-        <!-- News 3 -->
-        <div class="news-card">
-            <div class="news-img" style="background: linear-gradient(45deg, #84fab0, #8fd3f4);"><i class="fas fa-lightbulb"></i></div>
-            <div class="news-content">
-                <div><span class="tag" style="background:#FDC830; color:black;">Mẹo học</span> <span class="date">30/11/2025</span></div>
-                <h3 class="news-title">5 Cách Chống Buồn Ngủ Khi Ôn Thi Đêm</h3>
-                <p class="news-desc">Pomodoro, uống đủ nước và nghe nhạc không lời... Cùng khám phá các bí kíp giúp bạn tỉnh táo chạy deadline.</p>
-                <div class="read-more">Xem chi tiết &rarr;</div>
+        <div class="reader-hero" id="rHero"></div>
+        <div class="reader-body">
+            <div class="tag" id="rTag" style="display:inline-block; margin-bottom:10px;"></div>
+            <h1 class="reader-title" id="rTitle"></h1>
+            <div class="reader-meta">
+                <span id="rDate"><i class="far fa-clock"></i> </span>
+                <span><i class="far fa-user"></i> Ban Biên Tập</span>
             </div>
+            <div class="reader-content" id="rContent"></div>
         </div>
     </div>
 
+    <script>
+        // Dữ liệu tin tức mẫu (Sau này có thể lấy từ Firebase)
+        const NEWS_DATA = [
+            {
+                id: 1,
+                tag: "Thông báo",
+                color: "#FF2E63",
+                date: "02/12/2025",
+                title: "Lịch Thi Thử THPT Quốc Gia Đợt 1",
+                desc: "HighSchool Hub chính thức mở cổng đăng ký thi thử đợt 1 cho toàn bộ học sinh lớp 12. Nội dung bám sát đề minh họa của Bộ GD&ĐT.",
+                icon: "fa-calendar-alt",
+                bg: "linear-gradient(45deg, #FF9A9E, #FECFEF)",
+                content: `
+                    <p>Chào các bạn học sinh,</p>
+                    <p>Kỳ thi THPT Quốc Gia đang đến gần, để giúp các bạn có sự chuẩn bị tốt nhất, HighSchool Hub tổ chức kỳ thi thử <strong>Đợt 1 - Tháng 12/2025</strong>.</p>
+                    <h3>📌 Thông tin chi tiết:</h3>
+                    <ul>
+                        <li><strong>Thời gian:</strong> 8:00 Sáng Chủ Nhật (10/12/2025).</li>
+                        <li><strong>Môn thi:</strong> Toán, Lý, Hóa, Anh.</li>
+                        <li><strong>Hình thức:</strong> Thi Online trên nền tảng Hub.</li>
+                    </ul>
+                    <h3>🎁 Phần thưởng:</h3>
+                    <ul>
+                        <li>Top 1: Gói VIP 1 Tháng + 1000 Xu.</li>
+                        <li>Top 2-5: 500 Xu.</li>
+                        <li>Top 10: 200 Xu.</li>
+                    </ul>
+                    <p>Đừng quên đặt lịch và ôn tập thật kỹ nhé. Chúc các bạn đạt kết quả cao!</p>
+                `
+            },
+            {
+                id: 2,
+                tag: "Cập nhật",
+                color: "#00D2FF",
+                date: "01/12/2025",
+                title: "Ra Mắt Hệ Thống 'Vinh Danh' Mới",
+                desc: "Giờ đây bạn có thể nhận huy hiệu đặc biệt khi đứng Top 1 Leaderboard 3 tuần liên tiếp. Cùng đua top ngay nào!",
+                icon: "fa-trophy",
+                bg: "linear-gradient(45deg, #a18cd1, #fbc2eb)",
+                content: `
+                    <p>Hệ thống xếp hạng của HighSchool Hub vừa nhận được một bản cập nhật lớn!</p>
+                    <h3>🏆 Huy hiệu Vinh Danh</h3>
+                    <p>Chúng tôi giới thiệu bộ sưu tập Huy hiệu mới dành cho những người chơi xuất sắc nhất:</p>
+                    <ul>
+                        <li><strong>Kẻ Thống Trị:</strong> Top 1 Leaderboard 3 tuần liên tiếp.</li>
+                        <li><strong>Ong Chăm Chỉ:</strong> Duy trì chuỗi Streak 30 ngày.</li>
+                        <li><strong>Thần Đồng:</strong> Đạt điểm tối đa trong bài thi thử.</li>
+                    </ul>
+                    <p>Các huy hiệu này sẽ hiển thị ngay cạnh Avatar của bạn trong trang Hồ Sơ và Bảng Xếp Hạng. Hãy cho mọi người thấy đẳng cấp của bạn!</p>
+                `
+            },
+            {
+                id: 3,
+                tag: "Mẹo học",
+                color: "#FDC830",
+                date: "30/11/2025",
+                title: "5 Cách Chống Buồn Ngủ Khi Ôn Thi Đêm",
+                desc: "Pomodoro, uống đủ nước và nghe nhạc không lời... Cùng khám phá các bí kíp giúp bạn tỉnh táo chạy deadline.",
+                icon: "fa-lightbulb",
+                bg: "linear-gradient(45deg, #84fab0, #8fd3f4)",
+                content: `
+                    <p>Mùa thi đến cũng là lúc những đêm thức trắng trở thành "bạn thân". Làm sao để giữ tỉnh táo mà không hại sức khỏe? Thử ngay 5 mẹo sau:</p>
+                    <h3>1. Phương pháp Pomodoro</h3>
+                    <p>Học 25 phút, nghỉ 5 phút. Đừng cố ngồi lì 3-4 tiếng liên tục, não bộ sẽ bị bão hòa và gây buồn ngủ.</p>
+                    <h3>2. Uống nước mát</h3>
+                    <p>Một ngụm nước mát sẽ giúp kích thích các dây thần kinh và làm bạn tỉnh táo tức thì. Tránh uống quá nhiều nước ngọt có ga.</p>
+                    <h3>3. Vận động nhẹ</h3>
+                    <p>Nếu thấy mắt díp lại, hãy đứng dậy đi lại, vươn vai hoặc hít đất 10 cái. Máu lưu thông tốt hơn sẽ mang oxy lên não nhiều hơn.</p>
+                    <p><em>Hãy nhớ: Giấc ngủ vẫn là quan trọng nhất. Cố gắng ngủ đủ 6 tiếng mỗi ngày nhé!</em></p>
+                `
+            }
+        ];
+
+        // Render News Feed
+        const feed = document.getElementById('newsFeed');
+        NEWS_DATA.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'news-card';
+            card.onclick = () => openReader(item);
+            card.innerHTML = `
+                <div class="news-img" style="background: ${item.bg}"><i class="fas ${item.icon}"></i></div>
+                <div class="news-content">
+                    <div class="meta">
+                        <span class="tag" style="background: ${item.color}">${item.tag}</span>
+                        <span class="date">${item.date}</span>
+                    </div>
+                    <h3 class="news-title">${item.title}</h3>
+                    <p class="news-desc">${item.desc}</p>
+                    <div class="read-more">Đọc tiếp <i class="fas fa-arrow-right"></i></div>
+                </div>
+            `;
+            feed.appendChild(card);
+        });
+
+        // Open Reader
+        function openReader(item) {
+            const modal = document.getElementById('readerModal');
+            
+            // Fill Data
+            document.getElementById('rHero').style.background = item.bg;
+            document.getElementById('rHero').innerHTML = `<i class="fas ${item.icon}"></i>`;
+            
+            const tag = document.getElementById('rTag');
+            tag.innerText = item.tag;
+            tag.style.background = item.color;
+            
+            document.getElementById('rTitle').innerText = item.title;
+            document.getElementById('rDate').innerHTML = `<i class="far fa-clock"></i> ${item.date}`;
+            document.getElementById('rContent').innerHTML = item.content;
+
+            // Show Modal
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Disable background scroll
+        }
+
+        // Close Reader
+        function closeReader() {
+            document.getElementById('readerModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+    </script>
 </body>
 </html>
