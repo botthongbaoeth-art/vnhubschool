@@ -232,7 +232,7 @@
     <!-- LOADING SCREEN -->
     <div id="loadingOverlay">
         <div class="spinner"></div>
-        <p>Đang tải dữ liệu...</p>
+        <p>Đang kiểm tra đăng nhập...</p>
     </div>
 
     <!-- SIDEBAR (Desktop) -->
@@ -365,7 +365,7 @@
     <!-- FIREBASE & LOGIC -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getAuth, onAuthStateChanged, signOut, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, doc, getDoc, updateDoc, increment, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -385,42 +385,54 @@
         let currentUserData = { xp: 0, level: 1, xu: 0 };
         let currentUserId = null;
 
-        // AUTH CHECK - FIX AUTO LOGOUT
-        onAuthStateChanged(auth, async (user) => {
-            const loading = document.getElementById('loadingOverlay');
-            if (user) {
-                currentUserId = user.uid;
-                // Lấy dữ liệu
-                try {
-                    const docRef = doc(db, "users", user.uid);
-                    const docSnap = await getDoc(docRef);
+        // AUTH INITIALIZATION & PERSISTENCE FIX
+        (async () => {
+            try {
+                // Ép buộc trình duyệt nhớ đăng nhập
+                await setPersistence(auth, browserLocalPersistence);
+                
+                // AUTH CHECK
+                onAuthStateChanged(auth, async (user) => {
+                    const loading = document.getElementById('loadingOverlay');
                     
-                    if (docSnap.exists()) {
-                        const data = docSnap.data();
-                        currentUserData = { 
-                            xp: data.xp || 0, 
-                            level: data.level || 1, 
-                            xu: data.xu || 0,
-                            fullname: data.fullname || user.email.split('@')[0]
-                        };
+                    if (user) {
+                        currentUserId = user.uid;
+                        // Lấy dữ liệu
+                        try {
+                            const docRef = doc(db, "users", user.uid);
+                            const docSnap = await getDoc(docRef);
+                            
+                            if (docSnap.exists()) {
+                                const data = docSnap.data();
+                                currentUserData = { 
+                                    xp: data.xp || 0, 
+                                    level: data.level || 1, 
+                                    xu: data.xu || 0,
+                                    fullname: data.fullname || user.email.split('@')[0]
+                                };
+                            } else {
+                                currentUserData.fullname = user.email.split('@')[0];
+                            }
+                            updateUI();
+                            loadLeaderboard(); 
+                            
+                            // Ẩn màn hình chờ khi xong hết
+                            loading.style.opacity = '0';
+                            setTimeout(() => loading.style.display = 'none', 500);
+                        } catch(e) {
+                            console.error("Lỗi tải data:", e);
+                            // Vẫn cho vào dù lỗi data (để không bị loop)
+                            loading.style.display = 'none';
+                        }
                     } else {
-                        currentUserData.fullname = user.email.split('@')[0];
+                        // Chưa đăng nhập -> Chuyển hướng
+                        window.location.href = 'login.html';
                     }
-                    updateUI();
-                    loadLeaderboard(); // Tải bảng xếp hạng thật
-                    
-                    // Ẩn màn hình chờ khi xong hết
-                    loading.style.opacity = '0';
-                    setTimeout(() => loading.style.display = 'none', 500);
-                } catch(e) {
-                    console.error("Lỗi tải data:", e);
-                    alert("Lỗi tải dữ liệu người dùng!");
-                }
-            } else {
-                // Chỉ chuyển hướng nếu thực sự chưa đăng nhập
-                window.location.href = 'login.html';
+                });
+            } catch (error) {
+                console.error("Lỗi Persistence:", error);
             }
-        });
+        })();
 
         // UI UPDATER
         function updateUI() {
