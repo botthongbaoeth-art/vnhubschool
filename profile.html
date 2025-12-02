@@ -47,12 +47,15 @@
         }
         .btn-outline:hover { background: rgba(255,71,87,0.1); }
 
-        /* Avatar Modal */
+        /* Modal */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); align-items: center; justify-content: center; z-index: 999; }
         .modal-content { background: #1e293b; padding: 20px; border-radius: 20px; width: 90%; max-width: 350px; text-align: center; }
         .emoji-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 20px; }
         .emoji-opt { font-size: 2rem; cursor: pointer; padding: 5px; border-radius: 10px; }
         .emoji-opt:hover { background: rgba(255,255,255,0.1); }
+        
+        .modal-actions { display: flex; gap: 10px; margin-top: 20px; }
+        .modal-actions button { flex: 1; padding: 10px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -100,7 +103,7 @@
         </div>
 
         <button class="btn-save" onclick="saveProfile()">Lưu Thay Đổi</button>
-        <button class="btn-outline" onclick="resetPassword()">Đổi Mật Khẩu</button>
+        <button class="btn-outline" onclick="openPasswordModal()">Đổi Mật Khẩu</button>
     </div>
 
     <!-- Avatar Picker Modal -->
@@ -123,9 +126,32 @@
         </div>
     </div>
 
+    <!-- Password Modal -->
+    <div class="modal" id="passwordModal">
+        <div class="modal-content">
+            <h3>Đổi Mật Khẩu</h3>
+            <div class="form-group" style="margin-top: 20px; text-align: left;">
+                <label>Mật khẩu cũ</label>
+                <input type="password" id="oldPass" placeholder="Nhập mật khẩu hiện tại">
+            </div>
+            <div class="form-group" style="text-align: left;">
+                <label>Mật khẩu mới</label>
+                <input type="password" id="newPass" placeholder="Mật khẩu mới (min 6 ký tự)">
+            </div>
+            <div class="form-group" style="text-align: left;">
+                <label>Xác nhận mật khẩu mới</label>
+                <input type="password" id="confirmNewPass" placeholder="Nhập lại mật khẩu mới">
+            </div>
+            <div class="modal-actions">
+                <button onclick="document.getElementById('passwordModal').style.display='none'" style="background: transparent; border: 1px solid #aaa; color: #aaa;">Hủy</button>
+                <button onclick="handleChangePassword()" style="background: linear-gradient(135deg, #6C63FF, #00D2FF); color: white;">Đổi ngay</button>
+            </div>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getAuth, onAuthStateChanged, EmailAuthProvider, reauthenticateWithCredential, updatePassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -143,9 +169,11 @@
         const db = getFirestore(app);
         let uid = null;
         let userEmail = "";
+        let currentUser = null;
 
         onAuthStateChanged(auth, async (user) => {
             if(user) {
+                currentUser = user;
                 uid = user.uid;
                 userEmail = user.email;
                 document.getElementById('emailDisplay').value = userEmail;
@@ -195,13 +223,39 @@
             btn.innerText = "Lưu Thay Đổi";
         }
 
-        window.resetPassword = async () => {
-            if(confirm("Bạn có muốn nhận email để đặt lại mật khẩu không?")) {
-                try {
-                    await sendPasswordResetEmail(auth, userEmail);
-                    alert("Đã gửi email đặt lại mật khẩu! Hãy kiểm tra hộp thư.");
-                } catch(e) {
-                    alert("Lỗi gửi email: " + e.message);
+        window.openPasswordModal = () => {
+            document.getElementById('passwordModal').style.display = 'flex';
+        }
+
+        window.handleChangePassword = async () => {
+            const oldPass = document.getElementById('oldPass').value;
+            const newPass = document.getElementById('newPass').value;
+            const confirmNewPass = document.getElementById('confirmNewPass').value;
+
+            if (!oldPass || !newPass || !confirmNewPass) return alert("Vui lòng điền đầy đủ thông tin!");
+            if (newPass !== confirmNewPass) return alert("Mật khẩu mới không khớp!");
+            if (newPass.length < 6) return alert("Mật khẩu mới phải có ít nhất 6 ký tự!");
+
+            try {
+                // 1. Xác thực lại người dùng bằng mật khẩu cũ
+                const credential = EmailAuthProvider.credential(currentUser.email, oldPass);
+                await reauthenticateWithCredential(currentUser, credential);
+
+                // 2. Cập nhật mật khẩu mới
+                await updatePassword(currentUser, newPass);
+                
+                alert("Đổi mật khẩu thành công! Vui lòng đăng nhập lại.");
+                document.getElementById('passwordModal').style.display = 'none';
+                
+                // Đăng xuất để user đăng nhập lại bằng pass mới
+                auth.signOut().then(() => window.location.href = 'login.html');
+                
+            } catch (error) {
+                console.error(error);
+                if (error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password') {
+                    alert("Mật khẩu cũ không chính xác!");
+                } else {
+                    alert("Lỗi: " + error.message);
                 }
             }
         }
