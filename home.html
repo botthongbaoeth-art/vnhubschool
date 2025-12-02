@@ -232,7 +232,7 @@
     <!-- LOADING SCREEN -->
     <div id="loadingOverlay">
         <div class="spinner"></div>
-        <p>Đang kiểm tra đăng nhập...</p>
+        <p>Đang tải dữ liệu...</p>
     </div>
 
     <!-- SIDEBAR (Desktop) -->
@@ -365,8 +365,9 @@
     <!-- FIREBASE & LOGIC -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        // Import thêm setPersistence và browserLocalPersistence
         import { getAuth, onAuthStateChanged, signOut, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, updateDoc, increment, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, updateDoc, increment, collection, query, orderBy, limit, getDocs, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDFzSBZjJS5RvCL9Ax7xRrk6q_WsNGkh_s",
@@ -411,7 +412,15 @@
                                     fullname: data.fullname || user.email.split('@')[0]
                                 };
                             } else {
-                                currentUserData.fullname = user.email.split('@')[0];
+                                // Nếu chưa có data trong DB, tạo mặc định
+                                const defaultData = {
+                                    fullname: user.email.split('@')[0],
+                                    xp: 0,
+                                    level: 1,
+                                    xu: 0
+                                };
+                                await setDoc(docRef, defaultData);
+                                currentUserData = defaultData;
                             }
                             updateUI();
                             loadLeaderboard(); 
@@ -421,12 +430,11 @@
                             setTimeout(() => loading.style.display = 'none', 500);
                         } catch(e) {
                             console.error("Lỗi tải data:", e);
-                            // Vẫn cho vào dù lỗi data (để không bị loop)
-                            loading.style.display = 'none';
+                            loading.style.display = 'none'; // Vẫn hiện trang dù lỗi
                         }
                     } else {
-                        // Chưa đăng nhập -> Chuyển hướng
-                        window.location.href = 'login.html';
+                        // Chỉ chuyển hướng nếu thực sự chưa đăng nhập
+                        window.location.replace('login.html');
                     }
                 });
             } catch (error) {
@@ -436,8 +444,12 @@
 
         // UI UPDATER
         function updateUI() {
-            document.getElementById('userNameDisplay').innerText = currentUserData.fullname;
-            document.getElementById('avatarDisplay').innerText = currentUserData.fullname.charAt(0).toUpperCase();
+            const nameEl = document.getElementById('userNameDisplay');
+            if (nameEl) nameEl.innerText = currentUserData.fullname;
+            
+            const avatarEl = document.getElementById('avatarDisplay');
+            if (avatarEl && currentUserData.fullname) avatarEl.innerText = currentUserData.fullname.charAt(0).toUpperCase();
+            
             document.getElementById('currentXP').innerText = currentUserData.xp;
             document.getElementById('levelDisplay').innerText = "LV." + currentUserData.level;
             document.getElementById('userXu').innerText = currentUserData.xu;
@@ -449,16 +461,15 @@
             document.getElementById('xpPercent').innerText = Math.floor(percent) + "%";
         }
 
-        // LEADERBOARD REAL-TIME
         async function loadLeaderboard() {
             try {
-                // Lấy Top 10 người có XP cao nhất
                 const q = query(collection(db, "users"), orderBy("xp", "desc"), limit(10));
                 const querySnapshot = await getDocs(q);
                 
                 const lbList = document.getElementById('lbList');
-                lbList.innerHTML = ""; // Xóa list cũ
+                if (!lbList) return;
                 
+                lbList.innerHTML = "";
                 let rank = 1;
                 querySnapshot.forEach((doc) => {
                     const u = doc.data();
@@ -466,7 +477,6 @@
                     const xp = u.xp || 0;
                     const char = name.charAt(0).toUpperCase();
                     
-                    // Style cho Top 3
                     let rankClass = "";
                     if(rank === 1) rankClass = "top-1";
                     else if(rank === 2) rankClass = "top-2";
@@ -489,12 +499,12 @@
                 });
             } catch (e) {
                 console.error("Lỗi tải BXH:", e);
-                document.getElementById('lbList').innerHTML = '<li style="text-align:center; padding:20px;">Chưa có dữ liệu bảng xếp hạng.</li>';
+                const lbList = document.getElementById('lbList');
+                if(lbList) lbList.innerHTML = '<li style="text-align:center; padding:20px;">Chưa có dữ liệu bảng xếp hạng.</li>';
             }
         }
 
         // --- ACTIONS ---
-
         window.showTab = (tabName, btnElement) => {
             document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
             const tab = document.getElementById('tab-' + tabName);
@@ -505,23 +515,20 @@
             document.querySelectorAll('.b-nav-item').forEach(el => el.classList.remove('active'));
             if(btnElement) btnElement.classList.add('active');
             
-            // Nếu bấm tab BXH thì tải lại dữ liệu
             if(tabName === 'leaderboard') loadLeaderboard();
         }
 
         window.learnLesson = async (lessonName, xpAmount) => {
             if(!confirm(`Bắt đầu học bài: ${lessonName}?`)) return;
             
-            // Cộng XP vào DB
             try {
                 const userRef = doc(db, "users", currentUserId);
                 await updateDoc(userRef, { xp: increment(xpAmount) });
                 
                 currentUserData.xp += xpAmount;
-                
                 if (currentUserData.xp >= 1000 * currentUserData.level) {
                     currentUserData.level++;
-                    await updateDoc(userRef, { level: currentUserData.level }); // Không reset XP, chỉ tăng level
+                    await updateDoc(userRef, { level: currentUserData.level });
                     alert(`🎉 CHÚC MỪNG! BẠN ĐÃ LÊN CẤP ${currentUserData.level}`);
                 } else {
                     alert(`Hoàn thành! +${xpAmount} XP.`);
@@ -529,6 +536,7 @@
                 updateUI();
             } catch (e) {
                 console.error(e);
+                alert("Lỗi kết nối database!");
             }
         }
 
@@ -536,7 +544,6 @@
         
         window.recharge = async (amount) => {
             if(!confirm(`Xác nhận nạp ${amount} Xu?`)) return;
-            
             const userRef = doc(db, "users", currentUserId);
             try {
                 await updateDoc(userRef, { xu: increment(amount) });
@@ -544,7 +551,7 @@
                 updateUI();
                 alert("Nạp thành công!");
                 document.getElementById('rechargeModal').classList.remove('active');
-            } catch(e) { console.error(e); }
+            } catch(e) { console.error(e); alert("Lỗi giao dịch!"); }
         }
 
         window.buyItem = async (price, itemName) => {
@@ -553,7 +560,6 @@
                 openRechargeModal();
                 return;
             }
-            
             if(confirm(`Mua "${itemName}" giá ${price} Xu?`)) {
                 const userRef = doc(db, "users", currentUserId);
                 try {
@@ -561,7 +567,7 @@
                     currentUserData.xu -= price;
                     updateUI();
                     alert("Mua thành công!");
-                } catch(e) { console.error(e); }
+                } catch(e) { console.error(e); alert("Lỗi giao dịch!"); }
             }
         }
 
@@ -571,13 +577,11 @@
             }
         }
         
-        // Placeholder cho filter (Chưa làm backend phức tạp cho filter time)
         window.filterLB = (btn, type) => {
             document.querySelectorAll('.lb-tab').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            loadLeaderboard(); // Tạm thời load lại all time
+            loadLeaderboard(); 
         }
-
     </script>
 </body>
 </html>
