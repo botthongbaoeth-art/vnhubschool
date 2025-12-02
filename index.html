@@ -2,11 +2,11 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Thêm viewport-fit=cover để hỗ trợ tai thỏ trên iPhone -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
     <title>HighSchool Hub | Nền Tảng Học Tập 4.0</title>
     
     <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2997/2997320.png" type="image/x-icon">
-
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
@@ -20,17 +20,23 @@
             --text: #f1f5f9;
             --text-muted: #94a3b8;
             --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
-            --glass: rgba(30, 41, 59, 0.8);
+            --glass: rgba(30, 41, 59, 0.95); /* Tăng độ mờ nền để dễ đọc trên mobile */
+            
+            /* Safe area variables cho iOS */
+            --safe-top: env(safe-area-inset-top);
+            --safe-bottom: env(safe-area-inset-bottom);
         }
 
-        html { scroll-behavior: smooth; } /* Cuộn mượt */
+        html { scroll-behavior: smooth; }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; -webkit-tap-highlight-color: transparent; }
         
         body {
             background-color: var(--dark);
             color: var(--text);
             overflow-x: hidden;
+            /* Padding bottom để tránh cấn thanh home ảo trên iOS */
+            padding-bottom: var(--safe-bottom);
         }
 
         a { text-decoration: none; color: inherit; transition: 0.3s; }
@@ -40,19 +46,20 @@
         header {
             position: fixed;
             top: 0; left: 0; width: 100%;
-            padding: 15px 5%;
+            /* Thêm padding top cho tai thỏ */
+            padding: calc(15px + var(--safe-top)) 5% 15px 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
             background: var(--glass);
             backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px); /* Cho Safari */
             z-index: 1000;
             border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
-        /* Update Logo Style for Link */
         .logo {
-            font-size: 1.5rem;
+            font-size: 1.3rem; /* Giảm nhẹ size logo trên mobile */
             font-weight: 800;
             background: var(--gradient);
             -webkit-background-clip: text;
@@ -61,20 +68,55 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            z-index: 1002; /* Luôn nằm trên mobile menu */
         }
         
-        /* Fix icon color inside logo because of text-fill-color */
         .logo i {
             background: var(--gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
+        /* Desktop Nav */
         nav ul { display: flex; gap: 30px; }
         nav a:hover { color: var(--secondary); text-shadow: 0 0 10px var(--secondary); }
 
+        /* Mobile Menu Toggle Button */
+        .mobile-menu-btn {
+            display: none;
+            font-size: 1.5rem;
+            color: var(--text);
+            cursor: pointer;
+            z-index: 1002;
+        }
+
+        /* Mobile Nav Overlay */
+        .mobile-nav-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100vh;
+            background: var(--dark);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1001;
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+            padding-top: var(--safe-top);
+        }
+        
+        .mobile-nav-overlay.active {
+            transform: translateX(0);
+        }
+
+        .mobile-nav-overlay a {
+            font-size: 1.5rem;
+            margin: 20px 0;
+            font-weight: 600;
+        }
+
         .btn-cta {
-            padding: 10px 25px;
+            padding: 10px 20px;
             background: var(--gradient);
             border-radius: 30px;
             font-weight: 600;
@@ -82,26 +124,57 @@
             cursor: pointer;
             color: white;
             box-shadow: 0 4px 15px rgba(108, 99, 255, 0.4);
+            white-space: nowrap;
+            font-size: 0.9rem;
         }
         .btn-cta:hover { transform: translateY(-2px); }
+        .btn-cta:active { transform: translateY(0); } /* Feedback khi chạm */
+
+        /* Auth Area */
+        #authArea { display: flex; align-items: center; }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .user-name {
+            font-weight: 600;
+            color: var(--secondary);
+            max-width: 100px; /* Giới hạn chiều dài tên trên mobile */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .btn-logout {
+            background: transparent;
+            border: 1px solid var(--text-muted);
+            color: var(--text-muted);
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.75rem;
+        }
 
         /* --- HERO SECTION --- */
         .hero {
-            min-height: 100vh; /* Changed to min-height for mobile */
-            padding: 120px 10% 50px 10%; /* Adjusted padding for fixed header */
+            min-height: 100vh;
+            /* Fix chiều cao trên mobile browser */
+            min-height: 100dvh; 
+            padding: 120px 5% 50px 5%;
             display: flex;
             align-items: center;
             justify-content: space-between;
             position: relative;
         }
 
-        .hero-content { max-width: 600px; }
-        .hero h1 { font-size: 3.5rem; line-height: 1.2; margin-bottom: 20px; }
+        .hero-content { max-width: 600px; z-index: 1; }
+        .hero h1 { font-size: 2.8rem; line-height: 1.2; margin-bottom: 20px; }
         .hero span { color: var(--secondary); }
-        .hero p { color: var(--text-muted); margin-bottom: 30px; font-size: 1.1rem; }
+        .hero p { color: var(--text-muted); margin-bottom: 30px; font-size: 1rem; }
         
         .hero-img {
-            width: 400px;
+            width: 45%;
             animation: float 6s ease-in-out infinite;
             text-align: center;
         }
@@ -113,29 +186,29 @@
         }
 
         /* --- LIBRARY SECTION --- */
-        .section-padding { padding: 80px 10%; }
-        .section-title { text-align: center; margin-bottom: 50px; }
-        .section-title h2 { font-size: 2.5rem; margin-bottom: 10px; }
-        .section-title p { color: var(--text-muted); }
+        .section-padding { padding: 60px 5%; } /* Giảm padding ngang cho mobile */
+        .section-title { text-align: center; margin-bottom: 40px; }
+        .section-title h2 { font-size: 2rem; margin-bottom: 10px; }
+        .section-title p { color: var(--text-muted); font-size: 0.9rem; }
 
-        /* Search & Filter Tool */
+        /* Toolbar */
         .toolbar {
             display: flex;
             justify-content: space-between;
             margin-bottom: 40px;
             flex-wrap: wrap;
-            gap: 20px;
+            gap: 15px;
         }
 
         .search-box {
             background: var(--dark-light);
-            padding: 10px 20px;
+            padding: 12px 20px; /* Tăng vùng chạm */
             border-radius: 50px;
             display: flex;
             align-items: center;
             border: 1px solid rgba(255,255,255,0.1);
             flex: 1;
-            max-width: 400px;
+            min-width: 280px; /* Đảm bảo không quá nhỏ */
         }
         .search-box input {
             background: transparent;
@@ -144,17 +217,30 @@
             width: 100%;
             outline: none;
             margin-left: 10px;
+            font-size: 16px; /* Font size 16px để iOS không zoom */
         }
+
+        .filters {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto; /* Cho phép cuộn ngang nếu nhiều nút */
+            padding-bottom: 5px;
+            -webkit-overflow-scrolling: touch;
+            width: 100%; /* Mobile: full width */
+        }
+        
+        .filters::-webkit-scrollbar { display: none; } /* Ẩn scrollbar */
 
         .filters button {
             background: transparent;
             border: 1px solid var(--text-muted);
             color: var(--text-muted);
-            padding: 8px 20px;
+            padding: 8px 16px;
             border-radius: 20px;
             cursor: pointer;
-            margin-left: 10px;
-            transition: 0.3s;
+            white-space: nowrap; /* Không xuống dòng chữ trong nút */
+            flex-shrink: 0;
+            font-size: 0.9rem;
         }
         .filters button.active, .filters button:hover {
             background: var(--primary);
@@ -166,124 +252,172 @@
         .doc-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
+            gap: 20px;
         }
 
         .doc-card {
             background: var(--dark-light);
             border-radius: 20px;
-            padding: 25px;
+            padding: 20px;
             position: relative;
             overflow: hidden;
             border: 1px solid rgba(255,255,255,0.05);
             transition: 0.3s;
+            display: flex;
+            flex-direction: column;
         }
-        .doc-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            border-color: var(--primary);
-        }
-
+        
         .badge {
             position: absolute;
-            top: 20px; right: 20px;
-            padding: 5px 10px;
+            top: 15px; right: 15px;
+            padding: 4px 8px;
             background: rgba(255,255,255,0.1);
-            border-radius: 10px;
-            font-size: 0.8rem;
+            border-radius: 8px;
+            font-size: 0.75rem;
             color: var(--secondary);
         }
 
         .doc-icon {
-            font-size: 3rem;
-            margin-bottom: 20px;
+            font-size: 2.5rem;
+            margin-bottom: 15px;
             color: var(--primary);
         }
 
-        .doc-info h3 { font-size: 1.2rem; margin-bottom: 10px; }
-        .doc-info p { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px; }
+        .doc-info h3 { font-size: 1.1rem; margin-bottom: 8px; line-height: 1.4; }
+        .doc-info p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px; }
         
         .download-btn {
             width: 100%;
-            padding: 10px;
+            padding: 12px; /* Tăng vùng chạm */
             background: transparent;
             border: 2px solid var(--primary);
             color: white;
-            border-radius: 10px;
+            border-radius: 12px;
             cursor: pointer;
             font-weight: 600;
-            transition: 0.3s;
+            margin-top: auto; /* Đẩy nút xuống đáy card */
+            font-size: 0.9rem;
         }
-        .download-btn:hover { background: var(--primary); }
+        .download-btn:active { background: rgba(108, 99, 255, 0.2); }
 
-        /* --- NEW FEATURE: GPA CALCULATOR --- */
+        /* --- TOOLS SECTION REDESIGN --- */
         .tools-container {
             background: var(--dark-light);
-            padding: 40px;
+            padding: 25px;
             border-radius: 20px;
             border: 1px solid rgba(255,255,255,0.1);
             max-width: 800px;
             margin: 0 auto;
+            min-height: 400px;
         }
 
-        .gpa-input-group {
-            display: grid;
-            grid-template-columns: 2fr 1fr 50px;
-            gap: 15px;
-            margin-bottom: 15px;
+        /* Tool Tabs */
+        .tool-tabs {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 25px;
+            -webkit-overflow-scrolling: touch;
         }
+        .tool-tabs::-webkit-scrollbar { height: 4px; }
+        .tool-tabs::-webkit-scrollbar-thumb { background: var(--secondary); border-radius: 4px; }
 
-        .gpa-input-group input {
+        .tool-tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 10px 15px;
+            cursor: pointer;
+            white-space: nowrap;
+            font-weight: 600;
+            border-radius: 10px;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .tool-tab-btn:hover { background: rgba(255,255,255,0.05); color: white; }
+        .tool-tab-btn.active { background: rgba(108, 99, 255, 0.2); color: var(--secondary); }
+
+        .tool-content { display: none; animation: fadeIn 0.3s; }
+        .tool-content.active { display: block; }
+
+        /* Common Tool Inputs */
+        .tool-input-group { margin-bottom: 15px; }
+        .tool-input-group label { display: block; margin-bottom: 5px; color: var(--text-muted); font-size: 0.9rem; }
+        
+        /* CẬP NHẬT CSS: Áp dụng style cho tất cả input trong tools-container */
+        .tools-container input, .tools-container textarea {
+            width: 100%;
             padding: 12px;
             background: rgba(0,0,0,0.2);
             border: 1px solid rgba(255,255,255,0.1);
             color: white;
             border-radius: 8px;
             outline: none;
+            font-size: 16px;
         }
         
-        .btn-remove {
-            background: #ff4757;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        .gpa-controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .tool-result {
             margin-top: 20px;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            padding-top: 20px;
+            padding: 15px;
+            background: rgba(0,210,255,0.1);
+            border-radius: 10px;
+            text-align: center;
+            color: var(--secondary);
+            font-weight: 700;
         }
 
-        .gpa-result {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--secondary);
+        /* GPA Tool Specifics */
+        .gpa-row { 
+            display: grid; 
+            grid-template-columns: 1fr 80px 40px; 
+            gap: 10px; 
+            margin-bottom: 10px; 
+            align-items: center; /* Căn giữa theo chiều dọc */
         }
+        
+        /* Todo Tool Specifics */
+        .todo-item { display: flex; align-items: center; justify-content: space-between; padding: 10px; background: rgba(255,255,255,0.05); margin-bottom: 5px; border-radius: 8px; }
+        .todo-item.completed span { text-decoration: line-through; color: var(--text-muted); opacity: 0.6; }
+        .todo-checkbox { width: 20px; height: 20px; accent-color: var(--secondary); cursor: pointer; }
+
+        /* Breathing Tool */
+        .breath-circle {
+            width: 150px; height: 150px;
+            background: var(--gradient);
+            border-radius: 50%;
+            margin: 40px auto;
+            box-shadow: 0 0 30px var(--primary);
+            transition: transform 4s ease-in-out;
+        }
+        .breath-circle.inhale { transform: scale(1.5); }
+        .breath-circle.exhale { transform: scale(1); }
+        .breath-text { text-align: center; font-size: 1.5rem; font-weight: 700; min-height: 40px; }
 
         /* --- FOOTER --- */
         footer {
             background: #050911;
-            padding: 50px 10%;
+            padding: 40px 5% calc(40px + var(--safe-bottom)) 5%;
             text-align: center;
             border-top: 1px solid rgba(255,255,255,0.05);
         }
         .social-links { margin: 20px 0; }
         .social-links a {
-            font-size: 1.5rem;
+            font-size: 1.8rem; /* Icon to hơn dễ bấm */
             margin: 0 15px;
             color: var(--text-muted);
+            display: inline-block;
+            padding: 10px;
         }
-        .social-links a:hover { color: var(--secondary); }
 
         /* --- WIDGETS --- */
         .pomodoro-widget {
             position: fixed;
-            bottom: 30px; right: 30px;
+            bottom: calc(90px + var(--safe-bottom)); /* Tránh nút FAB */
+            right: 20px;
             background: var(--dark-light);
             padding: 20px;
             border-radius: 20px;
@@ -291,28 +425,28 @@
             border: 1px solid var(--secondary);
             text-align: center;
             z-index: 900;
-            width: 200px;
+            width: 220px;
             display: none;
         }
         .pomodoro-widget.active { display: block; animation: slideIn 0.3s; }
         
-        .timer-display { font-size: 2.5rem; font-weight: 700; margin: 10px 0; color: var(--secondary); }
-        
         .timer-controls button {
+            width: 40px; height: 40px; /* Touch target to hơn */
+            margin: 0 5px;
+            font-size: 1rem;
             background: rgba(255,255,255,0.1);
             border: none;
             color: white;
-            width: 30px; height: 30px;
             border-radius: 50%;
             cursor: pointer;
-            margin: 0 5px;
         }
         .timer-controls button:hover { background: var(--primary); }
 
         .fab-btn {
             position: fixed;
-            bottom: 30px; right: 30px;
-            width: 60px; height: 60px;
+            bottom: calc(20px + var(--safe-bottom)); 
+            right: 20px;
+            width: 56px; height: 56px;
             background: var(--gradient);
             border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
@@ -326,24 +460,104 @@
 
         .toast {
             position: fixed;
-            top: 100px; right: -300px;
-            background: var(--gradient);
-            padding: 15px 25px;
-            border-radius: 10px;
+            top: calc(80px + var(--safe-top)); 
+            right: -300px;
+            background: var(--dark-light);
+            border-left: 4px solid var(--secondary);
+            padding: 15px 20px;
+            border-radius: 8px;
             color: white;
             transition: 0.5s;
             z-index: 2000;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            max-width: 90%;
+        }
+
+        /* --- CUSTOM MODAL --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: 0.3s;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-box {
+            background: var(--dark-light);
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transform: scale(0.8);
+            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+        .modal-overlay.active .modal-box {
+            transform: scale(1);
+        }
+        .modal-icon {
+            font-size: 3rem;
+            color: var(--secondary);
+            margin-bottom: 20px;
+        }
+        .modal-box h3 { margin-bottom: 10px; font-size: 1.5rem; }
+        .modal-box p { color: var(--text-muted); margin-bottom: 25px; line-height: 1.5; }
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+        .btn-modal {
+            padding: 10px 25px;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            flex: 1;
+        }
+        .btn-modal.cancel {
+            background: transparent;
+            border: 1px solid var(--text-muted);
+            color: var(--text-muted);
+        }
+        .btn-modal.confirm {
+            background: var(--gradient);
+            color: white;
+            box-shadow: 0 4px 15px rgba(108, 99, 255, 0.3);
         }
 
         @keyframes slideIn { from {opacity:0; transform: translateY(20px);} to {opacity:1; transform: translateY(0);} }
+        @keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
 
-        /* Responsive */
+        /* --- RESPONSIVE QUERIES --- */
         @media (max-width: 768px) {
-            .hero { flex-direction: column; text-align: center; justify-content: center; }
-            .hero-content { margin-bottom: 50px; }
-            .hero-img { width: 80%; }
-            nav ul { display: none; }
-            .gpa-input-group { grid-template-columns: 1fr 1fr 50px; }
+            header { padding-right: 5%; padding-left: 5%; }
+            nav ul { display: none; } /* Ẩn nav desktop */
+            .mobile-menu-btn { display: block; } /* Hiện nút hamburger */
+            
+            .hero { flex-direction: column; text-align: center; justify-content: center; padding-top: 100px; }
+            .hero-content { margin-bottom: 40px; width: 100%; }
+            .hero h1 { font-size: 2.2rem; }
+            .hero-img { width: 70%; max-width: 300px; }
+            
+            .doc-grid { grid-template-columns: 1fr; } /* 1 cột trên mobile */
+            
+            .gpa-row { grid-template-columns: 1fr 70px 40px; }
         }
     </style>
 </head>
@@ -351,27 +565,49 @@
 
     <header>
         <a href="index.html" class="logo">
-            <i class="fas fa-graduation-cap"></i> HighSchool Hub
+            <i class="fas fa-graduation-cap"></i> Hub
         </a>
+        
+        <!-- Desktop Nav -->
         <nav>
             <ul>
                 <li><a href="#home">Trang chủ</a></li>
                 <li><a href="#library">Tài liệu</a></li>
-                <li><a href="#tools">Công cụ</a></li>
+                <li><a href="#tools">Tiện ích</a></li>
                 <li><a href="#contact">Liên hệ</a></li>
             </ul>
         </nav>
-        <button class="btn-cta" onclick="alert('Tính năng Đăng nhập đang được phát triển!')">Đăng nhập</button>
+        
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <div id="authArea">
+                <button class="btn-cta" onclick="window.location.href='insidetemplate/login.html'">Đăng nhập</button>
+            </div>
+            <!-- Nút Hamburger cho Mobile -->
+            <div class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
     </header>
+
+    <!-- Mobile Navigation Overlay -->
+    <div class="mobile-nav-overlay" id="mobileNav">
+        <div style="position: absolute; top: 20px; right: 20px; font-size: 2rem; cursor: pointer;" onclick="toggleMobileMenu()">
+            <i class="fas fa-times"></i>
+        </div>
+        <a href="#home" onclick="toggleMobileMenu()">Trang chủ</a>
+        <a href="#library" onclick="toggleMobileMenu()">Tài liệu</a>
+        <a href="#tools" onclick="toggleMobileMenu()">Tiện ích</a>
+        <a href="#contact" onclick="toggleMobileMenu()">Liên hệ</a>
+    </div>
 
     <section class="hero" id="home">
         <div class="hero-content">
             <h1>Học Tập Không Giới Hạn <br> <span>Bứt Phá Điểm Số</span></h1>
-            <p>Kho tài liệu ôn thi THPT Quốc Gia, đề thi thử và công cụ hỗ trợ học tập dành riêng cho Gen Z. Thiết kế tối ưu, nội dung chất lượng.</p>
+            <p>Kho tài liệu ôn thi THPT Quốc Gia, đề thi thử và bộ công cụ hỗ trợ học tập dành riêng cho Gen Z.</p>
             <button class="btn-cta" onclick="document.getElementById('library').scrollIntoView({behavior: 'smooth'})">Khám Phá Ngay</button>
         </div>
         <div class="hero-img">
-            <i class="fas fa-rocket" style="font-size: 15rem; color: var(--secondary); filter: drop-shadow(0 0 30px var(--primary));"></i>
+            <i class="fas fa-rocket" style="font-size: 10rem; color: var(--secondary); filter: drop-shadow(0 0 30px var(--primary));"></i>
         </div>
     </section>
 
@@ -384,7 +620,7 @@
         <div class="toolbar">
             <div class="search-box">
                 <i class="fas fa-search"></i>
-                <input type="text" id="searchInput" placeholder="Tìm kiếm tài liệu (VD: Toán, Hình học...)">
+                <input type="text" id="searchInput" placeholder="Tìm kiếm tài liệu...">
             </div>
             <div class="filters">
                 <button class="filter-btn active" data-filter="all">Tất cả</button>
@@ -395,52 +631,108 @@
         </div>
 
         <div class="doc-grid" id="docContainer">
-            </div>
+            <!-- Documents will be rendered here -->
+        </div>
     </section>
 
     <section class="section-padding" id="tools" style="background: rgba(0,0,0,0.2);">
         <div class="section-title">
-            <h2>Góc Công Cụ</h2>
-            <p>Tính nhanh điểm trung bình (GPA) để đặt mục tiêu học tập.</p>
+            <h2>Góc Tiện Ích</h2>
+            <p>Bộ công cụ 6-trong-1 giúp bạn tối ưu hóa việc học.</p>
         </div>
 
         <div class="tools-container">
-            <div id="gpaRows">
-                <div class="gpa-input-group">
-                    <input type="text" placeholder="Tên môn (VD: Toán)" value="Toán">
-                    <input type="number" class="score-input" placeholder="Điểm" max="10" min="0">
-                    <button class="btn-remove" onclick="removeRow(this)"><i class="fas fa-times"></i></button>
-                </div>
-                <div class="gpa-input-group">
-                    <input type="text" placeholder="Tên môn" value="Văn">
-                    <input type="number" class="score-input" placeholder="Điểm" max="10" min="0">
-                    <button class="btn-remove" onclick="removeRow(this)"><i class="fas fa-times"></i></button>
-                </div>
-                <div class="gpa-input-group">
-                    <input type="text" placeholder="Tên môn" value="Anh">
-                    <input type="number" class="score-input" placeholder="Điểm" max="10" min="0">
-                    <button class="btn-remove" onclick="removeRow(this)"><i class="fas fa-times"></i></button>
-                </div>
+            <!-- Tool Tabs Navigation -->
+            <div class="tool-tabs">
+                <button class="tool-tab-btn active" onclick="switchTool('gpa')"><i class="fas fa-calculator"></i> Tính GPA</button>
+                <button class="tool-tab-btn" onclick="switchTool('target')"><i class="fas fa-bullseye"></i> Điểm Mục Tiêu</button>
+                <button class="tool-tab-btn" onclick="switchTool('todo')"><i class="fas fa-list-check"></i> To-Do List</button>
+                <button class="tool-tab-btn" onclick="switchTool('countdown')"><i class="fas fa-hourglass-half"></i> Đếm Ngược</button>
+                <button class="tool-tab-btn" onclick="switchTool('note')"><i class="fas fa-sticky-note"></i> Ghi Chú</button>
+                <button class="tool-tab-btn" onclick="switchTool('breath')"><i class="fas fa-spa"></i> Thư Giãn</button>
             </div>
-            
-            <div class="gpa-controls">
-                <button class="btn-cta" onclick="addSubjectRow()" style="background: var(--dark); border: 1px solid var(--primary);">+ Thêm môn</button>
+
+            <!-- 1. GPA Calculator -->
+            <div id="tool-gpa" class="tool-content active">
+                <div id="gpaRows">
+                    <div class="gpa-row">
+                        <input type="text" placeholder="Môn (VD: Toán)" value="Toán">
+                        <input type="number" class="score-input" placeholder="Điểm" max="10" min="0">
+                        <button class="btn-remove" onclick="removeRow(this)"><i class="fas fa-times"></i></button>
+                    </div>
+                </div>
+                <div style="margin-top: 20px; display: flex; gap: 10px;">
+                    <button class="btn-cta" onclick="addSubjectRow()" style="background: var(--dark); border: 1px solid var(--primary); flex: 1;">+ Thêm</button>
+                    <button class="btn-cta" onclick="calculateGPA()" style="flex: 2;">Tính Ngay</button>
+                </div>
                 <div class="gpa-result">GPA: <span id="gpaValue">0.0</span></div>
-                <button class="btn-cta" onclick="calculateGPA()">Tính ngay</button>
             </div>
+
+            <!-- 2. Target Score Calculator -->
+            <div id="tool-target" class="tool-content">
+                <div class="tool-input-group">
+                    <label>Điểm trung bình hiện tại:</label>
+                    <input type="number" id="currentAvg" placeholder="VD: 7.5">
+                </div>
+                <div class="tool-input-group">
+                    <label>Điểm trung bình mong muốn:</label>
+                    <input type="number" id="desiredAvg" placeholder="VD: 8.0">
+                </div>
+                <div class="tool-input-group">
+                    <label>Trọng số bài thi cuối kỳ (0.1 - 1.0):</label>
+                    <input type="number" id="finalWeight" placeholder="VD: 0.3 (30%)">
+                </div>
+                <button class="btn-cta" style="width: 100%;" onclick="calcTargetScore()">Tính Điểm Cần Thi</button>
+                <div id="targetResult" class="tool-result" style="display: none;"></div>
+            </div>
+
+            <!-- 3. To-Do List -->
+            <div id="tool-todo" class="tool-content">
+                <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                    <input type="text" id="todoInput" placeholder="Thêm bài tập cần làm..." style="flex: 1; padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2); color: white;">
+                    <button class="btn-cta" onclick="addTodo()">Thêm</button>
+                </div>
+                <div id="todoList"></div>
+            </div>
+
+            <!-- 4. Countdown -->
+            <div id="tool-countdown" class="tool-content">
+                <div class="tool-input-group">
+                    <label>Chọn ngày thi quan trọng:</label>
+                    <input type="date" id="examDate" onchange="saveDate()">
+                </div>
+                <div id="countdownDisplay" style="font-size: 3rem; text-align: center; color: var(--secondary); font-weight: 800; margin-top: 30px;">
+                    00 : 00 : 00
+                </div>
+                <p style="text-align: center; color: var(--text-muted);">đến ngày thi!</p>
+            </div>
+
+            <!-- 5. Quick Notes -->
+            <div id="tool-note" class="tool-content">
+                <textarea id="quickNoteArea" rows="10" placeholder="Viết nháp ý tưởng, công thức..." oninput="saveNote()"></textarea>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 5px;">*Tự động lưu vào trình duyệt</p>
+            </div>
+
+            <!-- 6. Breathing -->
+            <div id="tool-breath" class="tool-content" style="text-align: center;">
+                <p style="margin-bottom: 20px;">Bài tập thở 4-7-8 giúp giảm căng thẳng</p>
+                <div class="breath-circle" id="breathCircle"></div>
+                <div class="breath-text" id="breathText">Sẵn sàng?</div>
+                <button class="btn-cta" onclick="toggleBreathing()" id="btnBreath">Bắt đầu</button>
+            </div>
+
         </div>
     </section>
 
     <footer id="contact">
         <div class="logo" style="justify-content: center; margin-bottom: 20px;">
-            <i class="fas fa-graduation-cap"></i> HighSchool Hub
+            <i class="fas fa-graduation-cap"></i> Hub
         </div>
         <p style="color: var(--text-muted);">Đồng hành cùng học sinh Việt Nam chinh phục cánh cổng đại học.</p>
         <div class="social-links">
             <a href="https://fb.com/lenhanriel"><i class="fab fa-facebook"></i></a>
-            <a href="404.html"><i class="fab fa-youtube"></i></a>
+            <a href="https://youtube.com/@lenhanzxc"><i class="fab fa-youtube"></i></a>
             <a href="https://tiktok.com/@nh4nz"><i class="fab fa-tiktok"></i></a>
-            <a href="mailto:lenhancute1@gmail.com"><i class="fas fa-envelope"></i></a>
         </div>
         <p style="font-size: 0.8rem; color: #555;">© 2025 HighSchool Hub. All rights reserved.</p>
     </footer>
@@ -457,19 +749,292 @@
         </div>
     </div>
 
-    <div class="toast" id="toast">Đang tải xuống tài liệu...</div>
+    <!-- NOTIFICATION TOAST (Success message) -->
+    <div class="toast" id="toast">
+        <i class="fas fa-info-circle"></i>
+        <span id="toastMsg">Đang tải xuống tài liệu...</span>
+    </div>
 
-    <script>
-        // --- 1. MOCK DATA & DOCS LOGIC ---
+    <!-- CUSTOM LOGIN MODAL -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal-box">
+            <div class="modal-icon"><i class="fas fa-lock"></i></div>
+            <h3>Yêu cầu đăng nhập</h3>
+            <p>Bạn cần đăng nhập tài khoản để tải tài liệu miễn phí và sử dụng đầy đủ tính năng.</p>
+            <div class="modal-actions">
+                <button class="btn-modal cancel" onclick="closeLoginModal()">Để sau</button>
+                <button class="btn-modal confirm" onclick="window.location.href='insidetemplate/login.html'">Đăng nhập ngay</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FIREBASE LOGIC & MAIN SCRIPT -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        
+        // --- CẤU HÌNH FIREBASE ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyDFzSBZjJS5RvCL9Ax7xRrk6q_WsNGkh_s",
+            authDomain: "hubschoolvn-db841.firebaseapp.com",
+            projectId: "hubschoolvn-db841",
+            storageBucket: "hubschoolvn-db841.firebasestorage.app",
+            messagingSenderId: "526272140814",
+            appId: "1:526272140814:web:ba337306b1d4b4d4af4e5f",
+            measurementId: "G-4KD8Z1FGC7"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        let currentUser = null;
+
+        // 1. Auth Listener
+        onAuthStateChanged(auth, async (user) => {
+            const authArea = document.getElementById('authArea');
+            if (user) {
+                currentUser = user;
+                let displayName = user.email.split('@')[0];
+                try {
+                    const docRef = doc(db, "users", user.uid);
+                    const docSnap = await getDoc(docRef);
+                    if (docSnap.exists()) {
+                        displayName = docSnap.data().fullname.split(' ').pop();
+                    }
+                } catch(e) { console.error(e); }
+
+                authArea.innerHTML = `
+                    <div class="user-info">
+                        <span class="user-name">Hi, ${displayName}</span>
+                        <button class="btn-logout" id="btnLogout"><i class="fas fa-sign-out-alt"></i></button>
+                    </div>
+                `;
+                document.getElementById('btnLogout').addEventListener('click', () => {
+                    signOut(auth).then(() => window.location.reload());
+                });
+            } else {
+                currentUser = null;
+                authArea.innerHTML = `<button class="btn-cta" onclick="window.location.href='insidetemplate/login.html'">Đăng nhập</button>`;
+            }
+        });
+
+        // 2. Mobile Menu
+        window.toggleMobileMenu = () => {
+            document.getElementById('mobileNav').classList.toggle('active');
+        }
+
+        // 3. Modal Logic
+        window.openLoginModal = () => {
+            document.getElementById('loginModal').classList.add('active');
+        }
+        
+        window.closeLoginModal = () => {
+            document.getElementById('loginModal').classList.remove('active');
+        }
+
+        // 4. Download Logic (Updated to use Modal)
+        window.simulateDownload = (title) => {
+            if (!currentUser) {
+                // Show custom modal instead of window.confirm
+                openLoginModal();
+                return;
+            }
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').innerText = `Đang tải: ${title}...`;
+            toast.style.right = "20px";
+            setTimeout(() => {
+                toast.style.background = "#00c853";
+                document.getElementById('toastMsg').innerText = "Tải thành công!";
+                setTimeout(() => {
+                    toast.style.right = "-300px";
+                    setTimeout(() => { 
+                        toast.style.background = "var(--dark-light)"; 
+                        toast.style.borderLeft = "4px solid var(--secondary)";
+                    }, 500);
+                }, 2000);
+            }, 1500);
+        }
+
+        // 5. --- TOOLS LOGIC ---
+        
+        // Tab Switching
+        window.switchTool = (toolId) => {
+            document.querySelectorAll('.tool-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tool-tab-btn').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(`tool-${toolId}`).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        // GPA Logic
+        window.addSubjectRow = () => {
+            const div = document.createElement('div');
+            div.className = 'gpa-row';
+            div.innerHTML = `
+                <input type="text" placeholder="Môn (VD: Toán)" value="Toán">
+                <input type="number" class="score-input" placeholder="Điểm" max="10" min="0">
+                <button class="btn-remove" onclick="removeRow(this)"><i class="fas fa-times"></i></button>
+            `;
+            document.getElementById('gpaRows').appendChild(div);
+        }
+        window.removeRow = (btn) => btn.parentElement.remove();
+        window.calculateGPA = () => {
+            const inputs = document.querySelectorAll('.score-input');
+            let total = 0, count = 0;
+            inputs.forEach(inp => {
+                const v = parseFloat(inp.value);
+                if (!isNaN(v)) { total += v; count++; }
+            });
+            const gpa = count ? (total/count).toFixed(2) : "0.0";
+            const d = document.getElementById('gpaValue');
+            d.innerText = gpa;
+            d.style.color = gpa >= 8 ? "#00c853" : (gpa >= 5 ? "#ffd600" : "#ff4757");
+        }
+
+        // Target Score Logic
+        window.calcTargetScore = () => {
+            const curr = parseFloat(document.getElementById('currentAvg').value);
+            const target = parseFloat(document.getElementById('desiredAvg').value);
+            const weight = parseFloat(document.getElementById('finalWeight').value);
+            const res = document.getElementById('targetResult');
+            
+            if(!curr || !target || !weight) {
+                res.innerText = "Vui lòng nhập đủ thông tin!";
+                res.style.display = 'block'; return;
+            }
+            
+            // Formula: Target = (Current * (1-W)) + (Final * W)
+            // => Final = (Target - (Current * (1-W))) / W
+            const required = (target - (curr * (1 - weight))) / weight;
+            
+            res.style.display = 'block';
+            res.innerText = `Bạn cần thi đạt: ${required.toFixed(2)} điểm`;
+            res.style.color = required > 10 ? '#ff4757' : '#00c853';
+            if(required > 10) res.innerText += " (Khó quá bỏ qua!)";
+        }
+
+        // To-Do Logic
+        const todoList = document.getElementById('todoList');
+        // Load from storage
+        const savedTodos = JSON.parse(localStorage.getItem('hubTodos')) || [];
+        const renderTodos = () => {
+            todoList.innerHTML = '';
+            savedTodos.forEach((todo, idx) => {
+                const div = document.createElement('div');
+                div.className = `todo-item ${todo.done ? 'completed' : ''}`;
+                div.innerHTML = `
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <input type="checkbox" class="todo-checkbox" ${todo.done ? 'checked' : ''} onclick="toggleTodo(${idx})">
+                        <span>${todo.text}</span>
+                    </div>
+                    <button class="btn-remove" style="width:30px; height:30px;" onclick="deleteTodo(${idx})"><i class="fas fa-trash"></i></button>
+                `;
+                todoList.appendChild(div);
+            });
+            localStorage.setItem('hubTodos', JSON.stringify(savedTodos));
+        }
+        window.addTodo = () => {
+            const inp = document.getElementById('todoInput');
+            if(inp.value.trim()) {
+                savedTodos.push({ text: inp.value, done: false });
+                inp.value = '';
+                renderTodos();
+            }
+        }
+        window.toggleTodo = (idx) => { savedTodos[idx].done = !savedTodos[idx].done; renderTodos(); }
+        window.deleteTodo = (idx) => { savedTodos.splice(idx, 1); renderTodos(); }
+        renderTodos(); // Init load
+
+        // Countdown Logic
+        let countdownInt;
+        const examDateInp = document.getElementById('examDate');
+        if(localStorage.getItem('examDate')) {
+            examDateInp.value = localStorage.getItem('examDate');
+            startCountdown();
+        }
+        window.saveDate = () => {
+            localStorage.setItem('examDate', examDateInp.value);
+            startCountdown();
+        }
+        function startCountdown() {
+            clearInterval(countdownInt);
+            const target = new Date(examDateInp.value).getTime();
+            const display = document.getElementById('countdownDisplay');
+            
+            countdownInt = setInterval(() => {
+                const now = new Date().getTime();
+                const dist = target - now;
+                
+                if (dist < 0) {
+                    display.innerText = "Đã đến ngày thi!";
+                    return;
+                }
+                
+                const days = Math.floor(dist / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((dist % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((dist % (1000 * 60 * 60)) / (1000 * 60));
+                
+                display.innerText = `${days} Ngày ${hours} Giờ`;
+            }, 1000);
+        }
+
+        // Quick Note Logic
+        const noteArea = document.getElementById('quickNoteArea');
+        if(localStorage.getItem('quickNote')) noteArea.value = localStorage.getItem('quickNote');
+        window.saveNote = () => localStorage.setItem('quickNote', noteArea.value);
+
+        // Breathing Logic
+        let breathing = false;
+        window.toggleBreathing = () => {
+            breathing = !breathing;
+            const btn = document.getElementById('btnBreath');
+            const circle = document.getElementById('breathCircle');
+            const text = document.getElementById('breathText');
+            
+            if(breathing) {
+                btn.innerText = "Dừng lại";
+                btn.style.background = "#ff4757";
+                runBreathCycle(circle, text);
+            } else {
+                btn.innerText = "Bắt đầu";
+                btn.style.background = "var(--gradient)";
+                circle.className = "breath-circle"; // Reset
+                text.innerText = "Sẵn sàng?";
+                clearTimeout(window.breathTimeout);
+            }
+        }
+        
+        function runBreathCycle(circle, text) {
+            if(!breathing) return;
+            text.innerText = "Hít vào... (4s)";
+            circle.className = "breath-circle inhale";
+            
+            window.breathTimeout = setTimeout(() => {
+                if(!breathing) return;
+                text.innerText = "Giữ hơi... (7s)";
+                
+                window.breathTimeout = setTimeout(() => {
+                    if(!breathing) return;
+                    text.innerText = "Thở ra... (8s)";
+                    circle.className = "breath-circle exhale";
+                    
+                    window.breathTimeout = setTimeout(() => {
+                        runBreathCycle(circle, text); // Loop
+                    }, 8000);
+                }, 7000);
+            }, 4000);
+        }
+
+        // --- OLD LOGIC (Pomodoro, Search...) ---
         const documents = [
-            { id: 1, title: "Tổng hợp công thức Toán 12", subject: "Toán", grade: "12", type: "PDF", views: 1200 },
-            { id: 2, title: "Đề thi thử THPTQG Vật Lý 2025", subject: "Vật Lý", grade: "12", type: "DOCX", views: 850 },
-            { id: 3, title: "Ngữ pháp Tiếng Anh cơ bản", subject: "Tiếng Anh", grade: "10", type: "PDF", views: 2000 },
-            { id: 4, title: "Sơ đồ tư duy Lịch Sử 11", subject: "Lịch Sử", grade: "11", type: "IMG", views: 500 },
-            { id: 5, title: "Hóa học hữu cơ - Chuyên đề", subject: "Hóa Học", grade: "12", type: "PDF", views: 900 },
-            { id: 6, title: "Bài tập Hình học không gian", subject: "Toán", grade: "11", type: "PDF", views: 600 },
+            { id: 1, title: "Công thức Toán 12", subject: "Toán", grade: "12", type: "PDF", views: 1200 },
+            { id: 2, title: "Đề thi Lý 2025", subject: "Vật Lý", grade: "12", type: "DOCX", views: 850 },
+            { id: 3, title: "Ngữ pháp Anh cơ bản", subject: "Tiếng Anh", grade: "10", type: "PDF", views: 2000 },
+            { id: 4, title: "Mindmap Sử 11", subject: "Lịch Sử", grade: "11", type: "IMG", views: 500 },
+            { id: 5, title: "Hóa hữu cơ - Chuyên đề", subject: "Hóa Học", grade: "12", type: "PDF", views: 900 },
+            { id: 6, title: "Hình học không gian", subject: "Toán", grade: "11", type: "PDF", views: 600 },
         ];
-
         const container = document.getElementById('docContainer');
         const searchInput = document.getElementById('searchInput');
         const filterBtns = document.querySelectorAll('.filter-btn');
@@ -481,9 +1046,7 @@
                 card.className = 'doc-card';
                 card.innerHTML = `
                     <div class="badge">Lớp ${doc.grade}</div>
-                    <div class="doc-icon">
-                        <i class="fas ${getIcon(doc.subject)}"></i>
-                    </div>
+                    <div class="doc-icon"><i class="fas ${getIcon(doc.subject)}"></i></div>
                     <div class="doc-info">
                         <h3>${doc.title}</h3>
                         <p>${doc.subject} • ${doc.type} • <i class="fas fa-eye"></i> ${doc.views}</p>
@@ -495,7 +1058,6 @@
                 container.appendChild(card);
             });
         }
-
         function getIcon(subject) {
             if(subject.includes("Toán")) return "fa-square-root-alt";
             if(subject.includes("Lý")) return "fa-atom";
@@ -503,9 +1065,7 @@
             if(subject.includes("Anh")) return "fa-language";
             return "fa-book";
         }
-
         renderDocs(documents);
-
         filterBtns.forEach(btn => {
             btn.addEventListener('click', () => {
                 document.querySelector('.filter-btn.active').classList.remove('active');
@@ -515,121 +1075,36 @@
                 else renderDocs(documents.filter(doc => doc.grade === filterValue));
             });
         });
-
         searchInput.addEventListener('input', (e) => {
             const keyword = e.target.value.toLowerCase();
             renderDocs(documents.filter(doc => doc.title.toLowerCase().includes(keyword) || doc.subject.toLowerCase().includes(keyword)));
         });
 
-        function simulateDownload(title) {
-            const toast = document.getElementById('toast');
-            toast.innerText = `Đang tải: ${title}...`;
-            toast.style.right = "20px";
-            setTimeout(() => {
-                toast.style.background = "#00c853";
-                toast.innerText = "Tải thành công!";
-                setTimeout(() => {
-                    toast.style.right = "-300px";
-                    setTimeout(() => { toast.style.background = "linear-gradient(135deg, var(--primary), var(--secondary))"; }, 500);
-                }, 2000);
-            }, 1500);
-        }
-
-        // --- 2. POMODORO LOGIC ---
+        // Pomodoro (Simple)
         let timerInterval;
         let timeLeft = 1500;
         let isRunning = false;
-
-        function togglePomodoro() {
-            const widget = document.getElementById('pomodoro');
-            if (widget.style.display === 'block') {
-                widget.style.display = 'none';
-                widget.classList.remove('active');
-            } else {
-                widget.style.display = 'block';
-                widget.classList.add('active');
-            }
+        window.togglePomodoro = () => {
+            const w = document.getElementById('pomodoro');
+            w.style.display = w.style.display === 'block' ? 'none' : 'block';
+            w.classList.add('active');
         }
-
         function updateDisplay() {
             const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
             const s = (timeLeft % 60).toString().padStart(2, '0');
             document.getElementById('timer').innerText = `${m}:${s}`;
         }
-
-        function startTimer() {
+        window.startTimer = () => {
             if (isRunning) return;
             isRunning = true;
             timerInterval = setInterval(() => {
-                if (timeLeft > 0) {
-                    timeLeft--;
-                    updateDisplay();
-                } else {
-                    clearInterval(timerInterval);
-                    alert("Hoàn thành phiên học!");
-                    resetTimer();
-                }
+                if (timeLeft > 0) { timeLeft--; updateDisplay(); }
+                else { clearInterval(timerInterval); alert("Hết giờ!"); resetTimer(); }
             }, 1000);
         }
+        window.pauseTimer = () => { clearInterval(timerInterval); isRunning = false; }
+        window.resetTimer = () => { window.pauseTimer(); timeLeft = 1500; updateDisplay(); }
 
-        function pauseTimer() {
-            clearInterval(timerInterval);
-            isRunning = false;
-        }
-
-        function resetTimer() {
-            pauseTimer();
-            timeLeft = 1500;
-            updateDisplay();
-        }
-
-        // --- 3. GPA CALCULATOR LOGIC (NEW FEATURE) ---
-        function addSubjectRow() {
-            const container = document.getElementById('gpaRows');
-            const div = document.createElement('div');
-            div.className = 'gpa-input-group';
-            div.innerHTML = `
-                <input type="text" placeholder="Tên môn">
-                <input type="number" class="score-input" placeholder="Điểm" max="10" min="0">
-                <button class="btn-remove" onclick="removeRow(this)"><i class="fas fa-times"></i></button>
-            `;
-            container.appendChild(div);
-        }
-
-        function removeRow(btn) {
-            if(document.querySelectorAll('.gpa-input-group').length > 1) {
-                btn.parentElement.remove();
-            } else {
-                alert("Cần ít nhất 1 môn học!");
-            }
-        }
-
-        function calculateGPA() {
-            const inputs = document.querySelectorAll('.score-input');
-            let total = 0;
-            let count = 0;
-            
-            inputs.forEach(input => {
-                const val = parseFloat(input.value);
-                if (!isNaN(val) && val >= 0 && val <= 10) {
-                    total += val;
-                    count++;
-                }
-            });
-
-            if (count === 0) {
-                alert("Vui lòng nhập điểm hợp lệ!");
-                return;
-            }
-
-            const gpa = (total / count).toFixed(2);
-            const gpaDisplay = document.getElementById('gpaValue');
-            gpaDisplay.innerText = gpa;
-            
-            if(gpa >= 8.0) gpaDisplay.style.color = "#00c853"; // Xanh lá
-            else if(gpa >= 5.0) gpaDisplay.style.color = "#ffd600"; // Vàng
-            else gpaDisplay.style.color = "#ff4757"; // Đỏ
-        }
     </script>
 </body>
 </html>
