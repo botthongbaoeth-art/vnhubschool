@@ -47,7 +47,7 @@
         }
         .btn-outline:hover { background: rgba(255,71,87,0.1); }
 
-        /* Modal */
+        /* Avatar Modal */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); align-items: center; justify-content: center; z-index: 999; }
         .modal-content { background: #1e293b; padding: 20px; border-radius: 20px; width: 90%; max-width: 350px; text-align: center; }
         .emoji-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 20px; }
@@ -188,7 +188,7 @@
                 if(snap.exists()) {
                     const d = snap.data();
                     document.getElementById('usernameInput').value = d.username || "";
-                    currentUsername = d.username || ""; // Lưu username hiện tại để check đổi
+                    currentUsername = d.username || ""; 
                     document.getElementById('fullname').value = d.fullname || "";
                     document.getElementById('bio').value = d.bio || "";
                     document.getElementById('interests').value = d.interests || "";
@@ -212,24 +212,31 @@
             const newUsername = document.getElementById('usernameInput').value.trim();
             
             if(!newUsername) return alert("Username không được để trống!");
-            // Validate username: chỉ chữ thường, số, gạch dưới
             if(!/^[a-z0-9_]+$/.test(newUsername)) return alert("Username chỉ được chứa chữ thường, số và dấu gạch dưới!");
 
-            btn.innerText = "Đang lưu...";
+            btn.innerText = "Đang xử lý...";
             btn.disabled = true;
 
             try {
-                // Nếu username thay đổi, kiểm tra xem đã tồn tại chưa
+                // 1. Kiểm tra trùng username (Cần mở Rules mới chạy được dòng này)
                 if(newUsername !== currentUsername) {
-                    const q = query(collection(db, "users"), where("username", "==", newUsername));
-                    const querySnapshot = await getDocs(q);
-                    if(!querySnapshot.empty) {
-                        btn.innerText = "Lưu Thay Đổi";
-                        btn.disabled = false;
-                        return alert("Username này đã có người sử dụng! Vui lòng chọn tên khác.");
+                    try {
+                        const q = query(collection(db, "users"), where("username", "==", newUsername));
+                        const querySnapshot = await getDocs(q);
+                        if(!querySnapshot.empty) {
+                            btn.innerText = "Lưu Thay Đổi";
+                            btn.disabled = false;
+                            return alert("Username này đã có người sử dụng! Vui lòng chọn tên khác.");
+                        }
+                    } catch (permissionError) {
+                        // Bỏ qua lỗi quyền để cho phép lưu các thông tin khác, 
+                        // nhưng cảnh báo người dùng cập nhật Rules
+                        console.warn("Không thể kiểm tra trùng username do lỗi quyền (Rules). Vẫn tiến hành lưu thông tin.");
+                        alert("Lưu ý: Bạn cần cập nhật Firestore Rules để tính năng kiểm tra trùng tên và Tìm bạn hoạt động.");
                     }
                 }
 
+                // 2. Lưu thông tin
                 const data = {
                     username: newUsername,
                     fullname: document.getElementById('fullname').value,
