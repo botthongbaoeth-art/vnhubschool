@@ -31,6 +31,7 @@
             width: 100%; padding: 15px; background: #1e293b; border: 1px solid rgba(255,255,255,0.1); 
             color: white; border-radius: 12px; outline: none; font-size: 1rem;
         }
+        input:disabled { background: rgba(30, 41, 59, 0.5); color: #64748b; cursor: not-allowed; }
         textarea { resize: none; height: 100px; }
         input:focus, textarea:focus { border-color: #6C63FF; }
 
@@ -39,6 +40,12 @@
             border: none; border-radius: 50px; color: white; font-weight: 700; font-size: 1rem; 
             cursor: pointer; margin-top: 20px; box-shadow: 0 5px 15px rgba(108,99,255,0.3);
         }
+        .btn-outline {
+            width: 100%; padding: 15px; background: transparent; 
+            border: 1px solid #ff4757; color: #ff4757; border-radius: 50px; 
+            font-weight: 700; cursor: pointer; margin-top: 15px; transition: 0.3s;
+        }
+        .btn-outline:hover { background: rgba(255,71,87,0.1); }
 
         /* Avatar Modal */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); align-items: center; justify-content: center; z-index: 999; }
@@ -62,6 +69,11 @@
         </div>
 
         <div class="form-group">
+            <label>Email (Không thể sửa)</label>
+            <input type="text" id="emailDisplay" disabled>
+        </div>
+
+        <div class="form-group">
             <label>Họ và tên</label>
             <input type="text" id="fullname" placeholder="Nhập tên của bạn">
         </div>
@@ -69,6 +81,11 @@
         <div class="form-group">
             <label>Tiểu sử (Bio)</label>
             <textarea id="bio" placeholder="Giới thiệu ngắn về bản thân..."></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Sở thích (Ngăn cách bằng dấu phẩy)</label>
+            <input type="text" id="interests" placeholder="Vd: Đọc sách, Code, Game...">
         </div>
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
@@ -83,6 +100,7 @@
         </div>
 
         <button class="btn-save" onclick="saveProfile()">Lưu Thay Đổi</button>
+        <button class="btn-outline" onclick="resetPassword()">Đổi Mật Khẩu</button>
     </div>
 
     <!-- Avatar Picker Modal -->
@@ -107,7 +125,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getAuth, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -124,15 +142,20 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
         let uid = null;
+        let userEmail = "";
 
         onAuthStateChanged(auth, async (user) => {
             if(user) {
                 uid = user.uid;
+                userEmail = user.email;
+                document.getElementById('emailDisplay').value = userEmail;
+
                 const snap = await getDoc(doc(db, "users", uid));
                 if(snap.exists()) {
                     const d = snap.data();
                     document.getElementById('fullname').value = d.fullname || "";
                     document.getElementById('bio').value = d.bio || "";
+                    document.getElementById('interests').value = d.interests || "";
                     document.getElementById('class').value = d.class || "";
                     document.getElementById('school').value = d.school || "";
                     document.getElementById('currentAvatar').innerText = d.avatarEmoji || (d.fullname ? d.fullname.charAt(0) : "U");
@@ -144,7 +167,6 @@
 
         window.selectAvatar = (emoji) => {
             document.getElementById('currentAvatar').innerText = emoji;
-            // Lưu tạm vào dataset hoặc biến
             document.getElementById('currentAvatar').dataset.emoji = emoji;
             document.getElementById('avatarModal').style.display = 'none';
         }
@@ -156,10 +178,10 @@
                 const data = {
                     fullname: document.getElementById('fullname').value,
                     bio: document.getElementById('bio').value,
+                    interests: document.getElementById('interests').value,
                     class: document.getElementById('class').value,
                     school: document.getElementById('school').value,
                 };
-                // Nếu có chọn emoji mới thì lưu
                 const emoji = document.getElementById('currentAvatar').dataset.emoji;
                 if(emoji) data.avatarEmoji = emoji;
 
@@ -171,6 +193,17 @@
                 alert("Lỗi khi lưu!");
             }
             btn.innerText = "Lưu Thay Đổi";
+        }
+
+        window.resetPassword = async () => {
+            if(confirm("Bạn có muốn nhận email để đặt lại mật khẩu không?")) {
+                try {
+                    await sendPasswordResetEmail(auth, userEmail);
+                    alert("Đã gửi email đặt lại mật khẩu! Hãy kiểm tra hộp thư.");
+                } catch(e) {
+                    alert("Lỗi gửi email: " + e.message);
+                }
+            }
         }
     </script>
 </body>
