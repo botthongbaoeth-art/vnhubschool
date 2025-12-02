@@ -390,6 +390,7 @@
 
         // --- DOCUMENT LIBRARY LOGIC ---
         const DOCUMENTS = [
+            { title: "IELTS Vocabulary 2021", subject: "Anh", type: "ZIP", filename: "https://download-directory.github.io/?url=https%3A%2F%2Fgithub.com%2Fbotthongbaoeth-art%2Fvnhubschool%2Ftree%2Fmain%2Fkhotailieu%2Fieltstuvung2021", isExternal: true },
             { title: "Đề thi Toán HK1 - 2024", subject: "Toán", type: "PDF", filename: "toan_hk1_2024.pdf" },
             { title: "Tổng hợp công thức Vật Lý 12", subject: "Lý", type: "PDF", filename: "cong_thuc_ly_12.pdf" },
             { title: "Đề minh họa Hóa Học 2025", subject: "Hóa", type: "PDF", filename: "de_minh_hoa_hoa_2025.pdf" },
@@ -410,7 +411,7 @@
                     <i class="fas ${icon} card-icon"></i>
                     <h3>${doc.title}</h3>
                     <div class="card-meta"><span>${doc.subject}</span></div>
-                    <button class="btn-action" onclick="downloadDoc('${doc.filename}')">Tải Xuống <i class="fas fa-download"></i></button>
+                    <button class="btn-action" onclick="downloadDoc('${doc.filename}', ${doc.isExternal})">Tải Xuống <i class="fas fa-download"></i></button>
                 `;
                 container.appendChild(div);
             });
@@ -437,16 +438,20 @@
             else renderDocs(DOCUMENTS.filter(d => d.subject === tag));
         }
 
-        window.downloadDoc = (filename) => {
-            const url = `tailieuon/${filename}`;
-            // Create a fake link to trigger download
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            alert("Đang bắt đầu tải xuống: " + filename);
+        window.downloadDoc = (filename, isExternal) => {
+            if (isExternal) {
+                 alert("Đang chuyển hướng đến trang tải folder...");
+                 window.open(filename, '_blank');
+            } else {
+                const url = `tailieuon/${filename}`;
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                alert("Đang bắt đầu tải xuống: " + filename);
+            }
         }
 
         // Init Library
