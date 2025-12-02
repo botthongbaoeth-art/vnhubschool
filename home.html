@@ -50,7 +50,6 @@
         /* LAYOUT */
         .wrapper { display: flex; }
         .sidebar { width: 260px; height: 100vh; background: rgba(15, 23, 42, 0.95); border-right: 1px solid rgba(255,255,255,0.05); padding: 30px 20px; position: fixed; display: flex; flex-direction: column; z-index: 100; transition: 0.3s; }
-        /* Sửa brand thành dạng click được */
         .brand { font-size: 1.8rem; font-weight: 800; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 50px; display: flex; gap: 10px; align-items: center; cursor: pointer; transition: 0.3s; }
         .brand:hover { opacity: 0.8; }
         
@@ -64,11 +63,20 @@
 
         /* PROFILE CARD */
         .profile-card { background: linear-gradient(135deg, rgba(108,99,255,0.15), rgba(0,210,255,0.15)); border: 1px solid rgba(255,255,255,0.1); border-radius: 25px; padding: 30px; display: flex; align-items: center; gap: 30px; margin-bottom: 40px; cursor: pointer; transition: 0.3s; position: relative; overflow: hidden; }
-        .avatar { width: 90px; height: 90px; border-radius: 50%; background: var(--gradient); display: flex; justify-content: center; align-items: center; font-size: 2.5rem; color: white; border: 4px solid var(--dark); font-weight: 700; }
+        .avatar { width: 90px; height: 90px; border-radius: 50%; background: var(--gradient); display: flex; justify-content: center; align-items: center; font-size: 2.5rem; color: white; border: 4px solid var(--dark); font-weight: 700; position: relative; }
         .xp-bar-container { width: 100%; max-width: 400px; margin-top: 10px; }
         .xp-bar-bg { width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; }
         .xp-bar-fill { height: 100%; background: var(--gradient); width: 0%; border-radius: 10px; transition: 1s ease; }
         .rank-title { font-size: 0.9rem; color: var(--secondary); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; display: block; }
+
+        /* VIP Badge */
+        .vip-crown { 
+            position: absolute; top: -15px; right: -15px; background: var(--gold); width: 40px; height: 40px; border-radius: 50%; 
+            display: none; align-items: center; justify-content: center; color: black; font-size: 1.2rem; z-index: 10; border: 3px solid var(--dark);
+        }
+        .is-vip .vip-crown { display: flex; }
+        .is-vip .avatar { border-color: var(--gold); box-shadow: 0 0 20px rgba(255, 215, 0, 0.3); }
+        .is-vip h2 { color: var(--gold); text-shadow: 0 0 10px rgba(255, 215, 0, 0.3); }
 
         /* CARD STYLES (Exam, Shop, Docs) */
         .grid-layout { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
@@ -100,12 +108,21 @@
         .content-card.vip-pack { border: 1px solid var(--gold); background: linear-gradient(135deg, rgba(255,215,0,0.05), rgba(0,0,0,0)); }
         .content-card.vip-pack .card-icon { filter: drop-shadow(0 0 10px var(--gold)); }
         .price-tag { color: var(--gold); font-weight: 800; font-size: 1.1rem; margin: 10px 0; display: flex; align-items: center; gap: 5px; }
-        
-        .sale-badge {
-            background: #ff4757; color: white; padding: 2px 8px; border-radius: 4px; 
-            font-size: 0.7rem; margin-left: 10px; vertical-align: middle;
-        }
+        .sale-badge { background: #ff4757; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; margin-left: 10px; vertical-align: middle; }
         .old-price { text-decoration: line-through; color: var(--text-muted); font-size: 0.9rem; margin-right: 5px; font-weight: normal; }
+
+        /* LEADERBOARD */
+        .lb-list { list-style: none; padding: 0; }
+        .lb-item { display: flex; align-items: center; padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); transition: 0.2s; }
+        .lb-item:hover { background: rgba(255,255,255,0.02); }
+        .lb-rank { width: 40px; font-weight: 800; font-size: 1.2rem; color: var(--text-muted); text-align: center; }
+        .lb-rank.top-1 { color: var(--gold); font-size: 1.5rem; }
+        .lb-rank.top-2 { color: silver; font-size: 1.4rem; }
+        .lb-rank.top-3 { color: #cd7f32; font-size: 1.3rem; }
+        .lb-user { flex: 1; display: flex; align-items: center; gap: 15px; margin-left: 10px; }
+        .lb-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--dark); display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid var(--text-muted); }
+        .lb-name { font-weight: 600; font-size: 0.95rem; }
+        .lb-score { font-weight: 700; color: var(--secondary); }
 
         /* EXAM INTERFACE */
         #examInterface { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: var(--dark); z-index: 2000; overflow-y: auto; padding: 20px; }
@@ -182,6 +199,7 @@
             <div class="nav-item active" onclick="switchTab('dashboard')"><i class="fas fa-home"></i> Tổng Quan</div>
             <div class="nav-item" onclick="switchTab('library')"><i class="fas fa-folder-open"></i> Kho Tài Liệu</div>
             <div class="nav-item" onclick="switchTab('exam')"><i class="fas fa-file-signature"></i> Thi Thử</div>
+            <div class="nav-item" onclick="switchTab('leaderboard')"><i class="fas fa-trophy"></i> BXH Top 50</div>
             <div class="nav-item" onclick="switchTab('shop')"><i class="fas fa-store"></i> Cửa Hàng</div>
             <div class="nav-item" onclick="window.location.href='news.html'"><i class="fas fa-newspaper"></i> Bảng Tin</div>
             <div class="nav-item" onclick="window.location.href='profile.html'"><i class="fas fa-user-circle"></i> Hồ Sơ</div>
@@ -199,8 +217,12 @@
 
             <!-- DASHBOARD TAB -->
             <div id="tab-dashboard" class="tab-content">
-                <div class="profile-card" onclick="window.location.href='profile.html'">
-                    <div class="avatar" id="userAvatar">U</div>
+                <!-- Thêm class "is-vip" bằng JS nếu user là VIP -->
+                <div class="profile-card" id="profileCard" onclick="window.location.href='profile.html'">
+                    <div class="avatar" id="userAvatar">
+                        U
+                        <div class="vip-crown"><i class="fas fa-crown"></i></div>
+                    </div>
                     <div style="flex:1;">
                         <h2 id="userName">Học viên</h2>
                         <span class="rank-title" id="userRankTitle">Tập Sự</span>
@@ -232,10 +254,9 @@
                 </div>
             </div>
 
-            <!-- LIBRARY TAB (KHO TÀI LIỆU) -->
+            <!-- LIBRARY TAB -->
             <div id="tab-library" class="tab-content" style="display:none;">
                 <input type="text" class="search-bar" placeholder="Tìm kiếm tài liệu..." oninput="filterDocs(this.value)">
-                
                 <div class="filter-tags">
                     <div class="filter-tag active" onclick="filterByTag('all', this)">Tất cả</div>
                     <div class="filter-tag" onclick="filterByTag('Toán', this)">Toán</div>
@@ -243,10 +264,7 @@
                     <div class="filter-tag" onclick="filterByTag('Hóa', this)">Hóa Học</div>
                     <div class="filter-tag" onclick="filterByTag('Anh', this)">Tiếng Anh</div>
                 </div>
-
-                <div class="grid-layout" id="libraryContainer">
-                    <!-- Docs will be rendered here -->
-                </div>
+                <div class="grid-layout" id="libraryContainer"></div>
             </div>
 
             <!-- EXAM TAB -->
@@ -255,22 +273,28 @@
                 <div class="grid-layout" id="examListContainer"></div>
             </div>
 
+            <!-- LEADERBOARD TAB -->
+            <div id="tab-leaderboard" class="tab-content" style="display:none;">
+                <h3 style="margin-bottom: 20px; color: var(--gold);"><i class="fas fa-trophy"></i> Bảng Xếp Hạng Top 50</h3>
+                <ul class="lb-list" id="lbList">
+                    <!-- Leaderboard items -->
+                </ul>
+            </div>
+
             <!-- SHOP TAB -->
             <div id="tab-shop" class="tab-content" style="display:none;">
                 <h3 style="margin-bottom: 20px;">Cửa Hàng Vật Phẩm</h3>
-                
                 <div class="grid-layout">
-                    <!-- VIP Monthly -->
+                    <!-- VIP PACKS -->
                     <div class="content-card vip-pack">
                         <span class="card-tag" style="background: var(--gold); color: #000;">VIP THÁNG</span>
                         <i class="fas fa-crown card-icon" style="color: var(--gold); font-size: 3rem; margin: 15px 0;"></i>
                         <h3>Gói Hội Viên (1 Tháng)</h3>
                         <p style="font-size:0.8rem; color:var(--text-muted); margin: 10px 0;">Mở khóa mọi đề thi, X2 XP mỗi ngày.</p>
                         <div class="price-tag"><i class="fas fa-coins"></i> 500</div>
-                        <button class="btn-action" onclick="buyItem(500, 'Gói VIP 1 Tháng')">Mua Ngay</button>
+                        <button class="btn-action" onclick="buyItem(500, 'Gói VIP 1 Tháng', 'vip')">Mua Ngay</button>
                     </div>
 
-                    <!-- VIP Yearly -->
                     <div class="content-card vip-pack" style="border-color: var(--accent);">
                         <span class="card-tag" style="background: var(--accent); color: #fff;">SALE 50%</span>
                         <i class="fas fa-gem card-icon" style="color: var(--accent); font-size: 3rem; margin: 15px 0;"></i>
@@ -280,7 +304,7 @@
                             <span class="old-price">6000</span> 
                             <i class="fas fa-coins"></i> 3000 
                         </div>
-                        <button class="btn-action" style="background: var(--accent);" onclick="buyItem(3000, 'Gói VIP 1 Năm')">Mua Ngay</button>
+                        <button class="btn-action" style="background: var(--accent);" onclick="buyItem(3000, 'Gói VIP 1 Năm', 'vip')">Mua Ngay</button>
                     </div>
 
                     <div class="content-card">
@@ -341,7 +365,6 @@
                 <button class="tab-btn" onclick="switchRechargeTab('ticket')">Nhập Ticket</button>
             </div>
 
-            <!-- Tab 1: Gói Nhanh -->
             <div id="recharge-quick" class="recharge-option active">
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                     <button class="btn-action secondary" onclick="recharge(100)">100 Xu <br><small style="font-size:0.7rem">10k VNĐ</small></button>
@@ -351,7 +374,6 @@
                 </div>
             </div>
 
-            <!-- Tab 2: Nạp Ticket -->
             <div id="recharge-ticket" class="recharge-option">
                 <p style="margin-bottom:10px; font-size:0.9rem; color:var(--text-muted);">Nhập mã quà tặng hoặc mã thẻ cào:</p>
                 <input type="text" id="ticketCode" class="input-ticket" placeholder="Nhập mã tại đây (VD: VIP2025)...">
@@ -364,7 +386,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, updateDoc, increment, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         // CONFIG
         const firebaseConfig = {
@@ -397,13 +419,19 @@
             if(docSnap.exists()) {
                 const data = docSnap.data();
                 document.getElementById('userName').innerText = data.fullname || "Học viên";
-                document.getElementById('userAvatar').innerText = (data.fullname || "U").charAt(0).toUpperCase();
+                document.getElementById('userAvatar').childNodes[0].nodeValue = (data.fullname || "U").charAt(0).toUpperCase() + " ";
                 document.getElementById('userXu').innerText = data.xu || 0;
                 document.getElementById('userLv').innerText = data.level || 1;
                 document.getElementById('userXp').innerText = data.xp || 0;
                 document.getElementById('userBio').innerText = data.bio || "Chưa có tiểu sử";
                 
-                // Tính rank
+                // Xử lý VIP
+                if (data.isVIP) {
+                    document.getElementById('profileCard').classList.add('is-vip');
+                    document.getElementById('userName').innerHTML = data.fullname + ' <i class="fas fa-check-circle" style="color:var(--gold); font-size:0.9rem;"></i>';
+                }
+
+                // Rank
                 const lvl = data.level || 1;
                 let rankName = "Tập Sự";
                 if (lvl >= 5) rankName = "Học Giả";
@@ -421,6 +449,51 @@
             loading.style.opacity = '0';
             setTimeout(() => loading.style.display = 'none', 500);
         }
+
+        // --- LEADERBOARD LOGIC ---
+        async function loadLeaderboard() {
+            try {
+                // Tăng giới hạn lên 50
+                const q = query(collection(db, "users"), orderBy("xp", "desc"), limit(50));
+                const querySnapshot = await getDocs(q);
+                
+                const lbList = document.getElementById('lbList');
+                lbList.innerHTML = ""; 
+                let rank = 1;
+                querySnapshot.forEach((doc) => {
+                    const u = doc.data();
+                    const name = u.fullname || "Ẩn danh";
+                    const xp = u.xp || 0;
+                    const char = name.charAt(0).toUpperCase();
+                    
+                    let rankClass = "";
+                    if(rank === 1) rankClass = "top-1";
+                    else if(rank === 2) rankClass = "top-2";
+                    else if(rank === 3) rankClass = "top-3";
+
+                    const item = `
+                        <li class="lb-item">
+                            <div class="lb-rank ${rankClass}">${rank}</div>
+                            <div class="lb-user">
+                                <div class="lb-avatar" style="${rank === 1 ? 'background:var(--gold);color:#000;' : ''}">
+                                    ${char}
+                                    ${u.isVIP ? '<div class="vip-crown" style="width:15px;height:15px;top:-5px;right:-5px;font-size:0.5rem;border:1px solid var(--dark);"><i class="fas fa-crown"></i></div>' : ''}
+                                </div>
+                                <div>
+                                    <div class="lb-name" style="${u.isVIP ? 'color:var(--gold);' : ''}">${name}</div>
+                                </div>
+                            </div>
+                            <div class="lb-score">${xp.toLocaleString()} XP</div>
+                        </li>
+                    `;
+                    lbList.insertAdjacentHTML('beforeend', item);
+                    rank++;
+                });
+            } catch (e) {
+                console.error("Lỗi tải BXH:", e);
+            }
+        }
+
 
         // --- DOCUMENT LIBRARY LOGIC ---
         const DOCUMENTS = [
@@ -585,14 +658,17 @@
             }
         }
 
-        window.buyItem = async (price, name) => {
+        window.buyItem = async (price, name, type) => {
             const currentXu = parseInt(document.getElementById('userXu').innerText);
             if(currentXu < price) {
                 if(confirm("Không đủ Xu! Bạn có muốn nạp thêm không?")) openRechargeModal();
                 return;
             }
             if(confirm(`Mua ${name} với giá ${price} Xu?`)) {
-                await updateDoc(doc(db, "users", currentUser.uid), { xu: increment(-price) });
+                const updates = { xu: increment(-price) };
+                if (type === 'vip') updates.isVIP = true; // Kích hoạt VIP
+                
+                await updateDoc(doc(db, "users", currentUser.uid), updates);
                 alert("Mua thành công!");
                 loadUserData(currentUser.uid);
             }
@@ -605,12 +681,12 @@
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.m-nav-item').forEach(el => el.classList.remove('active'));
             
-            // Find nav item with onclick matching tabId and activate it
-            // Simple approach for demo: just remove active from all and manually set if passed
-            // In a real app, use IDs for nav items.
+            event.currentTarget.classList.add('active');
             
             document.getElementById('pageTitle').innerText = 
-                tab === 'exam' ? 'Thi Thử' : (tab === 'shop' ? 'Cửa Hàng' : (tab === 'library' ? 'Kho Tài Liệu' : 'Tổng Quan'));
+                tab === 'exam' ? 'Thi Thử' : (tab === 'shop' ? 'Cửa Hàng' : (tab === 'library' ? 'Kho Tài Liệu' : (tab === 'leaderboard' ? 'Bảng Xếp Hạng' : 'Tổng Quan')));
+
+            if(tab === 'leaderboard') loadLeaderboard();
         }
         window.logout = () => signOut(auth).then(() => window.location.href = 'index.html');
     </script>
