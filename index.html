@@ -580,7 +580,8 @@
         
         <div style="display: flex; align-items: center; gap: 15px;">
             <div id="authArea">
-                <button class="btn-cta" onclick="window.location.href='/login.html'">Đăng nhập</button>
+                <!-- ĐÃ SỬA: Đường dẫn thành login.html -->
+                <button class="btn-cta" onclick="window.location.href='login.html'">Đăng nhập</button>
             </div>
             <!-- Nút Hamburger cho Mobile -->
             <div class="mobile-menu-btn" onclick="toggleMobileMenu()">
@@ -730,9 +731,9 @@
         </div>
         <p style="color: var(--text-muted);">Đồng hành cùng học sinh Việt Nam chinh phục cánh cổng đại học.</p>
         <div class="social-links">
-            <a href="https://fb.com/lenhanriel"><i class="fab fa-facebook"></i></a>
-            <a href="https://youtube.com/@lenhanzxc"><i class="fab fa-youtube"></i></a>
-            <a href="https://tiktok.com/@nh4nz"><i class="fab fa-tiktok"></i></a>
+            <a href="#"><i class="fab fa-facebook"></i></a>
+            <a href="#"><i class="fab fa-youtube"></i></a>
+            <a href="#"><i class="fab fa-tiktok"></i></a>
         </div>
         <p style="font-size: 0.8rem; color: #555;">© 2025 HighSchool Hub. All rights reserved.</p>
     </footer>
@@ -763,7 +764,8 @@
             <p>Bạn cần đăng nhập tài khoản để tải tài liệu miễn phí và sử dụng đầy đủ tính năng.</p>
             <div class="modal-actions">
                 <button class="btn-modal cancel" onclick="closeLoginModal()">Để sau</button>
-                <button class="btn-modal confirm" onclick="window.location.href='insidetemplate/login.html'">Đăng nhập ngay</button>
+                <!-- ĐÃ SỬA: Đường dẫn thành login.html -->
+                <button class="btn-modal confirm" onclick="window.location.href='login.html'">Đăng nhập ngay</button>
             </div>
         </div>
     </div>
@@ -774,7 +776,7 @@
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         
-        // --- CẤU HÌNH FIREBASE ---
+        // --- CẤU HÌNH FIREBASE TRỰC TIẾP (Fix lỗi import) ---
         const firebaseConfig = {
             apiKey: "AIzaSyDFzSBZjJS5RvCL9Ax7xRrk6q_WsNGkh_s",
             authDomain: "hubschoolvn-db841.firebaseapp.com",
@@ -815,7 +817,8 @@
                 });
             } else {
                 currentUser = null;
-                authArea.innerHTML = `<button class="btn-cta" onclick="window.location.href='insidetemplate/login.html'">Đăng nhập</button>`;
+                // ĐÃ SỬA: Đường dẫn thành login.html
+                authArea.innerHTML = `<button class="btn-cta" onclick="window.location.href='login.html'">Đăng nhập</button>`;
             }
         });
 
@@ -1108,4 +1111,3 @@
     </script>
 </body>
 </html>
-
