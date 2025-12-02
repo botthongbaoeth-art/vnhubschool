@@ -31,8 +31,22 @@
             background-color: var(--dark);
             color: var(--text);
             overflow-x: hidden;
-            padding-bottom: calc(80px + var(--safe-bottom)); /* Cho bottom nav mobile */
+            padding-bottom: calc(80px + var(--safe-bottom));
         }
+
+        /* --- LOADING OVERLAY --- */
+        #loadingOverlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            background: var(--dark); z-index: 9999;
+            display: flex; justify-content: center; align-items: center; flex-direction: column;
+            transition: opacity 0.5s;
+        }
+        .spinner {
+            width: 50px; height: 50px; border: 5px solid rgba(255,255,255,0.1);
+            border-top-color: var(--primary); border-radius: 50%;
+            animation: spin 1s linear infinite; margin-bottom: 20px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
         /* --- SIDEBAR (Desktop) --- */
         .sidebar {
@@ -97,13 +111,9 @@
             position: relative; overflow: hidden;
         }
         
-        .avatar-container {
-            position: relative;
-            width: 100px; height: 100px;
-        }
+        .avatar-container { position: relative; width: 100px; height: 100px; flex-shrink: 0; }
         .avatar {
-            width: 100%; height: 100%;
-            border-radius: 50%;
+            width: 100%; height: 100%; border-radius: 50%;
             background: var(--gradient);
             display: flex; align-items: center; justify-content: center;
             font-size: 2.5rem; color: white; border: 4px solid var(--dark);
@@ -152,19 +162,24 @@
         /* --- LEADERBOARD --- */
         .leaderboard-container { background: var(--dark-light); border-radius: 20px; padding: 25px; border: 1px solid rgba(255,255,255,0.05); }
         
-        .lb-tabs { display: flex; gap: 10px; margin-bottom: 20px; }
-        .lb-tab { padding: 8px 20px; border-radius: 20px; background: transparent; border: 1px solid var(--text-muted); color: var(--text-muted); cursor: pointer; font-weight: 600; }
-        .lb-tab.active { background: var(--gradient); border: none; color: white; }
-
-        .lb-list { list-style: none; }
-        .lb-item { display: flex; align-items: center; padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .lb-rank { width: 40px; font-weight: 800; font-size: 1.2rem; color: var(--text-muted); }
-        .lb-rank.top-1 { color: var(--gold); text-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
-        .lb-rank.top-2 { color: silver; }
-        .lb-rank.top-3 { color: #cd7f32; }
-        .lb-user { flex: 1; display: flex; align-items: center; gap: 10px; }
-        .lb-avatar { width: 35px; height: 35px; border-radius: 50%; background: #333; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; }
-        .lb-score { font-weight: 700; color: var(--secondary); }
+        .lb-list { list-style: none; margin-top: 20px; }
+        .lb-item { display: flex; align-items: center; padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); transition: 0.2s; }
+        .lb-item:hover { background: rgba(255,255,255,0.02); }
+        
+        .lb-rank { width: 40px; font-weight: 800; font-size: 1.2rem; color: var(--text-muted); text-align: center; }
+        .lb-rank.top-1 { color: var(--gold); text-shadow: 0 0 10px rgba(255, 215, 0, 0.5); font-size: 1.5rem; }
+        .lb-rank.top-2 { color: silver; font-size: 1.4rem; }
+        .lb-rank.top-3 { color: #cd7f32; font-size: 1.3rem; }
+        
+        .lb-user { flex: 1; display: flex; align-items: center; gap: 15px; margin-left: 10px; }
+        .lb-avatar { 
+            width: 40px; height: 40px; border-radius: 50%; background: var(--dark); 
+            display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid var(--text-muted);
+        }
+        .lb-name { font-weight: 600; }
+        .lb-badge { font-size: 0.7rem; padding: 2px 6px; border-radius: 10px; background: var(--primary); margin-left: 5px; color: white; }
+        
+        .lb-score { font-weight: 700; color: var(--secondary); display: flex; align-items: center; gap: 5px; }
 
         /* --- SHOP --- */
         .shop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
@@ -172,7 +187,8 @@
         .shop-item::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 5px; background: var(--gradient); }
         .item-icon { font-size: 3rem; margin: 15px 0; display: block; }
         .item-price { color: var(--gold); font-weight: 700; font-size: 1.1rem; margin: 10px 0; display: flex; align-items: center; justify-content: center; gap: 5px; }
-        .btn-buy { background: var(--gradient); border: none; color: white; padding: 8px 20px; border-radius: 20px; cursor: pointer; width: 100%; font-weight: 600; }
+        .btn-buy { background: var(--gradient); border: none; color: white; padding: 8px 20px; border-radius: 20px; cursor: pointer; width: 100%; font-weight: 600; transition: 0.3s; }
+        .btn-buy:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(108, 99, 255, 0.3); }
 
         /* --- MODAL --- */
         .modal {
@@ -181,7 +197,7 @@
             z-index: 2000; display: none; align-items: center; justify-content: center;
         }
         .modal.active { display: flex; animation: fadeIn 0.3s; }
-        .modal-content { background: var(--dark-light); padding: 30px; border-radius: 20px; width: 90%; max-width: 400px; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
+        .modal-content { background: var(--dark-light); padding: 30px; border-radius: 20px; width: 90%; max-width: 400px; text-align: center; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
         .close-modal { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; }
 
         /* --- MOBILE RESPONSIVE --- */
@@ -212,6 +228,12 @@
     </style>
 </head>
 <body>
+
+    <!-- LOADING SCREEN -->
+    <div id="loadingOverlay">
+        <div class="spinner"></div>
+        <p>Đang tải dữ liệu...</p>
+    </div>
 
     <!-- SIDEBAR (Desktop) -->
     <nav class="sidebar">
@@ -246,7 +268,7 @@
                     <div class="level-badge" id="levelDisplay">LV.1</div>
                 </div>
                 <div class="user-stats">
-                    <h2 id="userNameDisplay">User Name</h2>
+                    <h2 id="userNameDisplay">Đang tải...</h2>
                     <p>Học viên chăm chỉ - <span style="color: var(--gold);"><i class="fas fa-crown"></i> VIP Member</span></p>
                     <div class="xp-container">
                         <div class="xp-info">
@@ -271,20 +293,7 @@
                     <div class="progress-bar"><div class="progress-fill" style="width: 40%;"></div></div>
                     <button class="btn-learn" onclick="learnLesson('Toán 12', 50)">Tiếp tục học (+50 XP)</button>
                 </div>
-                <div class="course-card">
-                    <i class="fas fa-atom course-icon"></i>
-                    <div class="course-title">Vật Lý 12: Dao động cơ</div>
-                    <div class="progress-text">Đã học 2/8 bài</div>
-                    <div class="progress-bar"><div class="progress-fill" style="width: 25%;"></div></div>
-                    <button class="btn-learn" onclick="learnLesson('Lý 12', 50)">Tiếp tục học (+50 XP)</button>
-                </div>
-                <div class="course-card">
-                    <i class="fas fa-language course-icon"></i>
-                    <div class="course-title">Tiếng Anh: 12 Tenses</div>
-                    <div class="progress-text">Đã học 8/12 bài</div>
-                    <div class="progress-bar"><div class="progress-fill" style="width: 75%;"></div></div>
-                    <button class="btn-learn" onclick="learnLesson('Anh 12', 50)">Tiếp tục học (+50 XP)</button>
-                </div>
+                <!-- More cards can be added -->
             </div>
         </div>
 
@@ -293,42 +302,13 @@
             <div class="leaderboard-container">
                 <div style="text-align: center; margin-bottom: 30px;">
                     <i class="fas fa-crown" style="font-size: 3rem; color: var(--gold); margin-bottom: 10px;"></i>
-                    <h2 style="color: var(--gold);">Vinh Danh Nhà Vô Địch</h2>
-                    <p class="text-muted">Đua top nhận quà khủng hàng tuần!</p>
-                </div>
-
-                <div class="lb-tabs">
-                    <button class="lb-tab active" onclick="filterLB(this, 'week')">Tuần Này</button>
-                    <button class="lb-tab" onclick="filterLB(this, 'month')">Tháng 12</button>
-                    <button class="lb-tab" onclick="filterLB(this, 'year')">Năm 2025</button>
+                    <h2 style="color: var(--gold);">Bảng Xếp Hạng</h2>
+                    <p class="text-muted">Top 10 Học Viên Xuất Sắc Nhất</p>
                 </div>
 
                 <ul class="lb-list" id="lbList">
                     <!-- JS sẽ render list ở đây -->
-                    <li class="lb-item">
-                        <div class="lb-rank top-1">1</div>
-                        <div class="lb-user">
-                            <div class="lb-avatar" style="background: var(--gold); color: #000;">K</div>
-                            <span>Khoa Pug (VIP)</span>
-                        </div>
-                        <div class="lb-score">15,400 XP</div>
-                    </li>
-                    <li class="lb-item">
-                        <div class="lb-rank top-2">2</div>
-                        <div class="lb-user">
-                            <div class="lb-avatar">A</div>
-                            <span>An Nhiên</span>
-                        </div>
-                        <div class="lb-score">12,200 XP</div>
-                    </li>
-                    <li class="lb-item">
-                        <div class="lb-rank top-3">3</div>
-                        <div class="lb-user">
-                            <div class="lb-avatar">T</div>
-                            <span>Tuấn Hưng</span>
-                        </div>
-                        <div class="lb-score">10,050 XP</div>
-                    </li>
+                    <li style="text-align: center; padding: 20px;">Đang tải bảng xếp hạng...</li>
                 </ul>
             </div>
         </div>
@@ -349,16 +329,9 @@
                 <div class="shop-item">
                     <span class="item-icon">👑</span>
                     <h3>Gói VIP (1 Năm)</h3>
-                    <p style="font-size: 0.8rem; color: var(--text-muted); margin: 10px 0;">Quyền lợi VIP + Huy hiệu Vương miện + Mentor 1:1.</p>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin: 10px 0;">Quyền lợi VIP + Huy hiệu Vương miện.</p>
                     <div class="item-price"><i class="fas fa-coins"></i> 2000 Xu</div>
                     <button class="btn-buy" onclick="buyItem(2000, 'Gói VIP')">Mua Ngay</button>
-                </div>
-                <div class="shop-item">
-                    <span class="item-icon">📚</span>
-                    <h3>Kho Tài Liệu Tự Nhiên</h3>
-                    <p style="font-size: 0.8rem; color: var(--text-muted); margin: 10px 0;">Tổng hợp Lý - Hóa - Sinh 10 năm gần nhất.</p>
-                    <div class="item-price"><i class="fas fa-coins"></i> 500 Xu</div>
-                    <button class="btn-buy" onclick="buyItem(500, 'Kho Tài Liệu TN')">Mua Ngay</button>
                 </div>
             </div>
         </div>
@@ -378,6 +351,7 @@
     <div class="modal" id="rechargeModal">
         <div class="modal-content">
             <h3 style="margin-bottom: 20px;">Nạp Xu Vào Tài Khoản</h3>
+            <p style="margin-bottom: 20px; font-size: 0.9rem; color: #aaa;">Chọn gói nạp để thanh toán</p>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;">
                 <button class="btn-buy" style="background: #333;" onclick="recharge(100)">100 Xu <br><small>10k VNĐ</small></button>
                 <button class="btn-buy" style="background: #333;" onclick="recharge(500)">500 Xu <br><small>50k VNĐ</small></button>
@@ -392,9 +366,8 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, updateDoc, increment, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // CẤU HÌNH FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSyDFzSBZjJS5RvCL9Ax7xRrk6q_WsNGkh_s",
             authDomain: "hubschoolvn-db841.firebaseapp.com",
@@ -409,35 +382,42 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
         
-        let currentUserData = {
-            xp: 0,
-            level: 1,
-            xu: 0
-        };
+        let currentUserData = { xp: 0, level: 1, xu: 0 };
         let currentUserId = null;
 
-        // AUTH CHECK
+        // AUTH CHECK - FIX AUTO LOGOUT
         onAuthStateChanged(auth, async (user) => {
+            const loading = document.getElementById('loadingOverlay');
             if (user) {
                 currentUserId = user.uid;
-                // Load data
-                const docRef = doc(db, "users", user.uid);
-                const docSnap = await getDoc(docRef);
-                
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    currentUserData = { 
-                        xp: data.xp || 0, 
-                        level: data.level || 1, 
-                        xu: data.xu || 0,
-                        fullname: data.fullname || user.email.split('@')[0]
-                    };
-                } else {
-                    // Mới tạo chưa có data thì dùng mặc định
-                    currentUserData.fullname = user.email.split('@')[0];
+                // Lấy dữ liệu
+                try {
+                    const docRef = doc(db, "users", user.uid);
+                    const docSnap = await getDoc(docRef);
+                    
+                    if (docSnap.exists()) {
+                        const data = docSnap.data();
+                        currentUserData = { 
+                            xp: data.xp || 0, 
+                            level: data.level || 1, 
+                            xu: data.xu || 0,
+                            fullname: data.fullname || user.email.split('@')[0]
+                        };
+                    } else {
+                        currentUserData.fullname = user.email.split('@')[0];
+                    }
+                    updateUI();
+                    loadLeaderboard(); // Tải bảng xếp hạng thật
+                    
+                    // Ẩn màn hình chờ khi xong hết
+                    loading.style.opacity = '0';
+                    setTimeout(() => loading.style.display = 'none', 500);
+                } catch(e) {
+                    console.error("Lỗi tải data:", e);
+                    alert("Lỗi tải dữ liệu người dùng!");
                 }
-                updateUI();
             } else {
+                // Chỉ chuyển hướng nếu thực sự chưa đăng nhập
                 window.location.href = 'login.html';
             }
         });
@@ -446,82 +426,104 @@
         function updateUI() {
             document.getElementById('userNameDisplay').innerText = currentUserData.fullname;
             document.getElementById('avatarDisplay').innerText = currentUserData.fullname.charAt(0).toUpperCase();
-            
             document.getElementById('currentXP').innerText = currentUserData.xp;
             document.getElementById('levelDisplay').innerText = "LV." + currentUserData.level;
             document.getElementById('userXu').innerText = currentUserData.xu;
 
-            // Tính toán thanh XP (Giả sử 1000 XP lên 1 cấp)
             const nextLevel = 1000 * currentUserData.level;
             document.getElementById('nextLevelXP').innerText = nextLevel;
-            const percent = (currentUserData.xp / nextLevel) * 100;
+            const percent = Math.min((currentUserData.xp / nextLevel) * 100, 100);
             document.getElementById('xpBar').style.width = percent + "%";
             document.getElementById('xpPercent').innerText = Math.floor(percent) + "%";
         }
 
-        // --- GLOBAL FUNCTIONS (Gán vào window) ---
+        // LEADERBOARD REAL-TIME
+        async function loadLeaderboard() {
+            try {
+                // Lấy Top 10 người có XP cao nhất
+                const q = query(collection(db, "users"), orderBy("xp", "desc"), limit(10));
+                const querySnapshot = await getDocs(q);
+                
+                const lbList = document.getElementById('lbList');
+                lbList.innerHTML = ""; // Xóa list cũ
+                
+                let rank = 1;
+                querySnapshot.forEach((doc) => {
+                    const u = doc.data();
+                    const name = u.fullname || "Ẩn danh";
+                    const xp = u.xp || 0;
+                    const char = name.charAt(0).toUpperCase();
+                    
+                    // Style cho Top 3
+                    let rankClass = "";
+                    if(rank === 1) rankClass = "top-1";
+                    else if(rank === 2) rankClass = "top-2";
+                    else if(rank === 3) rankClass = "top-3";
 
-        // Tab Navigation
+                    const item = `
+                        <li class="lb-item">
+                            <div class="lb-rank ${rankClass}">${rank}</div>
+                            <div class="lb-user">
+                                <div class="lb-avatar" style="${rank === 1 ? 'background:var(--gold);color:#000;' : ''}">${char}</div>
+                                <div>
+                                    <div class="lb-name">${name} ${rank <= 3 ? '<i class="fas fa-check-circle" style="color:var(--secondary);font-size:0.8rem;"></i>' : ''}</div>
+                                </div>
+                            </div>
+                            <div class="lb-score">${xp.toLocaleString()} XP</div>
+                        </li>
+                    `;
+                    lbList.insertAdjacentHTML('beforeend', item);
+                    rank++;
+                });
+            } catch (e) {
+                console.error("Lỗi tải BXH:", e);
+                document.getElementById('lbList').innerHTML = '<li style="text-align:center; padding:20px;">Chưa có dữ liệu bảng xếp hạng.</li>';
+            }
+        }
+
+        // --- ACTIONS ---
+
         window.showTab = (tabName, btnElement) => {
-            // Hide all tabs
             document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
-            // Show selected
             const tab = document.getElementById('tab-' + tabName);
             if(tab) tab.style.display = 'block';
-            else document.getElementById('tab-dashboard').style.display = 'block'; // Fallback
+            else document.getElementById('tab-dashboard').style.display = 'block';
 
-            // Update Desktop Active
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            // Update Mobile Active
             document.querySelectorAll('.b-nav-item').forEach(el => el.classList.remove('active'));
             if(btnElement) btnElement.classList.add('active');
             
-            document.getElementById('pageTitle').innerText = 
-                tabName === 'dashboard' ? 'Tổng Quan' : 
-                (tabName === 'shop' ? 'Cửa Hàng' : 
-                (tabName === 'leaderboard' ? 'Bảng Xếp Hạng' : 'Học Tập'));
+            // Nếu bấm tab BXH thì tải lại dữ liệu
+            if(tabName === 'leaderboard') loadLeaderboard();
         }
 
-        // Logic "Cày" bài học nhận XP
         window.learnLesson = async (lessonName, xpAmount) => {
             if(!confirm(`Bắt đầu học bài: ${lessonName}?`)) return;
-            
-            alert(`Đang học bài ${lessonName}... (Giả lập)`);
             
             // Cộng XP vào DB
             try {
                 const userRef = doc(db, "users", currentUserId);
-                // Giả sử làm xong luôn
-                await updateDoc(userRef, {
-                    xp: increment(xpAmount)
-                });
+                await updateDoc(userRef, { xp: increment(xpAmount) });
                 
-                // Cập nhật local
                 currentUserData.xp += xpAmount;
                 
-                // Logic lên cấp
                 if (currentUserData.xp >= 1000 * currentUserData.level) {
                     currentUserData.level++;
-                    currentUserData.xp = 0; // Reset XP hoặc giữ dư tùy logic game
-                    await updateDoc(userRef, { level: currentUserData.level, xp: 0 });
-                    alert("🎉 CHÚC MỪNG! BẠN ĐÃ LÊN CẤP " + currentUserData.level);
+                    await updateDoc(userRef, { level: currentUserData.level }); // Không reset XP, chỉ tăng level
+                    alert(`🎉 CHÚC MỪNG! BẠN ĐÃ LÊN CẤP ${currentUserData.level}`);
                 } else {
-                    alert(`Hoàn thành! Bạn nhận được +${xpAmount} XP.`);
+                    alert(`Hoàn thành! +${xpAmount} XP.`);
                 }
                 updateUI();
             } catch (e) {
-                console.error("Lỗi cộng XP:", e);
-                // Fallback nếu chưa có doc trong DB
-                currentUserData.xp += xpAmount;
-                updateUI();
+                console.error(e);
             }
         }
 
-        // Shop Logic
         window.openRechargeModal = () => document.getElementById('rechargeModal').classList.add('active');
         
         window.recharge = async (amount) => {
-            if(!confirm(`Xác nhận nạp ${amount} Xu? (Demo)`)) return;
+            if(!confirm(`Xác nhận nạp ${amount} Xu?`)) return;
             
             const userRef = doc(db, "users", currentUserId);
             try {
@@ -540,31 +542,28 @@
                 return;
             }
             
-            if(confirm(`Bạn muốn mua "${itemName}" với giá ${price} Xu?`)) {
+            if(confirm(`Mua "${itemName}" giá ${price} Xu?`)) {
                 const userRef = doc(db, "users", currentUserId);
                 try {
                     await updateDoc(userRef, { xu: increment(-price) });
                     currentUserData.xu -= price;
                     updateUI();
-                    alert("Mua thành công! Kiểm tra trong kho đồ.");
+                    alert("Mua thành công!");
                 } catch(e) { console.error(e); }
             }
         }
 
-        // Logout
         window.logout = () => {
             if(confirm("Đăng xuất?")) {
                 signOut(auth).then(() => window.location.href = 'index.html');
             }
         }
-
-        // Leaderboard Filter (Visual only for demo)
+        
+        // Placeholder cho filter (Chưa làm backend phức tạp cho filter time)
         window.filterLB = (btn, type) => {
             document.querySelectorAll('.lb-tab').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            // Trong thực tế, đoạn này sẽ query Firebase để lấy top user theo time range
-            // Demo thì mình chỉ alert nhẹ
-            console.log("Filtering leaderboard by: " + type);
+            loadLeaderboard(); // Tạm thời load lại all time
         }
 
     </script>
