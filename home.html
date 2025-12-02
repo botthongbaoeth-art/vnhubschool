@@ -111,7 +111,7 @@
         .sale-badge { background: #ff4757; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; margin-left: 10px; vertical-align: middle; }
         .old-price { text-decoration: line-through; color: var(--text-muted); font-size: 0.9rem; margin-right: 5px; font-weight: normal; }
 
-        /* LEADERBOARD */
+        /* LEADERBOARD & FRIEND SEARCH */
         .lb-list { list-style: none; padding: 0; }
         .lb-item { display: flex; align-items: center; padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); transition: 0.2s; }
         .lb-item:hover { background: rgba(255,255,255,0.02); }
@@ -120,9 +120,10 @@
         .lb-rank.top-2 { color: silver; font-size: 1.4rem; }
         .lb-rank.top-3 { color: #cd7f32; font-size: 1.3rem; }
         .lb-user { flex: 1; display: flex; align-items: center; gap: 15px; margin-left: 10px; }
-        .lb-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--dark); display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid var(--text-muted); }
+        .lb-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--dark); display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid var(--text-muted); flex-shrink: 0; }
         .lb-name { font-weight: 600; font-size: 0.95rem; }
         .lb-score { font-weight: 700; color: var(--secondary); }
+        .user-username { font-size: 0.8rem; color: var(--text-muted); display: block; margin-top: 2px; }
 
         /* EXAM INTERFACE */
         #examInterface { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: var(--dark); z-index: 2000; overflow-y: auto; padding: 20px; }
@@ -200,6 +201,7 @@
             <div class="nav-item" onclick="switchTab('library')"><i class="fas fa-folder-open"></i> Kho Tài Liệu</div>
             <div class="nav-item" onclick="switchTab('exam')"><i class="fas fa-file-signature"></i> Thi Thử</div>
             <div class="nav-item" onclick="switchTab('leaderboard')"><i class="fas fa-trophy"></i> BXH Top 50</div>
+            <div class="nav-item" onclick="switchTab('friends')"><i class="fas fa-search"></i> Tìm Bạn</div>
             <div class="nav-item" onclick="switchTab('shop')"><i class="fas fa-store"></i> Cửa Hàng</div>
             <div class="nav-item" onclick="window.location.href='news.html'"><i class="fas fa-newspaper"></i> Bảng Tin</div>
             <div class="nav-item" onclick="window.location.href='profile.html'"><i class="fas fa-user-circle"></i> Hồ Sơ</div>
@@ -279,6 +281,20 @@
                 <ul class="lb-list" id="lbList">
                     <!-- Leaderboard items -->
                 </ul>
+            </div>
+
+            <!-- FRIENDS TAB (NEW) -->
+            <div id="tab-friends" class="tab-content" style="display:none;">
+                <h3 style="margin-bottom: 20px;">Tìm Bạn Bè</h3>
+                <div style="display: flex; gap: 10px; margin-bottom: 30px;">
+                    <input type="text" class="search-bar" id="friendSearchInput" placeholder="Nhập username (vd: nhan_cute123)..." style="margin-bottom: 0;">
+                    <button class="btn-action" style="width: 120px; margin-top: 0;" onclick="searchFriend()">Tìm</button>
+                </div>
+                
+                <div id="friendResult">
+                    <!-- Result will be rendered here -->
+                    <p style="color: var(--text-muted); text-align: center;">Nhập username chính xác để tìm kiếm.</p>
+                </div>
             </div>
 
             <!-- SHOP TAB -->
@@ -365,6 +381,7 @@
                 <button class="tab-btn" onclick="switchRechargeTab('ticket')">Nhập Ticket</button>
             </div>
 
+            <!-- Tab 1: Gói Nhanh -->
             <div id="recharge-quick" class="recharge-option active">
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                     <button class="btn-action secondary" onclick="recharge(100)">100 Xu <br><small style="font-size:0.7rem">10k VNĐ</small></button>
@@ -374,6 +391,7 @@
                 </div>
             </div>
 
+            <!-- Tab 2: Nạp Ticket -->
             <div id="recharge-ticket" class="recharge-option">
                 <p style="margin-bottom:10px; font-size:0.9rem; color:var(--text-muted);">Nhập mã quà tặng hoặc mã thẻ cào:</p>
                 <input type="text" id="ticketCode" class="input-ticket" placeholder="Nhập mã tại đây (VD: VIP2025)...">
@@ -386,7 +404,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, updateDoc, increment, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, updateDoc, increment, collection, query, orderBy, limit, getDocs, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         // CONFIG
         const firebaseConfig = {
@@ -419,7 +437,7 @@
             if(docSnap.exists()) {
                 const data = docSnap.data();
                 document.getElementById('userName').innerText = data.fullname || "Học viên";
-                document.getElementById('userAvatar').childNodes[0].nodeValue = (data.fullname || "U").charAt(0).toUpperCase() + " ";
+                document.getElementById('userAvatar').childNodes[0].nodeValue = (data.avatarEmoji || (data.fullname || "U").charAt(0).toUpperCase()) + " ";
                 document.getElementById('userXu').innerText = data.xu || 0;
                 document.getElementById('userLv').innerText = data.level || 1;
                 document.getElementById('userXp').innerText = data.xp || 0;
@@ -464,7 +482,8 @@
                     const u = doc.data();
                     const name = u.fullname || "Ẩn danh";
                     const xp = u.xp || 0;
-                    const char = name.charAt(0).toUpperCase();
+                    const char = u.avatarEmoji || name.charAt(0).toUpperCase();
+                    const username = u.username ? `@${u.username}` : "";
                     
                     let rankClass = "";
                     if(rank === 1) rankClass = "top-1";
@@ -480,7 +499,11 @@
                                     ${u.isVIP ? '<div class="vip-crown" style="width:15px;height:15px;top:-5px;right:-5px;font-size:0.5rem;border:1px solid var(--dark);"><i class="fas fa-crown"></i></div>' : ''}
                                 </div>
                                 <div>
-                                    <div class="lb-name" style="${u.isVIP ? 'color:var(--gold);' : ''}">${name}</div>
+                                    <div class="lb-name" style="${u.isVIP ? 'color:var(--gold);' : ''}">
+                                        ${name}
+                                        ${u.isVIP ? '<i class="fas fa-check-circle" style="font-size:0.8rem;"></i>' : ''}
+                                    </div>
+                                    <span class="user-username">${username}</span>
                                 </div>
                             </div>
                             <div class="lb-score">${xp.toLocaleString()} XP</div>
@@ -491,6 +514,53 @@
                 });
             } catch (e) {
                 console.error("Lỗi tải BXH:", e);
+            }
+        }
+
+        // --- SEARCH FRIEND LOGIC ---
+        window.searchFriend = async () => {
+            const input = document.getElementById('friendSearchInput').value.trim();
+            const resultContainer = document.getElementById('friendResult');
+            resultContainer.innerHTML = '<div style="text-align:center;"><div class="spinner" style="width:30px;height:30px;"></div></div>';
+            
+            if(!input) {
+                resultContainer.innerHTML = '<p style="color: var(--text-muted); text-align: center;">Vui lòng nhập username.</p>';
+                return;
+            }
+
+            try {
+                const q = query(collection(db, "users"), where("username", "==", input));
+                const querySnapshot = await getDocs(q);
+
+                if (querySnapshot.empty) {
+                    resultContainer.innerHTML = '<p style="color: var(--accent); text-align: center;">Không tìm thấy người dùng này!</p>';
+                } else {
+                    resultContainer.innerHTML = "";
+                    querySnapshot.forEach((doc) => {
+                        const u = doc.data();
+                        const card = `
+                            <div class="profile-card" style="margin-bottom:0; cursor:default;">
+                                <div class="avatar" style="width:70px;height:70px;font-size:2rem;">
+                                    ${u.avatarEmoji || u.fullname.charAt(0).toUpperCase()}
+                                    ${u.isVIP ? '<div class="vip-crown" style="display:flex;width:25px;height:25px;top:-5px;right:-5px;font-size:0.8rem;"><i class="fas fa-crown"></i></div>' : ''}
+                                </div>
+                                <div style="flex:1;">
+                                    <h3 style="margin-bottom:5px;">${u.fullname} ${u.isVIP ? '<i class="fas fa-check-circle" style="color:var(--gold); font-size:0.9rem;"></i>' : ''}</h3>
+                                    <p style="color:var(--secondary); font-weight:600; font-size:0.9rem;">@${u.username}</p>
+                                    <p style="color:var(--text-muted); font-size:0.85rem; margin-top:5px;">${u.bio || "Chưa có tiểu sử"}</p>
+                                    <div style="margin-top:10px; font-size:0.9rem;">
+                                        <span style="margin-right:15px;"><i class="fas fa-star" style="color:var(--gold);"></i> Level ${u.level || 1}</span>
+                                        <span><i class="fas fa-bolt" style="color:var(--primary);"></i> ${u.xp || 0} XP</span>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        resultContainer.innerHTML = card;
+                    });
+                }
+            } catch (error) {
+                console.error("Lỗi tìm kiếm:", error);
+                resultContainer.innerHTML = '<p style="color: var(--accent); text-align: center;">Lỗi kết nối!</p>';
             }
         }
 
@@ -684,7 +754,7 @@
             event.currentTarget.classList.add('active');
             
             document.getElementById('pageTitle').innerText = 
-                tab === 'exam' ? 'Thi Thử' : (tab === 'shop' ? 'Cửa Hàng' : (tab === 'library' ? 'Kho Tài Liệu' : (tab === 'leaderboard' ? 'Bảng Xếp Hạng' : 'Tổng Quan')));
+                tab === 'exam' ? 'Thi Thử' : (tab === 'shop' ? 'Cửa Hàng' : (tab === 'library' ? 'Kho Tài Liệu' : (tab === 'leaderboard' ? 'Bảng Xếp Hạng' : (tab === 'friends' ? 'Tìm Bạn' : 'Tổng Quan'))));
 
             if(tab === 'leaderboard') loadLeaderboard();
         }
