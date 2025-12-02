@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Hồ Sơ | HighSchool Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background: #0f172a; color: #f1f5f9; font-family: 'Montserrat', sans-serif; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; padding-bottom: 80px; }
+        
+        .header { display: flex; align-items: center; gap: 15px; margin-bottom: 30px; }
+        .back-btn { background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer; }
+        
+        .avatar-section { text-align: center; margin-bottom: 30px; position: relative; }
+        .avatar-big { 
+            width: 120px; height: 120px; background: linear-gradient(135deg, #6C63FF, #00D2FF); 
+            border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
+            font-size: 3rem; font-weight: 700; border: 4px solid #1e293b; cursor: pointer;
+        }
+        .edit-icon { 
+            position: absolute; bottom: 0; right: 50%; transform: translateX(50px); 
+            background: #FF2E63; width: 35px; height: 35px; border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center; font-size: 0.9rem;
+        }
+
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; color: #94a3b8; font-size: 0.9rem; }
+        input, textarea { 
+            width: 100%; padding: 15px; background: #1e293b; border: 1px solid rgba(255,255,255,0.1); 
+            color: white; border-radius: 12px; outline: none; font-size: 1rem;
+        }
+        textarea { resize: none; height: 100px; }
+        input:focus, textarea:focus { border-color: #6C63FF; }
+
+        .btn-save { 
+            width: 100%; padding: 15px; background: linear-gradient(135deg, #6C63FF, #00D2FF); 
+            border: none; border-radius: 50px; color: white; font-weight: 700; font-size: 1rem; 
+            cursor: pointer; margin-top: 20px; box-shadow: 0 5px 15px rgba(108,99,255,0.3);
+        }
+
+        /* Avatar Modal */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); align-items: center; justify-content: center; z-index: 999; }
+        .modal-content { background: #1e293b; padding: 20px; border-radius: 20px; width: 90%; max-width: 350px; text-align: center; }
+        .emoji-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 20px; }
+        .emoji-opt { font-size: 2rem; cursor: pointer; padding: 5px; border-radius: 10px; }
+        .emoji-opt:hover { background: rgba(255,255,255,0.1); }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <button class="back-btn" onclick="window.location.href='home.html'"><i class="fas fa-arrow-left"></i></button>
+            <h2>Hồ Sơ Cá Nhân</h2>
+        </div>
+
+        <div class="avatar-section" onclick="document.getElementById('avatarModal').style.display='flex'">
+            <div class="avatar-big" id="currentAvatar">U</div>
+            <div class="edit-icon"><i class="fas fa-camera"></i></div>
+        </div>
+
+        <div class="form-group">
+            <label>Họ và tên</label>
+            <input type="text" id="fullname" placeholder="Nhập tên của bạn">
+        </div>
+        
+        <div class="form-group">
+            <label>Tiểu sử (Bio)</label>
+            <textarea id="bio" placeholder="Giới thiệu ngắn về bản thân..."></textarea>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div class="form-group">
+                <label>Lớp</label>
+                <input type="text" id="class" placeholder="VD: 12A1">
+            </div>
+            <div class="form-group">
+                <label>Trường</label>
+                <input type="text" id="school" placeholder="VD: THPT Chuyên">
+            </div>
+        </div>
+
+        <button class="btn-save" onclick="saveProfile()">Lưu Thay Đổi</button>
+    </div>
+
+    <!-- Avatar Picker Modal -->
+    <div class="modal" id="avatarModal">
+        <div class="modal-content">
+            <h3>Chọn Avatar</h3>
+            <div class="emoji-grid">
+                <div class="emoji-opt" onclick="selectAvatar('🐯')">🐯</div>
+                <div class="emoji-opt" onclick="selectAvatar('🦁')">🦁</div>
+                <div class="emoji-opt" onclick="selectAvatar('🐼')">🐼</div>
+                <div class="emoji-opt" onclick="selectAvatar('🦊')">🦊</div>
+                <div class="emoji-opt" onclick="selectAvatar('🤖')">🤖</div>
+                <div class="emoji-opt" onclick="selectAvatar('👽')">👽</div>
+                <div class="emoji-opt" onclick="selectAvatar('👻')">👻</div>
+                <div class="emoji-opt" onclick="selectAvatar('🎃')">🎃</div>
+                <div class="emoji-opt" onclick="selectAvatar('🦄')">🦄</div>
+                <div class="emoji-opt" onclick="selectAvatar('🔥')">🔥</div>
+            </div>
+            <button onclick="document.getElementById('avatarModal').style.display='none'" style="margin-top:20px; padding:10px; width:100%; border-radius:10px; border:none; background:#333; color:white;">Đóng</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDFzSBZjJS5RvCL9Ax7xRrk6q_WsNGkh_s",
+            authDomain: "hubschoolvn-db841.firebaseapp.com",
+            projectId: "hubschoolvn-db841",
+            storageBucket: "hubschoolvn-db841.firebasestorage.app",
+            messagingSenderId: "526272140814",
+            appId: "1:526272140814:web:ba337306b1d4b4d4af4e5f",
+            measurementId: "G-4KD8Z1FGC7"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        let uid = null;
+
+        onAuthStateChanged(auth, async (user) => {
+            if(user) {
+                uid = user.uid;
+                const snap = await getDoc(doc(db, "users", uid));
+                if(snap.exists()) {
+                    const d = snap.data();
+                    document.getElementById('fullname').value = d.fullname || "";
+                    document.getElementById('bio').value = d.bio || "";
+                    document.getElementById('class').value = d.class || "";
+                    document.getElementById('school').value = d.school || "";
+                    document.getElementById('currentAvatar').innerText = d.avatarEmoji || (d.fullname ? d.fullname.charAt(0) : "U");
+                }
+            } else {
+                window.location.href = 'login.html';
+            }
+        });
+
+        window.selectAvatar = (emoji) => {
+            document.getElementById('currentAvatar').innerText = emoji;
+            // Lưu tạm vào dataset hoặc biến
+            document.getElementById('currentAvatar').dataset.emoji = emoji;
+            document.getElementById('avatarModal').style.display = 'none';
+        }
+
+        window.saveProfile = async () => {
+            const btn = document.querySelector('.btn-save');
+            btn.innerText = "Đang lưu...";
+            try {
+                const data = {
+                    fullname: document.getElementById('fullname').value,
+                    bio: document.getElementById('bio').value,
+                    class: document.getElementById('class').value,
+                    school: document.getElementById('school').value,
+                };
+                // Nếu có chọn emoji mới thì lưu
+                const emoji = document.getElementById('currentAvatar').dataset.emoji;
+                if(emoji) data.avatarEmoji = emoji;
+
+                await updateDoc(doc(db, "users", uid), data);
+                alert("Cập nhật thành công!");
+                window.location.href = 'home.html';
+            } catch(e) {
+                console.error(e);
+                alert("Lỗi khi lưu!");
+            }
+            btn.innerText = "Lưu Thay Đổi";
+        }
+    </script>
+</body>
+</html>
