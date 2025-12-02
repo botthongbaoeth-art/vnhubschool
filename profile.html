@@ -77,6 +77,11 @@
         </div>
 
         <div class="form-group">
+            <label>Username (Định danh duy nhất)</label>
+            <input type="text" id="usernameInput" placeholder="Vd: nhan_cute123 (Viết liền không dấu)">
+        </div>
+
+        <div class="form-group">
             <label>Họ và tên</label>
             <input type="text" id="fullname" placeholder="Nhập tên của bạn">
         </div>
@@ -152,7 +157,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, EmailAuthProvider, reauthenticateWithCredential, updatePassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, updateDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDFzSBZjJS5RvCL9Ax7xRrk6q_WsNGkh_s",
@@ -170,6 +175,7 @@
         let uid = null;
         let userEmail = "";
         let currentUser = null;
+        let currentUsername = "";
 
         onAuthStateChanged(auth, async (user) => {
             if(user) {
@@ -181,6 +187,8 @@
                 const snap = await getDoc(doc(db, "users", uid));
                 if(snap.exists()) {
                     const d = snap.data();
+                    document.getElementById('usernameInput').value = d.username || "";
+                    currentUsername = d.username || ""; // Lưu username hiện tại để check đổi
                     document.getElementById('fullname').value = d.fullname || "";
                     document.getElementById('bio').value = d.bio || "";
                     document.getElementById('interests').value = d.interests || "";
@@ -201,9 +209,29 @@
 
         window.saveProfile = async () => {
             const btn = document.querySelector('.btn-save');
+            const newUsername = document.getElementById('usernameInput').value.trim();
+            
+            if(!newUsername) return alert("Username không được để trống!");
+            // Validate username: chỉ chữ thường, số, gạch dưới
+            if(!/^[a-z0-9_]+$/.test(newUsername)) return alert("Username chỉ được chứa chữ thường, số và dấu gạch dưới!");
+
             btn.innerText = "Đang lưu...";
+            btn.disabled = true;
+
             try {
+                // Nếu username thay đổi, kiểm tra xem đã tồn tại chưa
+                if(newUsername !== currentUsername) {
+                    const q = query(collection(db, "users"), where("username", "==", newUsername));
+                    const querySnapshot = await getDocs(q);
+                    if(!querySnapshot.empty) {
+                        btn.innerText = "Lưu Thay Đổi";
+                        btn.disabled = false;
+                        return alert("Username này đã có người sử dụng! Vui lòng chọn tên khác.");
+                    }
+                }
+
                 const data = {
+                    username: newUsername,
                     fullname: document.getElementById('fullname').value,
                     bio: document.getElementById('bio').value,
                     interests: document.getElementById('interests').value,
@@ -218,9 +246,10 @@
                 window.location.href = 'home.html';
             } catch(e) {
                 console.error(e);
-                alert("Lỗi khi lưu!");
+                alert("Lỗi khi lưu: " + e.message);
+                btn.innerText = "Lưu Thay Đổi";
+                btn.disabled = false;
             }
-            btn.innerText = "Lưu Thay Đổi";
         }
 
         window.openPasswordModal = () => {
@@ -237,17 +266,12 @@
             if (newPass.length < 6) return alert("Mật khẩu mới phải có ít nhất 6 ký tự!");
 
             try {
-                // 1. Xác thực lại người dùng bằng mật khẩu cũ
                 const credential = EmailAuthProvider.credential(currentUser.email, oldPass);
                 await reauthenticateWithCredential(currentUser, credential);
-
-                // 2. Cập nhật mật khẩu mới
                 await updatePassword(currentUser, newPass);
                 
                 alert("Đổi mật khẩu thành công! Vui lòng đăng nhập lại.");
                 document.getElementById('passwordModal').style.display = 'none';
-                
-                // Đăng xuất để user đăng nhập lại bằng pass mới
                 auth.signOut().then(() => window.location.href = 'login.html');
                 
             } catch (error) {
