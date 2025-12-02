@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 | Lạc Trôi Giữa Ngân Hà</title>
+    
+    <!-- Favicon (Đồng bộ với trang chủ) -->
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2997/2997320.png" type="image/x-icon">
+
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #6C63FF;
+            --secondary: #00D2FF;
+            --dark: #0f172a;
+            --text: #f1f5f9;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
+
+        body {
+            background-color: var(--dark);
+            color: var(--text);
+            height: 100vh;
+            overflow: hidden; /* Không cho cuộn */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* --- BACKGROUND STARS EFFECT --- */
+        /* Tạo hiệu ứng sao bằng CSS thuần để nhẹ web */
+        .stars {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background: #000 url(https://www.script-tutorials.com/demos/360/images/stars.png) repeat top center;
+        }
+        
+        .twinkling {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background: transparent url(https://www.script-tutorials.com/demos/360/images/twinkling.png) repeat top center;
+            animation: move-twink-back 200s linear infinite;
+        }
+
+        @keyframes move-twink-back {
+            from {background-position:0 0;}
+            to {background-position:-10000px 5000px;}
+        }
+
+        /* --- CONTENT --- */
+        .container {
+            text-align: center;
+            padding: 20px;
+            z-index: 10;
+        }
+
+        .error-code {
+            font-size: 10rem;
+            font-weight: 900;
+            line-height: 1;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 10px 30px rgba(108, 99, 255, 0.3);
+            position: relative;
+        }
+
+        /* Hiệu ứng bóng mờ phía sau số 404 */
+        .error-code::after {
+            content: '404';
+            position: absolute;
+            top: 0; left: 0; width: 100%;
+            z-index: -1;
+            background: inherit;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: blur(20px);
+            opacity: 0.5;
+        }
+
+        .astronaut {
+            font-size: 8rem;
+            color: var(--text);
+            margin: 20px 0;
+            animation: float 6s ease-in-out infinite;
+            filter: drop-shadow(0 0 20px rgba(0, 210, 255, 0.5));
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        p {
+            color: #94a3b8;
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* --- BUTTON --- */
+        .btn-home {
+            padding: 15px 40px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            box-shadow: 0 5px 20px rgba(108, 99, 255, 0.4);
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-home:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(108, 99, 255, 0.6);
+        }
+
+        /* --- ANIMATIONS --- */
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(10deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .error-code { font-size: 6rem; }
+            .astronaut { font-size: 5rem; }
+            h2 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background Effects -->
+    <div class="stars"></div>
+    <div class="twinkling"></div>
+
+    <div class="container">
+        <!-- Icon Phi hành gia bay lơ lửng -->
+        <div class="astronaut">
+            <i class="fas fa-user-astronaut"></i>
+        </div>
+
+        <div class="error-code">404</div>
+        
+        <h2>Houstan, chúng ta có vấn đề!</h2>
+        <p>Trang bạn đang tìm kiếm đã bị hố đen nuốt chửng hoặc trôi dạt sang một thiên hà khác rồi.</p>
+        
+        <a href="index.html" class="btn-home">
+            <i class="fas fa-rocket"></i> Quay về Trái Đất
+        </a>
+    </div>
+
+</body>
+</html>
