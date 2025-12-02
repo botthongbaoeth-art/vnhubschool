@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+    <title>Dashboard | HighSchool Hub</title>
+    
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2997/2997320.png" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #6C63FF;
+            --secondary: #00D2FF;
+            --accent: #FF2E63;
+            --gold: #FFD700;
+            --dark: #0f172a;
+            --dark-light: #1e293b;
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
+            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+            --glass: rgba(30, 41, 59, 0.95);
+            --safe-top: env(safe-area-inset-top);
+            --safe-bottom: env(safe-area-inset-bottom);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            background-color: var(--dark);
+            color: var(--text);
+            overflow-x: hidden;
+            padding-bottom: calc(80px + var(--safe-bottom)); /* Cho bottom nav mobile */
+        }
+
+        /* --- SIDEBAR (Desktop) --- */
+        .sidebar {
+            position: fixed; top: 0; left: 0;
+            width: 250px; height: 100vh;
+            background: var(--dark-light);
+            border-right: 1px solid rgba(255,255,255,0.05);
+            padding: 20px;
+            display: flex; flex-direction: column;
+            z-index: 100;
+            transition: 0.3s;
+        }
+
+        .brand {
+            font-size: 1.5rem; font-weight: 800;
+            background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 40px; display: flex; align-items: center; gap: 10px;
+        }
+
+        .nav-links { list-style: none; flex: 1; }
+        .nav-item {
+            padding: 15px 20px; margin-bottom: 10px;
+            border-radius: 12px; cursor: pointer;
+            color: var(--text-muted); transition: 0.3s;
+            display: flex; align-items: center; gap: 15px; font-weight: 600;
+        }
+        .nav-item:hover, .nav-item.active { background: rgba(108, 99, 255, 0.1); color: var(--primary); }
+        .nav-item i { width: 25px; text-align: center; font-size: 1.2rem; }
+
+        /* --- MAIN CONTENT --- */
+        .main-content {
+            margin-left: 250px;
+            padding: 30px 5%;
+            padding-top: calc(30px + var(--safe-top));
+        }
+
+        /* --- HEADER PROFILE BAR --- */
+        .top-bar {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .currency-badge {
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            padding: 8px 15px;
+            border-radius: 50px;
+            font-weight: 700;
+            display: flex; align-items: center; gap: 8px;
+            cursor: pointer;
+        }
+
+        /* --- PROFILE CARD --- */
+        .profile-card {
+            background: linear-gradient(135deg, rgba(108,99,255,0.2), rgba(0,210,255,0.2));
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 30px;
+            display: flex; align-items: center; gap: 30px;
+            margin-bottom: 40px;
+            position: relative; overflow: hidden;
+        }
+        
+        .avatar-container {
+            position: relative;
+            width: 100px; height: 100px;
+        }
+        .avatar {
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.5rem; color: white; border: 4px solid var(--dark);
+        }
+        .level-badge {
+            position: absolute; bottom: -5px; right: -5px;
+            background: var(--accent); color: white;
+            padding: 5px 10px; border-radius: 20px;
+            font-size: 0.8rem; font-weight: 800;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .user-stats h2 { font-size: 1.8rem; margin-bottom: 5px; }
+        .user-stats p { color: var(--text-muted); margin-bottom: 15px; }
+        
+        .xp-container { width: 100%; max-width: 400px; }
+        .xp-info { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 5px; color: var(--text-muted); }
+        .xp-bar-bg { width: 100%; height: 10px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; }
+        .xp-bar-fill { height: 100%; background: var(--gradient); width: 0%; transition: width 0.5s ease; border-radius: 10px; }
+
+        /* --- SECTIONS --- */
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .section-title { font-size: 1.5rem; font-weight: 700; border-left: 4px solid var(--secondary); padding-left: 15px; }
+
+        /* Course Grid */
+        .course-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;
+        }
+        .course-card {
+            background: var(--dark-light); border-radius: 15px; padding: 20px;
+            border: 1px solid rgba(255,255,255,0.05); transition: 0.3s;
+            display: flex; flex-direction: column;
+        }
+        .course-card:hover { transform: translateY(-5px); border-color: var(--primary); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .course-icon { font-size: 2rem; color: var(--primary); margin-bottom: 15px; }
+        .course-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 10px; }
+        .progress-text { font-size: 0.8rem; color: var(--text-muted); margin-top: auto; margin-bottom: 5px; }
+        .progress-bar { width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; }
+        .progress-fill { height: 100%; background: var(--secondary); border-radius: 3px; }
+        .btn-learn { 
+            margin-top: 15px; width: 100%; padding: 10px; background: rgba(108,99,255,0.1); 
+            color: var(--primary); border: 1px solid var(--primary); border-radius: 8px; cursor: pointer; font-weight: 600; 
+        }
+        .btn-learn:hover { background: var(--primary); color: white; }
+
+        /* --- LEADERBOARD --- */
+        .leaderboard-container { background: var(--dark-light); border-radius: 20px; padding: 25px; border: 1px solid rgba(255,255,255,0.05); }
+        
+        .lb-tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+        .lb-tab { padding: 8px 20px; border-radius: 20px; background: transparent; border: 1px solid var(--text-muted); color: var(--text-muted); cursor: pointer; font-weight: 600; }
+        .lb-tab.active { background: var(--gradient); border: none; color: white; }
+
+        .lb-list { list-style: none; }
+        .lb-item { display: flex; align-items: center; padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .lb-rank { width: 40px; font-weight: 800; font-size: 1.2rem; color: var(--text-muted); }
+        .lb-rank.top-1 { color: var(--gold); text-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
+        .lb-rank.top-2 { color: silver; }
+        .lb-rank.top-3 { color: #cd7f32; }
+        .lb-user { flex: 1; display: flex; align-items: center; gap: 10px; }
+        .lb-avatar { width: 35px; height: 35px; border-radius: 50%; background: #333; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; }
+        .lb-score { font-weight: 700; color: var(--secondary); }
+
+        /* --- SHOP --- */
+        .shop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+        .shop-item { background: var(--dark-light); border-radius: 15px; padding: 20px; text-align: center; border: 1px solid rgba(255,255,255,0.05); position: relative; overflow: hidden; }
+        .shop-item::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 5px; background: var(--gradient); }
+        .item-icon { font-size: 3rem; margin: 15px 0; display: block; }
+        .item-price { color: var(--gold); font-weight: 700; font-size: 1.1rem; margin: 10px 0; display: flex; align-items: center; justify-content: center; gap: 5px; }
+        .btn-buy { background: var(--gradient); border: none; color: white; padding: 8px 20px; border-radius: 20px; cursor: pointer; width: 100%; font-weight: 600; }
+
+        /* --- MODAL --- */
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(5px);
+            z-index: 2000; display: none; align-items: center; justify-content: center;
+        }
+        .modal.active { display: flex; animation: fadeIn 0.3s; }
+        .modal-content { background: var(--dark-light); padding: 30px; border-radius: 20px; width: 90%; max-width: 400px; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
+        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; }
+
+        /* --- MOBILE RESPONSIVE --- */
+        @media (max-width: 768px) {
+            .sidebar { display: none; } /* Ẩn sidebar desktop */
+            .main-content { margin-left: 0; padding-bottom: 100px; }
+            .profile-card { flex-direction: column; text-align: center; }
+            .xp-container { margin: 0 auto; }
+            
+            /* Bottom Nav for Mobile */
+            .bottom-nav {
+                position: fixed; bottom: 0; left: 0; width: 100%;
+                background: var(--dark-light); border-top: 1px solid rgba(255,255,255,0.1);
+                display: flex; justify-content: space-around; padding: 15px 5px;
+                z-index: 999; padding-bottom: calc(15px + var(--safe-bottom));
+            }
+            .b-nav-item {
+                display: flex; flex-direction: column; align-items: center;
+                color: var(--text-muted); font-size: 0.7rem; gap: 5px;
+                background: none; border: none; cursor: pointer;
+            }
+            .b-nav-item i { font-size: 1.4rem; }
+            .b-nav-item.active { color: var(--primary); }
+        }
+        @media (min-width: 769px) { .bottom-nav { display: none; } }
+
+        @keyframes fadeIn { from {opacity: 0; transform: scale(0.9);} to {opacity: 1; transform: scale(1);} }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR (Desktop) -->
+    <nav class="sidebar">
+        <div class="brand">
+            <i class="fas fa-graduation-cap"></i> Hub
+        </div>
+        <ul class="nav-links">
+            <li class="nav-item active" onclick="showTab('dashboard')"><i class="fas fa-home"></i> Tổng Quan</li>
+            <li class="nav-item" onclick="showTab('learn')"><i class="fas fa-book-open"></i> Học Tập</li>
+            <li class="nav-item" onclick="showTab('leaderboard')"><i class="fas fa-trophy"></i> Đua Top</li>
+            <li class="nav-item" onclick="showTab('shop')"><i class="fas fa-store"></i> Cửa Hàng</li>
+            <li class="nav-item" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Đăng xuất</li>
+        </ul>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <h2 id="pageTitle">Tổng Quan</h2>
+            <div class="currency-badge" onclick="openRechargeModal()">
+                <i class="fas fa-coins"></i> <span id="userXu">0</span> Xu <i class="fas fa-plus-circle" style="font-size: 0.8rem; color: var(--primary);"></i>
+            </div>
+        </div>
+
+        <!-- TAB: DASHBOARD -->
+        <div id="tab-dashboard" class="tab-content">
+            <div class="profile-card">
+                <div class="avatar-container">
+                    <div class="avatar" id="avatarDisplay">U</div>
+                    <div class="level-badge" id="levelDisplay">LV.1</div>
+                </div>
+                <div class="user-stats">
+                    <h2 id="userNameDisplay">User Name</h2>
+                    <p>Học viên chăm chỉ - <span style="color: var(--gold);"><i class="fas fa-crown"></i> VIP Member</span></p>
+                    <div class="xp-container">
+                        <div class="xp-info">
+                            <span>EXP: <span id="currentXP">0</span> / <span id="nextLevelXP">1000</span></span>
+                            <span id="xpPercent">0%</span>
+                        </div>
+                        <div class="xp-bar-bg">
+                            <div class="xp-bar-fill" id="xpBar" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-header">
+                <div class="section-title">Tiến Trình Học Tập</div>
+            </div>
+            <div class="course-grid">
+                <div class="course-card">
+                    <i class="fas fa-square-root-alt course-icon"></i>
+                    <div class="course-title">Toán 12: Khảo sát hàm số</div>
+                    <div class="progress-text">Đã học 4/10 bài</div>
+                    <div class="progress-bar"><div class="progress-fill" style="width: 40%;"></div></div>
+                    <button class="btn-learn" onclick="learnLesson('Toán 12', 50)">Tiếp tục học (+50 XP)</button>
+                </div>
+                <div class="course-card">
+                    <i class="fas fa-atom course-icon"></i>
+                    <div class="course-title">Vật Lý 12: Dao động cơ</div>
+                    <div class="progress-text">Đã học 2/8 bài</div>
+                    <div class="progress-bar"><div class="progress-fill" style="width: 25%;"></div></div>
+                    <button class="btn-learn" onclick="learnLesson('Lý 12', 50)">Tiếp tục học (+50 XP)</button>
+                </div>
+                <div class="course-card">
+                    <i class="fas fa-language course-icon"></i>
+                    <div class="course-title">Tiếng Anh: 12 Tenses</div>
+                    <div class="progress-text">Đã học 8/12 bài</div>
+                    <div class="progress-bar"><div class="progress-fill" style="width: 75%;"></div></div>
+                    <button class="btn-learn" onclick="learnLesson('Anh 12', 50)">Tiếp tục học (+50 XP)</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: LEADERBOARD -->
+        <div id="tab-leaderboard" class="tab-content" style="display: none;">
+            <div class="leaderboard-container">
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <i class="fas fa-crown" style="font-size: 3rem; color: var(--gold); margin-bottom: 10px;"></i>
+                    <h2 style="color: var(--gold);">Vinh Danh Nhà Vô Địch</h2>
+                    <p class="text-muted">Đua top nhận quà khủng hàng tuần!</p>
+                </div>
+
+                <div class="lb-tabs">
+                    <button class="lb-tab active" onclick="filterLB(this, 'week')">Tuần Này</button>
+                    <button class="lb-tab" onclick="filterLB(this, 'month')">Tháng 12</button>
+                    <button class="lb-tab" onclick="filterLB(this, 'year')">Năm 2025</button>
+                </div>
+
+                <ul class="lb-list" id="lbList">
+                    <!-- JS sẽ render list ở đây -->
+                    <li class="lb-item">
+                        <div class="lb-rank top-1">1</div>
+                        <div class="lb-user">
+                            <div class="lb-avatar" style="background: var(--gold); color: #000;">K</div>
+                            <span>Khoa Pug (VIP)</span>
+                        </div>
+                        <div class="lb-score">15,400 XP</div>
+                    </li>
+                    <li class="lb-item">
+                        <div class="lb-rank top-2">2</div>
+                        <div class="lb-user">
+                            <div class="lb-avatar">A</div>
+                            <span>An Nhiên</span>
+                        </div>
+                        <div class="lb-score">12,200 XP</div>
+                    </li>
+                    <li class="lb-item">
+                        <div class="lb-rank top-3">3</div>
+                        <div class="lb-user">
+                            <div class="lb-avatar">T</div>
+                            <span>Tuấn Hưng</span>
+                        </div>
+                        <div class="lb-score">10,050 XP</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- TAB: SHOP -->
+        <div id="tab-shop" class="tab-content" style="display: none;">
+            <div class="section-header">
+                <div class="section-title">Gói Học Tập Cao Cấp</div>
+            </div>
+            <div class="shop-grid">
+                <div class="shop-item">
+                    <span class="item-icon">🚀</span>
+                    <h3>Gói Bứt Phá (1 Tháng)</h3>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin: 10px 0;">Mở khóa toàn bộ đề thi thử + Lời giải chi tiết.</p>
+                    <div class="item-price"><i class="fas fa-coins"></i> 200 Xu</div>
+                    <button class="btn-buy" onclick="buyItem(200, 'Gói Bứt Phá')">Mua Ngay</button>
+                </div>
+                <div class="shop-item">
+                    <span class="item-icon">👑</span>
+                    <h3>Gói VIP (1 Năm)</h3>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin: 10px 0;">Quyền lợi VIP + Huy hiệu Vương miện + Mentor 1:1.</p>
+                    <div class="item-price"><i class="fas fa-coins"></i> 2000 Xu</div>
+                    <button class="btn-buy" onclick="buyItem(2000, 'Gói VIP')">Mua Ngay</button>
+                </div>
+                <div class="shop-item">
+                    <span class="item-icon">📚</span>
+                    <h3>Kho Tài Liệu Tự Nhiên</h3>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin: 10px 0;">Tổng hợp Lý - Hóa - Sinh 10 năm gần nhất.</p>
+                    <div class="item-price"><i class="fas fa-coins"></i> 500 Xu</div>
+                    <button class="btn-buy" onclick="buyItem(500, 'Kho Tài Liệu TN')">Mua Ngay</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- BOTTOM NAV (Mobile Only) -->
+    <div class="bottom-nav">
+        <button class="b-nav-item active" onclick="showTab('dashboard', this)"><i class="fas fa-home"></i>Home</button>
+        <button class="b-nav-item" onclick="showTab('learn', this)"><i class="fas fa-book"></i>Học</button>
+        <button class="b-nav-item" onclick="showTab('leaderboard', this)"><i class="fas fa-trophy"></i>Top</button>
+        <button class="b-nav-item" onclick="showTab('shop', this)"><i class="fas fa-store"></i>Shop</button>
+        <button class="b-nav-item" onclick="logout()"><i class="fas fa-user"></i>Thoát</button>
+    </div>
+
+    <!-- MODAL NẠP XU -->
+    <div class="modal" id="rechargeModal">
+        <div class="modal-content">
+            <h3 style="margin-bottom: 20px;">Nạp Xu Vào Tài Khoản</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;">
+                <button class="btn-buy" style="background: #333;" onclick="recharge(100)">100 Xu <br><small>10k VNĐ</small></button>
+                <button class="btn-buy" style="background: #333;" onclick="recharge(500)">500 Xu <br><small>50k VNĐ</small></button>
+                <button class="btn-buy" style="background: #333;" onclick="recharge(1000)">1000 Xu <br><small>100k VNĐ</small></button>
+                <button class="btn-buy" style="background: var(--gold); color: #000;" onclick="recharge(5000)">5000 Xu <br><small>500k VNĐ</small></button>
+            </div>
+            <button class="btn-buy" style="background: transparent; border: 1px solid #aaa;" onclick="document.getElementById('rechargeModal').classList.remove('active')">Đóng</button>
+        </div>
+    </div>
+
+    <!-- FIREBASE & LOGIC -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // CẤU HÌNH FIREBASE
+        const firebaseConfig = {
+            apiKey: "AIzaSyDFzSBZjJS5RvCL9Ax7xRrk6q_WsNGkh_s",
+            authDomain: "hubschoolvn-db841.firebaseapp.com",
+            projectId: "hubschoolvn-db841",
+            storageBucket: "hubschoolvn-db841.firebasestorage.app",
+            messagingSenderId: "526272140814",
+            appId: "1:526272140814:web:ba337306b1d4b4d4af4e5f",
+            measurementId: "G-4KD8Z1FGC7"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        
+        let currentUserData = {
+            xp: 0,
+            level: 1,
+            xu: 0
+        };
+        let currentUserId = null;
+
+        // AUTH CHECK
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUserId = user.uid;
+                // Load data
+                const docRef = doc(db, "users", user.uid);
+                const docSnap = await getDoc(docRef);
+                
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    currentUserData = { 
+                        xp: data.xp || 0, 
+                        level: data.level || 1, 
+                        xu: data.xu || 0,
+                        fullname: data.fullname || user.email.split('@')[0]
+                    };
+                } else {
+                    // Mới tạo chưa có data thì dùng mặc định
+                    currentUserData.fullname = user.email.split('@')[0];
+                }
+                updateUI();
+            } else {
+                window.location.href = 'login.html';
+            }
+        });
+
+        // UI UPDATER
+        function updateUI() {
+            document.getElementById('userNameDisplay').innerText = currentUserData.fullname;
+            document.getElementById('avatarDisplay').innerText = currentUserData.fullname.charAt(0).toUpperCase();
+            
+            document.getElementById('currentXP').innerText = currentUserData.xp;
+            document.getElementById('levelDisplay').innerText = "LV." + currentUserData.level;
+            document.getElementById('userXu').innerText = currentUserData.xu;
+
+            // Tính toán thanh XP (Giả sử 1000 XP lên 1 cấp)
+            const nextLevel = 1000 * currentUserData.level;
+            document.getElementById('nextLevelXP').innerText = nextLevel;
+            const percent = (currentUserData.xp / nextLevel) * 100;
+            document.getElementById('xpBar').style.width = percent + "%";
+            document.getElementById('xpPercent').innerText = Math.floor(percent) + "%";
+        }
+
+        // --- GLOBAL FUNCTIONS (Gán vào window) ---
+
+        // Tab Navigation
+        window.showTab = (tabName, btnElement) => {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+            // Show selected
+            const tab = document.getElementById('tab-' + tabName);
+            if(tab) tab.style.display = 'block';
+            else document.getElementById('tab-dashboard').style.display = 'block'; // Fallback
+
+            // Update Desktop Active
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            // Update Mobile Active
+            document.querySelectorAll('.b-nav-item').forEach(el => el.classList.remove('active'));
+            if(btnElement) btnElement.classList.add('active');
+            
+            document.getElementById('pageTitle').innerText = 
+                tabName === 'dashboard' ? 'Tổng Quan' : 
+                (tabName === 'shop' ? 'Cửa Hàng' : 
+                (tabName === 'leaderboard' ? 'Bảng Xếp Hạng' : 'Học Tập'));
+        }
+
+        // Logic "Cày" bài học nhận XP
+        window.learnLesson = async (lessonName, xpAmount) => {
+            if(!confirm(`Bắt đầu học bài: ${lessonName}?`)) return;
+            
+            alert(`Đang học bài ${lessonName}... (Giả lập)`);
+            
+            // Cộng XP vào DB
+            try {
+                const userRef = doc(db, "users", currentUserId);
+                // Giả sử làm xong luôn
+                await updateDoc(userRef, {
+                    xp: increment(xpAmount)
+                });
+                
+                // Cập nhật local
+                currentUserData.xp += xpAmount;
+                
+                // Logic lên cấp
+                if (currentUserData.xp >= 1000 * currentUserData.level) {
+                    currentUserData.level++;
+                    currentUserData.xp = 0; // Reset XP hoặc giữ dư tùy logic game
+                    await updateDoc(userRef, { level: currentUserData.level, xp: 0 });
+                    alert("🎉 CHÚC MỪNG! BẠN ĐÃ LÊN CẤP " + currentUserData.level);
+                } else {
+                    alert(`Hoàn thành! Bạn nhận được +${xpAmount} XP.`);
+                }
+                updateUI();
+            } catch (e) {
+                console.error("Lỗi cộng XP:", e);
+                // Fallback nếu chưa có doc trong DB
+                currentUserData.xp += xpAmount;
+                updateUI();
+            }
+        }
+
+        // Shop Logic
+        window.openRechargeModal = () => document.getElementById('rechargeModal').classList.add('active');
+        
+        window.recharge = async (amount) => {
+            if(!confirm(`Xác nhận nạp ${amount} Xu? (Demo)`)) return;
+            
+            const userRef = doc(db, "users", currentUserId);
+            try {
+                await updateDoc(userRef, { xu: increment(amount) });
+                currentUserData.xu += amount;
+                updateUI();
+                alert("Nạp thành công!");
+                document.getElementById('rechargeModal').classList.remove('active');
+            } catch(e) { console.error(e); }
+        }
+
+        window.buyItem = async (price, itemName) => {
+            if (currentUserData.xu < price) {
+                alert("Bạn không đủ Xu! Hãy nạp thêm.");
+                openRechargeModal();
+                return;
+            }
+            
+            if(confirm(`Bạn muốn mua "${itemName}" với giá ${price} Xu?`)) {
+                const userRef = doc(db, "users", currentUserId);
+                try {
+                    await updateDoc(userRef, { xu: increment(-price) });
+                    currentUserData.xu -= price;
+                    updateUI();
+                    alert("Mua thành công! Kiểm tra trong kho đồ.");
+                } catch(e) { console.error(e); }
+            }
+        }
+
+        // Logout
+        window.logout = () => {
+            if(confirm("Đăng xuất?")) {
+                signOut(auth).then(() => window.location.href = 'index.html');
+            }
+        }
+
+        // Leaderboard Filter (Visual only for demo)
+        window.filterLB = (btn, type) => {
+            document.querySelectorAll('.lb-tab').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            // Trong thực tế, đoạn này sẽ query Firebase để lấy top user theo time range
+            // Demo thì mình chỉ alert nhẹ
+            console.log("Filtering leaderboard by: " + type);
+        }
+
+    </script>
+</body>
+</html>
