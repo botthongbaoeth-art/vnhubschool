@@ -36,7 +36,6 @@
             background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
             border-radius: 0 0 20px 20px; position: relative;
         }
-        .cover-photo img { width: 100%; height: 100%; object-fit: cover; border-radius: 0 0 20px 20px; }
         
         .profile-header {
             display: flex; flex-direction: column; align-items: center;
@@ -123,7 +122,7 @@
         .ach-bar-fill { height: 100%; border-radius: 10px; }
 
         /* --- EDIT MODAL --- */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(5px); padding: 20px; }
         .modal.active { display: flex; animation: fadeIn 0.3s; }
         .modal-box { background: var(--dark-light); padding: 30px; border-radius: 20px; width: 95%; max-width: 500px; max-height: 90vh; overflow-y: auto; }
         
@@ -284,6 +283,7 @@
             <div class="form-group">
                 <label class="form-label">Username (Duy nhất)</label>
                 <input type="text" class="form-input" id="editUsername">
+                <small style="color:var(--accent); font-size:0.7rem;">*Chỉ được đổi sau mỗi 7 ngày.</small>
             </div>
             <div class="form-group">
                 <label class="form-label">Tiểu sử</label>
@@ -354,13 +354,14 @@
         let userEmail = "";
         let currentUser = null;
         let currentUsername = "";
+        let lastUsernameChange = 0;
 
         onAuthStateChanged(auth, async (user) => {
             if(user) {
                 currentUser = user;
                 uid = user.uid;
                 userEmail = user.email;
-                document.getElementById('emailDisplay').value = userEmail;
+                document.getElementById('emailDisplay').innerText = userEmail;
 
                 const snap = await getDoc(doc(db, "users", uid));
                 let data = {};
@@ -371,7 +372,6 @@
                 // Fill Display
                 document.getElementById('fullnameDisplay').innerText = data.fullname || "Người dùng";
                 document.getElementById('usernameDisplay').innerText = "@" + (data.username || "chua_dat_ten");
-                document.getElementById('emailDisplay').innerText = email;
                 document.getElementById('schoolDisplay').innerText = data.school || "Chưa cập nhật";
                 document.getElementById('classDisplay').innerText = data.class || "Chưa cập nhật";
                 document.getElementById('interestsDisplay').innerText = data.interests || "Chưa cập nhật";
@@ -385,9 +385,9 @@
                 document.getElementById('xpDisplaySmall').innerText = data.xp || 0;
                 document.getElementById('lvlDisplay').innerText = data.level || 1;
 
-                // VERIFIED CHECK
+                // VERIFIED CHECK (Đã cập nhật logic)
                 const verifiedEmails = ["lenhancute1@gmail.com", "bot.thongbaoeth@gmail.com"];
-                if (verifiedEmails.includes(userEmail) || data.username === "adminisme") {
+                if (verifiedEmails.includes(userEmail) || data.username === "adminisme" || data.username === "lenhanzxc") {
                     document.getElementById('verifiedBadge').style.display = "inline-block";
                     document.getElementById('roleBadge').style.display = "block";
                 }
@@ -396,30 +396,28 @@
                 document.getElementById('editFullname').value = data.fullname || "";
                 document.getElementById('editUsername').value = data.username || "";
                 currentUsername = data.username || "";
+                lastUsernameChange = data.lastUsernameChange || 0;
+
                 document.getElementById('editBio').value = data.bio || "";
                 document.getElementById('editSchool').value = data.school || "";
                 document.getElementById('editClass').value = data.class || "";
                 document.getElementById('editInterests').value = data.interests || "";
                 document.getElementById('avatarInput').value = avatarChar;
 
-                // Streak Logic
+                // Streak Logic (Tự động tính ngày liên tiếp)
                 const today = new Date().toISOString().split('T')[0];
                 let streak = data.streak || 0;
                 const lastLogin = data.lastLoginDate || "";
 
                 if (lastLogin !== today) {
                     const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
-                    // Nếu login hôm qua thì tăng streak, ngược lại reset
                     if (lastLogin === yesterday) {
                         streak++;
                     } else if (lastLogin !== "") {
-                        // Nếu không phải login hôm qua và không phải lần đầu, reset
-                         streak = 1;
+                         streak = 1; // Reset nếu đứt chuỗi
                     } else {
-                        streak = 1; // Lần đầu login
+                        streak = 1; // Lần đầu
                     }
-                    
-                    // Update DB
                     await setDoc(doc(db, "users", uid), { streak: streak, lastLoginDate: today }, { merge: true });
                 }
                 document.getElementById('streakDisplay').innerText = streak;
@@ -449,39 +447,48 @@
             btn.disabled = true;
             btn.style.opacity = "0.7";
 
+            const data = {
+                fullname: document.getElementById('editFullname').value,
+                bio: document.getElementById('editBio').value,
+                school: document.getElementById('editSchool').value,
+                class: document.getElementById('editClass').value,
+                interests: document.getElementById('editInterests').value,
+                avatarEmoji: document.getElementById('avatarInput').value
+            };
+
             try {
-                // Kiểm tra trùng username
+                // Logic đổi Username (Có giới hạn 7 ngày)
                 if(newUsername !== currentUsername) {
+                    const now = Date.now();
+                    const oneWeek = 7 * 24 * 60 * 60 * 1000;
+                    
+                    // Kiểm tra thời gian
+                    if (now - lastUsernameChange < oneWeek) {
+                        const daysLeft = Math.ceil((oneWeek - (now - lastUsernameChange)) / (24 * 60 * 60 * 1000));
+                        throw new Error(`Bạn mới đổi tên gần đây. Vui lòng chờ ${daysLeft} ngày nữa.`);
+                    }
+
+                    // Kiểm tra trùng lặp
                     try {
                         const q = query(collection(db, "users"), where("username", "==", newUsername));
                         const snap = await getDocs(q);
-                        if(!snap.empty) {
-                            btn.innerText = "Lưu Thay Đổi";
-                            btn.disabled = false;
-                            btn.style.opacity = "1";
-                            return alert("Username này đã có người sử dụng! Vui lòng chọn tên khác.");
-                        }
-                    } catch (permissionError) {
-                        console.warn("Lỗi quyền kiểm tra username. Bỏ qua bước này.");
+                        if(!snap.empty) throw new Error("Username này đã được sử dụng!");
+                    } catch (permErr) {
+                        console.warn("Skipped check duplicate due to permissions");
                     }
+
+                    data.username = newUsername;
+                    data.lastUsernameChange = now; 
                 }
 
-                const data = {
-                    username: newUsername,
-                    fullname: document.getElementById('editFullname').value,
-                    bio: document.getElementById('editBio').value,
-                    school: document.getElementById('editSchool').value,
-                    class: document.getElementById('editClass').value,
-                    interests: document.getElementById('editInterests').value,
-                    avatarEmoji: document.getElementById('avatarInput').value
-                };
-
+                // Dùng setDoc với merge: true để fix lỗi "No document to update"
                 await setDoc(doc(db, "users", uid), data, { merge: true });
+                
                 alert("Cập nhật thành công!");
                 window.location.reload();
             } catch(e) {
                 console.error(e);
-                alert("Lỗi khi lưu: " + e.message);
+                alert("Lỗi: " + e.message);
                 btn.innerText = "Lưu Thay Đổi";
                 btn.disabled = false;
                 btn.style.opacity = "1";
@@ -493,7 +500,9 @@
             const newP = document.getElementById('newPass').value;
             const confP = document.getElementById('confirmPass').value;
 
-            if(newP !== confP) return alert("Mật khẩu mới không khớp!");
+            if (!oldP || !newP) return alert("Vui lòng nhập đầy đủ thông tin!");
+            if (newP !== confP) return alert("Mật khẩu mới không khớp!");
+            if (newP.length < 6) return alert("Mật khẩu mới quá ngắn (min 6 ký tự)!");
             
             try {
                 const cred = EmailAuthProvider.credential(currentUser.email, oldP);
@@ -502,7 +511,7 @@
                 alert("Đổi mật khẩu thành công! Vui lòng đăng nhập lại.");
                 auth.signOut().then(() => window.location.href='login.html');
             } catch(e) {
-                alert("Lỗi: Mật khẩu cũ không đúng hoặc quá yếu.");
+                alert("Lỗi: Mật khẩu cũ không đúng.");
             }
         }
     </script>
