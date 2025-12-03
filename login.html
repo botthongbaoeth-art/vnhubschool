@@ -77,6 +77,7 @@
             margin-top: 10px;
         }
         .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(108, 99, 255, 0.4); }
+        .btn-submit:disabled { opacity: 0.7; cursor: not-allowed; }
 
         .auth-footer { text-align: center; margin-top: 20px; font-size: 0.9rem; color: var(--text-muted); }
         .auth-footer a { color: var(--secondary); text-decoration: none; font-weight: 600; }
@@ -95,7 +96,7 @@
 </head>
 <body>
 
-    <a href="../index.html" class="back-home"><i class="fas fa-arrow-left"></i> Trang chủ</a>
+    <a href="index.html" class="back-home"><i class="fas fa-arrow-left"></i> Trang chủ</a>
 
     <div class="auth-container">
         <div class="auth-header">
@@ -103,11 +104,11 @@
             <h2>Chào Mừng Trở Lại</h2>
             <p>Đăng nhập để tiếp tục học tập</p>
         </div>
-        <form id="loginForm" onsubmit="handleLogin(event)">
+        <form id="loginForm">
             <div class="input-group">
-                <label>Email hoặc Tên đăng nhập</label>
+                <label>Email</label>
                 <i class="fas fa-envelope"></i>
-                <input type="text" id="email" placeholder="example@email.com" required>
+                <input type="email" id="email" placeholder="example@email.com" required>
             </div>
             <div class="input-group">
                 <label>Mật khẩu</label>
@@ -126,29 +127,68 @@
         </div>
     </div>
 
-    <script>
-        function handleLogin(e) {
+    <!-- FIREBASE SCRIPT -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        // Import thêm setPersistence và browserLocalPersistence
+        import { getAuth, signInWithEmailAndPassword, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDFzSBZjJS5RvCL9Ax7xRrk6q_WsNGkh_s",
+            authDomain: "hubschoolvn-db841.firebaseapp.com",
+            projectId: "hubschoolvn-db841",
+            storageBucket: "hubschoolvn-db841.firebasestorage.app",
+            messagingSenderId: "526272140814",
+            appId: "1:526272140814:web:ba337306b1d4b4d4af4e5f",
+            measurementId: "G-4KD8Z1FGC7"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
+
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             const btn = document.querySelector('.btn-submit');
+            const originalText = btn.innerHTML;
 
             // Hiệu ứng Loading
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...';
-            btn.style.opacity = "0.8";
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang kiểm tra...';
+            btn.disabled = true;
 
-            setTimeout(() => {
-                // Giả lập logic đăng nhập
-                if(email && password.length >= 6) {
-                    alert('Đăng nhập thành công! Chào mừng bạn quay lại.');
-                    window.location.href = '../home.html';
-                } else {
-                    alert('Vui lòng kiểm tra lại thông tin!');
-                    btn.innerHTML = 'ĐĂNG NHẬP';
-                    btn.style.opacity = "1";
+            try {
+                // 1. Thiết lập lưu phiên đăng nhập (Quan trọng để không bị văng)
+                await setPersistence(auth, browserLocalPersistence);
+
+                // 2. Tiến hành đăng nhập
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                // 3. Thông báo và chuyển hướng
+                // Sử dụng window.location.replace để người dùng không bấm Back quay lại trang login được
+                alert('Đăng nhập thành công! Đang chuyển hướng...');
+                window.location.replace('home.html');
+
+            } catch (error) {
+                console.error(error);
+                let msg = "Đăng nhập thất bại: " + error.message;
+                
+                // Việt hóa lỗi
+                if(error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+                    msg = "Sai email hoặc mật khẩu!";
+                } else if (error.code === 'auth/too-many-requests') {
+                    msg = "Đăng nhập sai quá nhiều lần. Vui lòng thử lại sau.";
+                } else if (error.code === 'auth/network-request-failed') {
+                    msg = "Lỗi kết nối mạng!";
                 }
-            }, 1500);
-        }
+
+                alert(msg);
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        });
     </script>
 </body>
 </html>
