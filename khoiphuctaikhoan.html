@@ -107,7 +107,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-        // CẤU HÌNH FIREBASE (Dùng chung với các file khác)
+        // CẤU HÌNH FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSyDFzSBZjJS5RvCL9Ax7xRrk6q_WsNGkh_s",
             authDomain: "hubschoolvn-db841.firebaseapp.com",
@@ -120,6 +120,9 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+
+        // --- QUAN TRỌNG: Cài đặt ngôn ngữ Tiếng Việt cho Email ---
+        auth.languageCode = 'vi'; 
 
         // Toast Logic
         const showToast = (type, title, msg) => {
@@ -146,7 +149,7 @@
 
             try {
                 await sendPasswordResetEmail(auth, email);
-                showToast('success', 'Đã gửi email!', 'Vui lòng kiểm tra hộp thư (cả mục Spam) để đặt lại mật khẩu.');
+                showToast('success', 'Đã gửi email!', 'Hệ thống đã gửi link đặt lại mật khẩu (Tiếng Việt) vào hộp thư của bạn.');
                 btn.innerText = "Gửi Lại";
             } catch (error) {
                 console.error(error);
