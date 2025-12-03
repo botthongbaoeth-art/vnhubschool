@@ -15,6 +15,7 @@
             --gold: #FFD700; --dark: #0f172a; --dark-lighter: #1e293b;
             --text: #f8fafc; --text-muted: #94a3b8;
             --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+            --gradient-gold: linear-gradient(135deg, #FFD700, #FFA500);
             --glass-bg: rgba(30, 41, 59, 0.7);
             --glass-border: 1px solid rgba(255, 255, 255, 0.08);
             --shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
@@ -475,7 +476,7 @@
                             <h3 class="card-title">Toán 12 - Cuối Kỳ 1</h3>
                             <div class="card-meta"><span><i class="far fa-file-alt"></i> 40 Câu</span><span><i class="far fa-clock"></i> 90 Phút</span></div>
                         </div>
-                        <button class="btn-action" onclick="startExam('math_12_hk1')">Làm Bài</button>
+                        <button class="btn-action" onclick="startExam('math_12_hk1')">Làm Bài Ngay</button>
                     </div>
                     <div class="content-card">
                         <div class="card-icon-box">
@@ -525,7 +526,7 @@
                     <i class="fas fa-search"></i>
                     <input type="text" class="search-bar" id="friendSearchInput" placeholder="Nhập username (vd: nhan_cute)..." onkeypress="if(event.key==='Enter') searchFriend()">
                 </div>
-                <button class="btn-action" style="width: 100px; margin-bottom: 30px;" onclick="searchFriend()">Tìm</button>
+                <button class="btn-action" style="width: 100px; margin-bottom: 30px;" onclick="searchFriend()">Tìm Kiếm</button>
                 <div id="friendResult" class="grid-layout"></div>
             </div>
 
@@ -833,7 +834,7 @@
             document.getElementById('examInterface').style.display = 'block';
             document.body.style.overflow = 'hidden';
             const list = document.getElementById('questionsList');
-            list.innerHTML = ""; 
+            list.innerHTML = ""; 
             list.innerHTML = `<div class="question-card"><div class="q-title">Câu 1: 1 + 1 = ?</div><div class="q-options"><label class="q-option"><input type="radio" name="q1"> 2</label></div></div>`;
         }
         window.quitExam = () => { if(confirm("Thoát?")) { document.getElementById('examInterface').style.display='none'; document.body.style.overflow='auto'; } }
