@@ -15,7 +15,6 @@
             --gold: #FFD700; --dark: #0f172a; --dark-lighter: #1e293b;
             --text: #f8fafc; --text-muted: #94a3b8;
             --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
-            --gradient-gold: linear-gradient(135deg, #FFD700, #FFA500);
             --glass-bg: rgba(30, 41, 59, 0.7);
             --glass-border: 1px solid rgba(255, 255, 255, 0.08);
             --shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
@@ -32,19 +31,57 @@
         ::-webkit-scrollbar-thumb { background: var(--dark-lighter); border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
 
-        /* --- LOADING SCREEN --- */
+        /* --- BAMBOO LOADING SCREEN --- */
         #loadingOverlay { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100vh; 
             background: var(--dark); z-index: 10000; 
             display: flex; justify-content: center; align-items: center; flex-direction: column; 
             transition: opacity 0.4s ease-out, visibility 0.4s;
         }
-        .loader-logo { font-size: 4rem; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 20px; animation: pulse 1.5s infinite; }
-        .loading-bar-container { width: 180px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; }
-        .loading-bar { height: 100%; background: var(--gradient); width: 0%; border-radius: 10px; animation: loadProgress 1.5s ease-in-out forwards; }
         
-        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.05); opacity: 0.7; } }
-        @keyframes loadProgress { 0% { width: 0%; } 50% { width: 70%; } 100% { width: 100%; } }
+        .bamboo-container {
+            width: 80px; height: 200px; position: relative;
+            display: flex; flex-direction: column-reverse; align-items: center;
+            margin-bottom: 20px;
+        }
+        /* Đốt tre */
+        .bamboo-joint {
+            width: 30px; height: 0; opacity: 0;
+            background: linear-gradient(90deg, #66BB6A 0%, #43A047 50%, #66BB6A 100%);
+            border: 1px solid #2E7D32; border-radius: 4px;
+            margin-bottom: 2px; position: relative;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            animation: growJoint 0.4s ease-out forwards;
+        }
+        .bamboo-joint::before { /* Mắt tre */
+            content: ''; position: absolute; top: -3px; left: -2px;
+            width: 34px; height: 4px; background: #1B5E20; border-radius: 5px; z-index: 2;
+        }
+        /* Lá tre */
+        .bamboo-leaf {
+            position: absolute; width: 0; height: 0; 
+            background: #66BB6A; border-radius: 0 50% 50% 50%;
+            opacity: 0; z-index: 1;
+            animation: growLeaf 0.4s ease-out forwards;
+        }
+
+        /* Animation Delays */
+        .j1 { animation-delay: 0.2s; height: 40px; }
+        .j2 { animation-delay: 0.6s; height: 40px; }
+        .j3 { animation-delay: 1.0s; height: 40px; }
+        .j4 { animation-delay: 1.4s; height: 40px; }
+        .j5 { animation-delay: 1.8s; height: 30px; border-radius: 4px 4px 20px 20px; } /* Ngọn */
+
+        .l1 { top: 140px; left: 40px; transform: rotate(-20deg); animation-delay: 0.7s; }
+        .l2 { top: 100px; right: 40px; transform: rotate(200deg); animation-delay: 1.1s; }
+        .l3 { top: 60px; left: 40px; transform: rotate(-30deg); animation-delay: 1.5s; }
+        .l4 { top: 20px; right: 35px; transform: rotate(210deg); animation-delay: 1.9s; }
+
+        @keyframes growJoint { from { height: 0; opacity: 0; transform: translateY(10px); } to { height: 45px; opacity: 1; transform: translateY(0); } }
+        @keyframes growLeaf { from { width: 0; height: 0; opacity: 0; } to { width: 35px; height: 12px; opacity: 1; } }
+
+        .loading-text { margin-top: 10px; color: #66BB6A; font-size: 1rem; letter-spacing: 2px; font-weight: 700; text-transform: uppercase; animation: blink 1.5s infinite; }
+        @keyframes blink { 50% { opacity: 0.5; } }
 
         /* --- LAYOUT --- */
         .wrapper { display: flex; min-height: 100vh; }
@@ -345,13 +382,18 @@
 </head>
 <body>
 
-    <!-- LOADING -->
+    <!-- BAMBOO LOADING -->
     <div id="loadingOverlay">
-        <div class="loader-content">
-            <div class="loader-logo"><i class="fas fa-rocket"></i></div>
-            <div class="loading-bar-container"><div class="loading-bar"></div></div>
-            <p class="loading-text">Đang khởi động hệ thống...</p>
+        <div class="bamboo-container">
+            <div class="bamboo-leaf l1"></div>
+            <div class="bamboo-leaf l2"></div>
+            <div class="bamboo-leaf l3"></div>
+            <div class="bamboo-joint j4"></div>
+            <div class="bamboo-joint j3"></div>
+            <div class="bamboo-joint j2"></div>
+            <div class="bamboo-joint j1"></div>
         </div>
+        <p class="loading-text">Đang vươn cao...</p>
     </div>
 
     <div class="wrapper">
@@ -483,7 +525,7 @@
                     <i class="fas fa-search"></i>
                     <input type="text" class="search-bar" id="friendSearchInput" placeholder="Nhập username (vd: nhan_cute)..." onkeypress="if(event.key==='Enter') searchFriend()">
                 </div>
-                <button class="btn-action" style="width: 100px; margin-bottom: 30px;" onclick="searchFriend()">Tìm Kiếm</button>
+                <button class="btn-action" style="width: 100px; margin-bottom: 30px;" onclick="searchFriend()">Tìm</button>
                 <div id="friendResult" class="grid-layout"></div>
             </div>
 
@@ -492,6 +534,19 @@
                 <h3 style="margin-bottom: 20px;">Cửa Hàng Vật Phẩm</h3>
                 <div class="grid-layout">
                     <!-- VIP PACKS -->
+                    <div class="content-card vip-pack shop-item">
+                        <span class="card-badge" style="background: var(--gold); color: #000;">VIP TUẦN</span>
+                        <div class="card-icon-box" style="background: rgba(255,215,0,0.1); color: var(--gold);">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div>
+                            <h3 class="card-title">Hội Viên (1 Tuần)</h3>
+                            <p style="font-size:0.85rem; color:var(--text-muted);">Trải nghiệm đặc quyền VIP.</p>
+                            <div class="price-tag"><i class="fas fa-coins"></i> 150</div>
+                        </div>
+                        <button class="btn-action" onclick="buyItem(150, 'Gói VIP 1 Tuần', 'vip')">Mua Ngay</button>
+                    </div>
+
                     <div class="content-card vip-pack shop-item">
                         <span class="card-badge" style="background: var(--gold); color: #000;">VIP THÁNG</span>
                         <div class="card-icon-box" style="background: rgba(255,215,0,0.1); color: var(--gold);">
