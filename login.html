@@ -17,6 +17,8 @@
             --text: #f1f5f9;
             --text-muted: #94a3b8;
             --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+            --success: #00c853;
+            --error: #ff4757;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
@@ -29,19 +31,19 @@
             align-items: center;
             justify-content: center;
             background-image: radial-gradient(circle at 10% 20%, rgba(108, 99, 255, 0.1) 0%, transparent 20%);
+            overflow: hidden; /* Ngăn cuộn khi có popup */
         }
 
         .auth-container {
             background: var(--dark-light);
             padding: 40px;
             border-radius: 20px;
-            width: 100%;
+            width: 90%; /* Responsive cho mobile */
             max-width: 400px;
             border: 1px solid rgba(255,255,255,0.1);
             box-shadow: 0 20px 50px rgba(0,0,0,0.5);
             animation: fadeIn 0.5s ease-out;
             position: relative;
-            overflow: hidden;
         }
 
         .auth-header { text-align: center; margin-bottom: 30px; }
@@ -91,10 +93,57 @@
         }
         .back-home:hover { color: var(--secondary); }
 
+        /* --- CUSTOM TOAST NOTIFICATION --- */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: -400px; /* Ẩn bên phải màn hình */
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: right 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 9999;
+            border: 1px solid rgba(255,255,255,0.1);
+            min-width: 300px;
+            border-left: 4px solid transparent;
+        }
+        
+        .toast.show { right: 20px; }
+        
+        .toast.success { border-left-color: var(--success); }
+        .toast.success .toast-icon { color: var(--success); }
+        
+        .toast.error { border-left-color: var(--error); }
+        .toast.error .toast-icon { color: var(--error); }
+
+        .toast-icon { font-size: 1.5rem; }
+        .toast-content { flex: 1; }
+        .toast-title { font-weight: 700; font-size: 1rem; margin-bottom: 4px; }
+        .toast-msg { font-size: 0.85rem; color: var(--text-muted); }
+        
+        .toast-close { cursor: pointer; color: var(--text-muted); transition: 0.2s; }
+        .toast-close:hover { color: white; }
+
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
+
+    <!-- TOAST NOTIFICATION ELEMENT -->
+    <div id="customToast" class="toast">
+        <div class="toast-icon"><i class="fas fa-info-circle"></i></div>
+        <div class="toast-content">
+            <div class="toast-title">Thông báo</div>
+            <div class="toast-msg">Nội dung thông báo...</div>
+        </div>
+        <div class="toast-close" onclick="hideToast()"><i class="fas fa-times"></i></div>
+    </div>
 
     <a href="index.html" class="back-home"><i class="fas fa-arrow-left"></i> Trang chủ</a>
 
@@ -130,7 +179,6 @@
     <!-- FIREBASE SCRIPT -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        // Import thêm setPersistence và browserLocalPersistence
         import { getAuth, signInWithEmailAndPassword, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         const firebaseConfig = {
@@ -146,6 +194,36 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
+        // --- HÀM HIỂN THỊ TOAST ---
+        window.showToast = (type, title, message) => {
+            const toast = document.getElementById('customToast');
+            const icon = toast.querySelector('.toast-icon i');
+            const titleEl = toast.querySelector('.toast-title');
+            const msgEl = toast.querySelector('.toast-msg');
+
+            // Reset class
+            toast.className = `toast ${type} show`;
+            
+            // Set Icon
+            if(type === 'success') {
+                icon.className = 'fas fa-check-circle';
+            } else {
+                icon.className = 'fas fa-exclamation-triangle';
+            }
+
+            titleEl.innerText = title;
+            msgEl.innerText = message;
+
+            // Tự động ẩn sau 3s
+            setTimeout(() => {
+                hideToast();
+            }, 3000);
+        }
+
+        window.hideToast = () => {
+            document.getElementById('customToast').classList.remove('show');
+        }
+
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
 
@@ -159,32 +237,38 @@
             btn.disabled = true;
 
             try {
-                // 1. Thiết lập lưu phiên đăng nhập (Quan trọng để không bị văng)
+                // 1. Thiết lập lưu phiên đăng nhập
                 await setPersistence(auth, browserLocalPersistence);
 
                 // 2. Tiến hành đăng nhập
-                const userCredential = await signInWithEmailAndPassword(auth, email, password);
-                const user = userCredential.user;
+                await signInWithEmailAndPassword(auth, email, password);
 
-                // 3. Thông báo và chuyển hướng
-                // Sử dụng window.location.replace để người dùng không bấm Back quay lại trang login được
-                alert('Đăng nhập thành công! Đang chuyển hướng...');
-                window.location.replace('home.html');
+                // 3. Thông báo thành công
+                showToast('success', 'Thành công!', 'Đang chuyển hướng về trang chủ...');
+                
+                // Chờ 1.5s để người dùng đọc thông báo rồi mới chuyển trang
+                setTimeout(() => {
+                    window.location.replace('home.html');
+                }, 1500);
 
             } catch (error) {
                 console.error(error);
-                let msg = "Đăng nhập thất bại: " + error.message;
+                let title = "Đăng nhập thất bại";
+                let msg = "Đã có lỗi xảy ra.";
                 
-                // Việt hóa lỗi
+                // Việt hóa lỗi chi tiết
                 if(error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-                    msg = "Sai email hoặc mật khẩu!";
+                    msg = "Email hoặc mật khẩu không chính xác!";
                 } else if (error.code === 'auth/too-many-requests') {
-                    msg = "Đăng nhập sai quá nhiều lần. Vui lòng thử lại sau.";
+                    msg = "Bạn thử lại quá nhiều lần. Vui lòng đợi một lát.";
                 } else if (error.code === 'auth/network-request-failed') {
-                    msg = "Lỗi kết nối mạng!";
+                    msg = "Vui lòng kiểm tra kết nối mạng!";
+                } else if (error.code === 'auth/invalid-email') {
+                    msg = "Định dạng email không hợp lệ!";
                 }
 
-                alert(msg);
+                showToast('error', title, msg);
+                
                 btn.innerHTML = originalText;
                 btn.disabled = false;
             }
