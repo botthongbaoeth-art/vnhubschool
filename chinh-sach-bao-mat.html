@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Chính Sách Bảo Mật | HighSchool Hub</title>
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2997/2997320.png" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #6C63FF; --secondary: #00D2FF; --accent: #FF2E63;
+            --dark: #0f172a; --dark-light: #1e293b;
+            --text: #f1f5f9; --text-muted: #94a3b8;
+            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+            --glass-border: 1px solid rgba(255, 255, 255, 0.08);
+            --safe-top: env(safe-area-inset-top);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
+        
+        body { 
+            background-color: var(--dark); color: var(--text); 
+            line-height: 1.6; padding-bottom: 50px;
+        }
+
+        /* HEADER */
+        .header { 
+            position: sticky; top: 0; left: 0; width: 100%; 
+            background: rgba(15,23,42,0.95); backdrop-filter: blur(10px);
+            padding: calc(15px + var(--safe-top)) 5% 15px 5%; 
+            display: flex; align-items: center; gap: 20px; 
+            border-bottom: var(--glass-border); z-index: 100;
+        }
+        .back-btn { 
+            background: none; border: none; color: var(--text); 
+            font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; gap: 5px;
+            transition: 0.2s;
+        }
+        .back-btn:hover { color: var(--secondary); transform: translateX(-3px); }
+        .header h1 { font-size: 1.2rem; margin: 0; flex: 1; text-align: center; padding-right: 40px; }
+
+        /* CONTAINER */
+        .container { max-width: 800px; margin: 40px auto; padding: 0 20px; }
+
+        /* SECTIONS */
+        .policy-card {
+            background: var(--dark-light); border-radius: 20px; padding: 40px;
+            border: var(--glass-border); margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        h2 { 
+            color: var(--secondary); font-size: 1.5rem; margin-bottom: 20px; 
+            display: flex; align-items: center; gap: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px;
+        }
+        h3 { font-size: 1.1rem; margin: 20px 0 10px 0; color: white; }
+        p { color: var(--text-muted); margin-bottom: 15px; text-align: justify; }
+        
+        ul { list-style: none; padding-left: 0; margin-bottom: 20px; }
+        li { 
+            position: relative; padding-left: 25px; margin-bottom: 10px; color: #cbd5e1; 
+        }
+        li::before {
+            content: '•'; position: absolute; left: 0; color: var(--primary); 
+            font-size: 1.5rem; line-height: 1rem; top: 2px;
+        }
+
+        .highlight { color: var(--accent); font-weight: 600; }
+
+        /* CONTACT BOX */
+        .contact-box {
+            background: linear-gradient(135deg, rgba(108,99,255,0.1), rgba(0,210,255,0.1));
+            border: 1px solid var(--primary); border-radius: 15px; padding: 20px;
+            text-align: center; margin-top: 40px;
+        }
+        .contact-btn {
+            display: inline-block; margin-top: 10px; padding: 10px 25px;
+            background: var(--gradient); color: white; border-radius: 50px;
+            text-decoration: none; font-weight: 700; box-shadow: 0 4px 15px rgba(108,99,255,0.4);
+            transition: 0.3s;
+        }
+        .contact-btn:hover { transform: translateY(-2px); }
+
+        /* FOOTER */
+        .footer { text-align: center; color: var(--text-muted); font-size: 0.8rem; margin-top: 50px; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 768px) {
+            .policy-card { padding: 25px; }
+            h2 { font-size: 1.3rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <button class="back-btn" onclick="window.history.back()"><i class="fas fa-arrow-left"></i> Quay lại</button>
+        <h1>Chính Sách Bảo Mật</h1>
+    </header>
+
+    <div class="container">
+        
+        <div class="policy-card">
+            <p><strong>Cập nhật lần cuối:</strong> 01/01/2025</p>
+            <p>Chào mừng bạn đến với <strong>HighSchool Hub</strong>. Chúng tôi cam kết bảo vệ thông tin cá nhân của bạn và tuân thủ các quy định pháp luật về bảo mật dữ liệu. Chính sách này giải thích cách chúng tôi thu thập, sử dụng và bảo vệ thông tin của bạn.</p>
+        </div>
+
+        <div class="policy-card">
+            <h2><i class="fas fa-database"></i> 1. Thông Tin Chúng Tôi Thu Thập</h2>
+            <p>Để cung cấp trải nghiệm học tập tốt nhất, chúng tôi thu thập các thông tin sau khi bạn đăng ký và sử dụng dịch vụ:</p>
+            <ul>
+                <li><strong>Thông tin tài khoản:</strong> Tên hiển thị, địa chỉ Email, ảnh đại diện (Avatar), trường lớp.</li>
+                <li><strong>Dữ liệu học tập:</strong> Điểm số các bài thi thử, tiến độ hoàn thành bài học, cấp độ (Level) và điểm kinh nghiệm (XP).</li>
+                <li><strong>Thông tin giao dịch:</strong> Lịch sử nạp Xu và mua vật phẩm trong cửa hàng (chúng tôi không lưu trữ thông tin thẻ tín dụng trực tiếp).</li>
+            </ul>
+        </div>
+
+        <div class="policy-card">
+            <h2><i class="fas fa-chart-pie"></i> 2. Cách Chúng Tôi Sử Dụng Thông Tin</h2>
+            <p>Thông tin của bạn được sử dụng cho các mục đích sau:</p>
+            <ul>
+                <li><strong>Cá nhân hóa:</strong> Đề xuất bài học và lộ trình ôn thi phù hợp với trình độ của bạn.</li>
+                <li><strong>Xếp hạng:</strong> Hiển thị tên và thành tích của bạn trên Bảng Xếp Hạng (Leaderboard) công khai để tạo động lực thi đua.</li>
+                <li><strong>Liên lạc:</strong> Gửi thông báo về lịch thi thử, kết quả học tập hoặc các cập nhật quan trọng về tài khoản.</li>
+                <li><strong>Cải thiện dịch vụ:</strong> Phân tích dữ liệu ẩn danh để nâng cấp chất lượng đề thi và tính năng.</li>
+            </ul>
+        </div>
+
+        <div class="policy-card">
+            <h2><i class="fas fa-shield-alt"></i> 3. Bảo Mật & Chia Sẻ Dữ Liệu</h2>
+            <p>Chúng tôi sử dụng các biện pháp bảo mật tiên tiến (như <span class="highlight">Google Firebase Security Rules</span>) để bảo vệ dữ liệu của bạn khỏi truy cập trái phép.</p>
+            <h3>Cam kết của chúng tôi:</h3>
+            <ul>
+                <li>Không bán thông tin cá nhân của bạn cho bên thứ ba.</li>
+                <li>Chỉ chia sẻ dữ liệu khi có yêu cầu từ cơ quan pháp luật hoặc để bảo vệ quyền lợi của HighSchool Hub.</li>
+                <li>Mọi dữ liệu nhạy cảm (như mật khẩu) đều được mã hóa trước khi lưu trữ.</li>
+            </ul>
+        </div>
+
+        <div class="policy-card">
+            <h2><i class="fas fa-user-cog"></i> 4. Quyền Lợi Của Bạn</h2>
+            <p>Bạn có toàn quyền kiểm soát dữ liệu của mình:</p>
+            <ul>
+                <li><strong>Truy cập & Chỉnh sửa:</strong> Bạn có thể xem và sửa thông tin cá nhân tại trang <a href="profile.html" style="color:var(--secondary)">Hồ Sơ</a> bất cứ lúc nào.</li>
+                <li><strong>Xóa tài khoản:</strong> Nếu muốn ngừng sử dụng, bạn có thể yêu cầu xóa vĩnh viễn tài khoản và dữ liệu liên quan bằng cách liên hệ với chúng tôi.</li>
+            </ul>
+        </div>
+
+        <div class="contact-box">
+            <h3>Bạn còn thắc mắc?</h3>
+            <p>Nếu bạn có câu hỏi về Chính sách bảo mật này, vui lòng liên hệ đội ngũ hỗ trợ.</p>
+            <a href="mailto:hotro@highschoolhub.vn" class="contact-btn"><i class="fas fa-envelope"></i> Gửi Email Hỗ Trợ</a>
+        </div>
+
+        <div class="footer">
+            © 2025 HighSchool Hub. All rights reserved.<br>
+            Nền tảng học tập dành cho học sinh THPT Việt Nam.
+        </div>
+    </div>
+
+</body>
+</html>
