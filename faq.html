@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ - Câu Hỏi Thường Gặp | HighSchool Hub</title>
+    
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2997/2997320.png" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        /* --- CSS VARIABLES & RESET (Đồng bộ với index.html) --- */
+        :root {
+            --primary: #6C63FF;
+            --secondary: #00D2FF;
+            --dark: #0f172a;
+            --dark-light: #1e293b;
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
+            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+            --glass: rgba(30, 41, 59, 0.8);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
+        
+        body {
+            background-color: var(--dark);
+            color: var(--text);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        a { text-decoration: none; color: inherit; transition: 0.3s; }
+
+        /* --- HEADER --- */
+        header {
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            padding: 15px 5%;
+            display: flex;
+            align-items: center;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            border-bottom: var(--glass-border);
+        }
+
+        .back-btn {
+            color: var(--text);
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+        }
+        .back-btn:hover { color: var(--primary); }
+
+        /* --- MAIN CONTENT --- */
+        .container {
+            max-width: 800px;
+            margin: 120px auto 60px;
+            padding: 0 20px;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        .page-title h1 {
+            font-size: 2.5rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        .page-title p { color: var(--text-muted); }
+
+        /* --- FAQ ACCORDION --- */
+        .faq-item {
+            background: var(--dark-light);
+            border-radius: 16px;
+            margin-bottom: 20px;
+            border: var(--glass-border);
+            overflow: hidden;
+            transition: 0.3s;
+        }
+
+        .faq-item:hover {
+            border-color: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        details {
+            width: 100%;
+        }
+
+        summary {
+            padding: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.1rem;
+            list-style: none; /* Ẩn tam giác mặc định */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+
+        summary::-webkit-details-marker { display: none; }
+
+        /* Icon xoay khi mở */
+        summary::after {
+            content: '\f078'; /* FontAwesome Down Arrow */
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900;
+            transition: 0.3s;
+            color: var(--primary);
+        }
+
+        details[open] summary::after {
+            transform: rotate(180deg);
+        }
+
+        details[open] summary {
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            background: rgba(108, 99, 255, 0.05);
+        }
+
+        .faq-answer {
+            padding: 20px;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            border-top: 1px solid rgba(255,255,255,0.02);
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .highlight { color: var(--secondary); font-weight: 600; }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            background: #050911;
+            padding: 40px 10%;
+            text-align: center;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            margin-top: auto;
+        }
+        .footer-links { margin-top: 15px; }
+        .footer-links a { color: var(--text-muted); margin: 0 10px; font-size: 0.9rem; }
+        .footer-links a:hover { color: var(--primary); text-decoration: underline; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-title h1 { font-size: 2rem; }
+            summary { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Quay lại Trang chủ
+        </a>
+    </header>
+
+    <div class="container">
+        <div class="page-title">
+            <h1>Câu Hỏi Thường Gặp</h1>
+            <p>Giải đáp những thắc mắc phổ biến nhất về HighSchool Hub</p>
+        </div>
+
+        <!-- FAQ 1 -->
+        <div class="faq-item">
+            <details>
+                <summary>1. Làm thế nào để đăng ký tài khoản?</summary>
+                <div class="faq-answer">
+                    Bạn có thể đăng ký tài khoản hoàn toàn miễn phí bằng cách nhấn vào nút <strong>"Đăng nhập"</strong> ở góc trên bên phải màn hình, sau đó chọn <span class="highlight">"Đăng ký ngay"</span>. Bạn chỉ cần điền tên, email và mật khẩu để bắt đầu hành trình học tập!
+                </div>
+            </details>
+        </div>
+
+        <!-- FAQ 2 -->
+        <div class="faq-item">
+            <details>
+                <summary>2. Tài liệu trên HighSchool Hub có miễn phí không?</summary>
+                <div class="faq-answer">
+                    <strong>Có!</strong> Hơn 80% tài liệu trên Hub là hoàn toàn miễn phí cho cộng đồng. Tuy nhiên, chúng tôi cũng cung cấp các <span class="highlight">Gói VIP</span> giúp bạn truy cập vào các bộ đề thi thử độc quyền, lời giải chi tiết và các tính năng nâng cao khác.
+                </div>
+            </details>
+        </div>
+
+        <!-- FAQ 3 -->
+        <div class="faq-item">
+            <details>
+                <summary>3. Làm sao để tải tài liệu về máy?</summary>
+                <div class="faq-answer">
+                    Để tải tài liệu, bạn cần <strong>đăng nhập</strong> vào tài khoản của mình. Sau đó, tại trang <a href="home.html" class="highlight">Kho Tài Liệu</a>, bạn chỉ cần nhấn vào nút "Tải Ngay" ở dưới mỗi tài liệu. Hệ thống sẽ tự động tải file PDF hoặc DOCX về thiết bị của bạn.
+                </div>
+            </details>
+        </div>
+
+        <!-- FAQ 4 -->
+        <div class="faq-item">
+            <details>
+                <summary>4. Tôi có thể nạp Xu bằng cách nào?</summary>
+                <div class="faq-answer">
+                    Hiện tại, HighSchool Hub hỗ trợ nạp Xu thông qua tính năng <strong>Ticket (Mã thẻ)</strong>. Bạn có thể nhận mã này từ các sự kiện trên Fanpage, quà tặng từ Admin hoặc mua trực tiếp. Trong tương lai, chúng tôi sẽ tích hợp thêm ví điện tử Momo và chuyển khoản ngân hàng.
+                </div>
+            </details>
+        </div>
+
+        <!-- FAQ 5 -->
+        <div class="faq-item">
+            <details>
+                <summary>5. Tôi quên mật khẩu thì phải làm sao?</summary>
+                <div class="faq-answer">
+                    Đừng lo lắng! Tại màn hình Đăng nhập, hãy nhấn vào liên kết <a href="khoiphuctaikhoan.html" class="highlight">"Quên mật khẩu?"</a>. Hệ thống sẽ yêu cầu bạn nhập email đã đăng ký để gửi mã OTP xác thực và hướng dẫn đặt lại mật khẩu mới.
+                </div>
+            </details>
+        </div>
+
+    </div>
+
+    <footer>
+        <p style="color: var(--text-muted);">© 2025 HighSchool Hub. All rights reserved.</p>
+        <div class="footer-links">
+            <a href="chinh-sach-bao-mat.html">Chính Sách Bảo Mật</a>
+            <a href="dieu-khoan-su-dung.html">Điều Khoản Sử Dụng</a>
+            <a href="mailto:lenhancute1@gmail.com">Liên Hệ Hỗ Trợ</a>
+        </div>
+    </footer>
+
+</body>
+</html>
