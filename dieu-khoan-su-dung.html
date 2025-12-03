@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Điều Khoản Sử Dụng | HighSchool Hub</title>
+    
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2997/2997320.png" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        /* --- CSS VARIABLES & RESET (Đồng bộ) --- */
+        :root {
+            --primary: #6C63FF; --secondary: #00D2FF; --accent: #FF2E63;
+            --dark: #0f172a; --dark-light: #1e293b;
+            --text: #f1f5f9; --text-muted: #94a3b8;
+            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+            --glass: rgba(30, 41, 59, 0.95);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
+        
+        body {
+            background-color: var(--dark);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* --- HEADER --- */
+        header {
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            padding: 15px 5%;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            border-bottom: var(--glass-border);
+            display: flex; align-items: center;
+        }
+
+        .back-btn {
+            color: var(--text);
+            font-size: 1.1rem;
+            display: flex; align-items: center; gap: 8px;
+            font-weight: 600; text-decoration: none; transition: 0.3s;
+        }
+        .back-btn:hover { color: var(--primary); transform: translateX(-5px); }
+
+        /* --- CONTENT --- */
+        .container {
+            max-width: 800px;
+            margin: 100px auto 60px;
+            padding: 0 20px;
+        }
+
+        .page-title { text-align: center; margin-bottom: 40px; }
+        .page-title h1 {
+            font-size: 2.2rem;
+            background: var(--gradient);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        /* Fix lỗi căn lề cho đoạn text giới thiệu */
+        .page-title p { 
+            color: var(--text-muted); 
+            text-align: center !important; 
+        }
+
+        .term-card {
+            background: var(--dark-light);
+            border-radius: 20px;
+            padding: 35px;
+            margin-bottom: 25px;
+            border: var(--glass-border);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: 0.3s;
+        }
+        .term-card:hover { border-color: var(--secondary); transform: translateY(-3px); }
+
+        h2 { 
+            color: var(--secondary); font-size: 1.4rem; margin-bottom: 15px; 
+            display: flex; align-items: center; gap: 10px;
+        }
+        h2 i { font-size: 1.2rem; }
+
+        /* Style chung cho đoạn văn nội dung */
+        p { color: #cbd5e1; margin-bottom: 15px; text-align: justify; }
+
+        ul { list-style: none; padding-left: 15px; }
+        li { 
+            position: relative; margin-bottom: 10px; color: var(--text-muted);
+            padding-left: 20px;
+        }
+        li::before {
+            content: "•"; position: absolute; left: 0; color: var(--primary); font-weight: bold;
+        }
+
+        .highlight { color: var(--accent); font-weight: 700; }
+
+        /* --- CONTACT BOX --- */
+        .contact-box {
+            background: linear-gradient(135deg, rgba(108,99,255,0.1), rgba(0,210,255,0.1));
+            border: 1px solid var(--primary); border-radius: 15px; padding: 30px;
+            text-align: center; margin-top: 40px;
+        }
+        /* Fix lỗi căn lề cho text trong contact box */
+        .contact-box p { text-align: center !important; }
+
+        .btn-contact {
+            display: inline-block; margin-top: 15px; padding: 10px 30px;
+            background: var(--gradient); color: white; border-radius: 50px;
+            text-decoration: none; font-weight: 700; box-shadow: 0 4px 15px rgba(108,99,255,0.4);
+            transition: 0.3s;
+        }
+        .btn-contact:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(108,99,255,0.6); }
+
+        /* --- FOOTER --- */
+        footer {
+            background: #050911;
+            padding: 40px 10%;
+            text-align: center;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            color: var(--text-muted); font-size: 0.9rem;
+        }
+        /* Fix lỗi căn lề text footer */
+        footer p {
+            text-align: center !important; /* Ghi đè style justify ở trên */
+            color: var(--text-muted);
+        }
+        .footer-links { margin-top: 15px; }
+        .footer-links a { color: var(--text-muted); margin: 0 10px; text-decoration: none; transition: 0.3s; }
+        .footer-links a:hover { color: var(--primary); }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-title h1 { font-size: 1.8rem; }
+            .term-card { padding: 25px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Quay lại Trang chủ
+        </a>
+    </header>
+
+    <div class="container">
+        <div class="page-title">
+            <h1>Điều Khoản Sử Dụng</h1>
+            <p>Vui lòng đọc kỹ trước khi tham gia cộng đồng HighSchool Hub</p>
+        </div>
+
+        <div class="term-card">
+            <p><strong>Cập nhật lần cuối:</strong> 01/01/2025</p>
+            <p>Chào mừng bạn đến với HighSchool Hub. Việc bạn truy cập, đăng ký và sử dụng website đồng nghĩa với việc bạn đã đọc, hiểu và đồng ý tuân thủ các điều khoản dưới đây.</p>
+        </div>
+
+        <!-- Điều 1 -->
+        <div class="term-card">
+            <h2><i class="fas fa-user-check"></i> 1. Tài Khoản Người Dùng</h2>
+            <p>Để sử dụng đầy đủ tính năng (tải tài liệu, thi thử, đua top), bạn cần tạo một tài khoản.</p>
+            <ul>
+                <li>Bạn chịu trách nhiệm bảo mật thông tin đăng nhập (email, mật khẩu).</li>
+                <li>Không được chia sẻ tài khoản cho nhiều người cùng sử dụng (đặc biệt là tài khoản VIP).</li>
+                <li>Chúng tôi có quyền khóa tài khoản vĩnh viễn nếu phát hiện hành vi gian lận, spam hoặc phá hoại hệ thống.</li>
+            </ul>
+        </div>
+
+        <!-- Điều 2 -->
+        <div class="term-card">
+            <h2><i class="fas fa-coins"></i> 2. Quy Định Về Xu & Giao Dịch</h2>
+            <p><strong>"Xu"</strong> là đơn vị tiền tệ ảo duy nhất trên HighSchool Hub.</p>
+            <ul>
+                <li>Xu được dùng để mua các gói học tập, vật phẩm bổ trợ và trang trí profile.</li>
+                <li>Xu có thể kiếm được miễn phí thông qua việc học tập hoặc nạp qua thẻ Ticket.</li>
+                <li><span class="highlight">Lưu ý quan trọng:</span> Xu không có giá trị quy đổi thành tiền mặt và không thể hoàn trả sau khi đã nạp thành công, trừ trường hợp lỗi hệ thống.</li>
+            </ul>
+        </div>
+
+        <!-- Điều 3 -->
+        <div class="term-card">
+            <h2><i class="fas fa-copyright"></i> 3. Bản Quyền & Sở Hữu Trí Tuệ</h2>
+            <p>Mọi tài liệu, đề thi và nội dung trên HighSchool Hub đều thuộc quyền sở hữu của chúng tôi hoặc được cấp phép sử dụng hợp pháp.</p>
+            <ul>
+                <li>Bạn chỉ được phép tải tài liệu về cho mục đích học tập cá nhân.</li>
+                <li>Nghiêm cấm sao chép, bán lại hoặc phát tán tài liệu trên các nền tảng khác khi chưa có sự đồng ý bằng văn bản.</li>
+            </ul>
+        </div>
+
+        <!-- Điều 4 -->
+        <div class="term-card">
+            <h2><i class="fas fa-comments"></i> 4. Quy Tắc Ứng Xử</h2>
+            <p>Chúng tôi xây dựng một cộng đồng học tập văn minh và tích cực.</p>
+            <ul>
+                <li>Không sử dụng ngôn từ thô tục, xúc phạm danh dự người khác trong phần chat hoặc bình luận.</li>
+                <li>Không đặt Username (Tên đăng nhập) chứa nội dung nhạy cảm, chính trị hoặc vi phạm thuần phong mỹ tục.</li>
+                <li>Tôn trọng quyền riêng tư của các thành viên khác.</li>
+            </ul>
+        </div>
+
+        <!-- Liên hệ -->
+        <div class="contact-box">
+            <h3>Bạn cần hỗ trợ thêm?</h3>
+            <p>Nếu bạn có bất kỳ câu hỏi nào về Điều khoản sử dụng, đừng ngần ngại liên hệ với chúng tôi.</p>
+            <a href="mailto:lenhancute1@gmail.com" class="btn-contact"><i class="fas fa-paper-plane"></i> Gửi Email Ngay</a>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>© 2025 HighSchool Hub. Nền tảng học tập số 1 cho Gen Z.</p>
+        <div class="footer-links">
+            <a href="chinh-sach-bao-mat.html">Chính Sách Bảo Mật</a>
+            <a href="#">Quy Chế Hoạt Động</a>
+            <a href="faq.html">Câu Hỏi Thường Gặp</a>
+        </div>
+    </footer>
+
+</body>
+</html>
