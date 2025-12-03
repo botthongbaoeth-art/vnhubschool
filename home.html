@@ -1061,9 +1061,12 @@
             }
         }
         window.submitTicket = async () => {
-            if(document.getElementById('ticketCode').value === "VIP2025") {
+            if(document.getElementById('ticketCode').value === "ONLYADMIN") {
                 await updateDoc(doc(db, "users", currentUser.uid), { xu: increment(500) });
                 alert("Nhận 500 Xu!"); loadUserData(currentUser.uid); closeRechargeModal();
+            if(document.getElementById('ticketCode').value === "THANHVIENMOI") {
+                await updateDoc(doc(db, "users", currentUser.uid), { xu: increment(100) });
+                alert("Nhận 100 Xu!"); loadUserData(currentUser.uid); closeRechargeModal();
             } else alert("Mã sai!");
         }
         window.buyItem = async (price, name, type) => {
