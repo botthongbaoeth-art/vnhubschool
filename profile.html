@@ -201,7 +201,7 @@
                     <div class="stat-box">
                         <i class="fas fa-fire stat-icon" style="color: #ff9f43;"></i>
                         <div>
-                            <div style="font-size:1.2rem; font-weight:800;">0</div>
+                            <div style="font-size:1.2rem; font-weight:800;" id="streakDisplay">0</div>
                             <div style="font-size:0.8rem; color:var(--text-muted);">Ngày streak</div>
                         </div>
                     </div>
@@ -304,7 +304,7 @@
                 <input type="text" class="form-input" id="editInterests">
             </div>
 
-            <button class="btn-edit btn-primary" style="width:100%; justify-content:center;" onclick="saveProfileData()">Lưu Thay Đổi</button>
+            <button class="btn-edit btn-primary" style="width:100%; justify-content:center;" onclick="saveProfile()">Lưu Thay Đổi</button>
         </div>
     </div>
 
@@ -335,7 +335,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, EmailAuthProvider, reauthenticateWithCredential, updatePassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, updateDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDFzSBZjJS5RvCL9Ax7xRrk6q_WsNGkh_s",
@@ -350,22 +350,24 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
+        let uid = null;
+        let userEmail = "";
         let currentUser = null;
         let currentUsername = "";
 
         onAuthStateChanged(auth, async (user) => {
             if(user) {
                 currentUser = user;
-                loadProfile(user.uid, user.email);
-            } else {
-                window.location.href = 'login.html';
-            }
-        });
+                uid = user.uid;
+                userEmail = user.email;
+                document.getElementById('emailDisplay').value = userEmail;
 
-        async function loadProfile(uid, email) {
-            const docSnap = await getDoc(doc(db, "users", uid));
-            if(docSnap.exists()) {
-                const data = docSnap.data();
+                const snap = await getDoc(doc(db, "users", uid));
+                let data = {};
+                if(snap.exists()) {
+                    data = snap.data();
+                }
+                
                 // Fill Display
                 document.getElementById('fullnameDisplay').innerText = data.fullname || "Người dùng";
                 document.getElementById('usernameDisplay').innerText = "@" + (data.username || "chua_dat_ten");
@@ -383,8 +385,9 @@
                 document.getElementById('xpDisplaySmall').innerText = data.xp || 0;
                 document.getElementById('lvlDisplay').innerText = data.level || 1;
 
-                // VERIFIED CHECK (Logic Tích Xanh)
-                if (email === "lenhancute1@gmail.com") {
+                // VERIFIED CHECK
+                const verifiedEmails = ["lenhancute1@gmail.com", "bot.thongbaoeth@gmail.com"];
+                if (verifiedEmails.includes(userEmail) || data.username === "adminisme") {
                     document.getElementById('verifiedBadge').style.display = "inline-block";
                     document.getElementById('roleBadge').style.display = "block";
                 }
@@ -398,10 +401,34 @@
                 document.getElementById('editClass').value = data.class || "";
                 document.getElementById('editInterests').value = data.interests || "";
                 document.getElementById('avatarInput').value = avatarChar;
-            }
-        }
 
-        // MODAL FUNCTIONS
+                // Streak Logic
+                const today = new Date().toISOString().split('T')[0];
+                let streak = data.streak || 0;
+                const lastLogin = data.lastLoginDate || "";
+
+                if (lastLogin !== today) {
+                    const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+                    // Nếu login hôm qua thì tăng streak, ngược lại reset
+                    if (lastLogin === yesterday) {
+                        streak++;
+                    } else if (lastLogin !== "") {
+                        // Nếu không phải login hôm qua và không phải lần đầu, reset
+                         streak = 1;
+                    } else {
+                        streak = 1; // Lần đầu login
+                    }
+                    
+                    // Update DB
+                    await setDoc(doc(db, "users", uid), { streak: streak, lastLoginDate: today }, { merge: true });
+                }
+                document.getElementById('streakDisplay').innerText = streak;
+
+            } else {
+                window.location.href = 'login.html';
+            }
+        });
+
         window.openEditModal = () => document.getElementById('editModal').style.display = 'flex';
         window.closeEditModal = () => document.getElementById('editModal').style.display = 'none';
         window.openPasswordModal = () => document.getElementById('passModal').style.display = 'flex';
@@ -411,37 +438,53 @@
             alert("Đã chọn: " + emoji);
         }
 
-        window.saveProfileData = async () => {
+        window.saveProfile = async () => {
+            const btn = document.querySelector('.btn-edit.btn-primary');
             const newUsername = document.getElementById('editUsername').value.trim();
-            if(!newUsername) return alert("Username không được trống!");
             
-            // Check Duplicate Username
-            if(newUsername !== currentUsername) {
-                try {
-                    const q = query(collection(db, "users"), where("username", "==", newUsername));
-                    const snap = await getDocs(q);
-                    if(!snap.empty) return alert("Username đã tồn tại!");
-                } catch(e) { console.warn("Skip check username due to permission"); }
-            }
+            if(!newUsername) return alert("Username không được trống!");
+            if(!/^[a-z0-9_]+$/.test(newUsername)) return alert("Username chỉ được chứa chữ thường, số và dấu gạch dưới!");
 
-            const updates = {
-                fullname: document.getElementById('editFullname').value,
-                username: newUsername,
-                bio: document.getElementById('editBio').value,
-                school: document.getElementById('editSchool').value,
-                class: document.getElementById('editClass').value,
-                interests: document.getElementById('editInterests').value,
-                avatarEmoji: document.getElementById('avatarInput').value
-            };
+            btn.innerText = "Đang xử lý...";
+            btn.disabled = true;
+            btn.style.opacity = "0.7";
 
             try {
-                await updateDoc(doc(db, "users", currentUser.uid), updates);
-                alert("Đã lưu thông tin!");
-                closeEditModal();
-                loadProfile(currentUser.uid, currentUser.email); // Reload UI
+                // Kiểm tra trùng username
+                if(newUsername !== currentUsername) {
+                    try {
+                        const q = query(collection(db, "users"), where("username", "==", newUsername));
+                        const snap = await getDocs(q);
+                        if(!snap.empty) {
+                            btn.innerText = "Lưu Thay Đổi";
+                            btn.disabled = false;
+                            btn.style.opacity = "1";
+                            return alert("Username này đã có người sử dụng! Vui lòng chọn tên khác.");
+                        }
+                    } catch (permissionError) {
+                        console.warn("Lỗi quyền kiểm tra username. Bỏ qua bước này.");
+                    }
+                }
+
+                const data = {
+                    username: newUsername,
+                    fullname: document.getElementById('editFullname').value,
+                    bio: document.getElementById('editBio').value,
+                    school: document.getElementById('editSchool').value,
+                    class: document.getElementById('editClass').value,
+                    interests: document.getElementById('editInterests').value,
+                    avatarEmoji: document.getElementById('avatarInput').value
+                };
+
+                await setDoc(doc(db, "users", uid), data, { merge: true });
+                alert("Cập nhật thành công!");
+                window.location.reload();
             } catch(e) {
                 console.error(e);
-                alert("Lỗi khi lưu!");
+                alert("Lỗi khi lưu: " + e.message);
+                btn.innerText = "Lưu Thay Đổi";
+                btn.disabled = false;
+                btn.style.opacity = "1";
             }
         }
 
