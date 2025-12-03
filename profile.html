@@ -4,58 +4,137 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Hồ Sơ | HighSchool Hub</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2997/2997320.png" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        body { background: #0f172a; color: #f1f5f9; font-family: 'Montserrat', sans-serif; padding: 20px; }
-        .container { max-width: 600px; margin: 0 auto; padding-bottom: 80px; }
-        
-        .header { display: flex; align-items: center; gap: 15px; margin-bottom: 30px; }
-        .back-btn { background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer; }
-        
-        .avatar-section { text-align: center; margin-bottom: 30px; position: relative; }
-        .avatar-big { 
-            width: 120px; height: 120px; background: linear-gradient(135deg, #6C63FF, #00D2FF); 
-            border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
-            font-size: 3rem; font-weight: 700; border: 4px solid #1e293b; cursor: pointer;
+        :root {
+            --primary: #6C63FF; --secondary: #00D2FF; --accent: #FF2E63;
+            --gold: #FFD700; --dark: #0f172a; --dark-light: #1e293b;
+            --text: #f8fafc; --text-muted: #94a3b8;
+            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+            --glass-border: 1px solid rgba(255, 255, 255, 0.08);
+            --input-bg: rgba(255, 255, 255, 0.03);
         }
-        .edit-icon { 
-            position: absolute; bottom: 0; right: 50%; transform: translateX(50px); 
-            background: #FF2E63; width: 35px; height: 35px; border-radius: 50%; 
-            display: flex; align-items: center; justify-content: center; font-size: 0.9rem;
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--dark); color: var(--text); padding: 20px; min-height: 100vh; }
+
+        /* CONTAINER */
+        .container { 
+            max-width: 600px; margin: 0 auto; padding-bottom: 40px; 
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        /* HEADER */
+        .header { display: flex; align-items: center; gap: 20px; margin-bottom: 30px; padding-top: 10px; }
+        .back-btn { 
+            background: var(--dark-light); border: var(--glass-border); color: var(--text); 
+            width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: 0.2s; font-size: 1.2rem;
+        }
+        .back-btn:active { transform: scale(0.9); }
+        .header h2 { font-size: 1.5rem; font-weight: 700; }
+
+        /* AVATAR SECTION */
+        .avatar-section { text-align: center; margin-bottom: 40px; position: relative; width: fit-content; margin: 0 auto 40px; }
+        .avatar-wrapper { position: relative; cursor: pointer; transition: 0.3s; }
+        .avatar-wrapper:active { transform: scale(0.95); }
+        
+        .avatar-big { 
+            width: 120px; height: 120px; background: var(--gradient); 
+            border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
+            font-size: 3.5rem; font-weight: 700; border: 4px solid var(--dark); 
+            box-shadow: 0 0 20px rgba(108, 99, 255, 0.3);
+        }
+        .edit-badge { 
+            position: absolute; bottom: 5px; right: 0; 
+            background: var(--accent); width: 36px; height: 36px; border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center; font-size: 1rem;
+            border: 3px solid var(--dark); color: white;
+        }
+
+        /* FORM STYLES */
+        .form-card {
+            background: var(--dark-light); border-radius: 24px; padding: 25px;
+            border: var(--glass-border); box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
 
         .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; color: #94a3b8; font-size: 0.9rem; }
+        label { display: block; margin-bottom: 8px; color: var(--text-muted); font-size: 0.9rem; font-weight: 500; margin-left: 5px; }
+        
         input, textarea { 
-            width: 100%; padding: 15px; background: #1e293b; border: 1px solid rgba(255,255,255,0.1); 
-            color: white; border-radius: 12px; outline: none; font-size: 1rem;
+            width: 100%; padding: 14px 18px; background: var(--input-bg); 
+            border: 1px solid rgba(255,255,255,0.1); color: var(--text); 
+            border-radius: 16px; outline: none; font-size: 1rem; transition: 0.3s;
+            font-family: 'Montserrat', sans-serif;
         }
-        input:disabled { background: rgba(30, 41, 59, 0.5); color: #64748b; cursor: not-allowed; }
-        textarea { resize: none; height: 100px; }
-        input:focus, textarea:focus { border-color: #6C63FF; }
+        input:focus, textarea:focus { 
+            border-color: var(--primary); background: rgba(108, 99, 255, 0.05);
+            box-shadow: 0 0 0 4px rgba(108, 99, 255, 0.1); 
+        }
+        input:disabled { background: rgba(255, 255, 255, 0.02); color: var(--text-muted); border-color: transparent; cursor: not-allowed; }
+        textarea { resize: none; height: 120px; line-height: 1.5; }
 
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+
+        /* BUTTONS */
+        .action-buttons { margin-top: 30px; display: flex; flex-direction: column; gap: 15px; }
+        
         .btn-save { 
-            width: 100%; padding: 15px; background: linear-gradient(135deg, #6C63FF, #00D2FF); 
-            border: none; border-radius: 50px; color: white; font-weight: 700; font-size: 1rem; 
-            cursor: pointer; margin-top: 20px; box-shadow: 0 5px 15px rgba(108,99,255,0.3);
+            width: 100%; padding: 16px; background: var(--gradient); 
+            border: none; border-radius: 16px; color: white; font-weight: 700; font-size: 1rem; 
+            cursor: pointer; box-shadow: 0 8px 20px rgba(108,99,255,0.3); transition: 0.3s;
         }
+        .btn-save:active { transform: scale(0.98); box-shadow: 0 4px 10px rgba(108,99,255,0.2); }
+        .btn-save:disabled { opacity: 0.7; cursor: wait; }
+
         .btn-outline {
             width: 100%; padding: 15px; background: transparent; 
-            border: 1px solid #ff4757; color: #ff4757; border-radius: 50px; 
-            font-weight: 700; cursor: pointer; margin-top: 15px; transition: 0.3s;
+            border: 1px solid var(--text-muted); color: var(--text-muted); border-radius: 16px; 
+            font-weight: 600; cursor: pointer; transition: 0.3s;
         }
-        .btn-outline:hover { background: rgba(255,71,87,0.1); }
+        .btn-outline:hover { border-color: var(--accent); color: var(--accent); background: rgba(255, 46, 99, 0.05); }
 
-        /* Avatar Modal */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); align-items: center; justify-content: center; z-index: 999; }
-        .modal-content { background: #1e293b; padding: 20px; border-radius: 20px; width: 90%; max-width: 350px; text-align: center; }
-        .emoji-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 20px; }
-        .emoji-opt { font-size: 2rem; cursor: pointer; padding: 5px; border-radius: 10px; }
-        .emoji-opt:hover { background: rgba(255,255,255,0.1); }
-        
-        .modal-actions { display: flex; gap: 10px; margin-top: 20px; }
-        .modal-actions button { flex: 1; padding: 10px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; }
+        /* MODALS */
+        .modal { 
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.8); align-items: center; justify-content: center; 
+            z-index: 999; backdrop-filter: blur(5px); padding: 20px;
+        }
+        .modal-content { 
+            background: var(--dark-light); padding: 25px; border-radius: 24px; 
+            width: 100%; max-width: 400px; text-align: center; border: var(--glass-border);
+            animation: slideUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .modal-content h3 { margin-bottom: 20px; font-size: 1.3rem; }
+
+        /* Emoji Grid */
+        .emoji-grid { 
+            display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 20px; 
+        }
+        .emoji-opt { 
+            font-size: 2rem; cursor: pointer; padding: 10px; border-radius: 12px; 
+            background: rgba(255,255,255,0.03); transition: 0.2s;
+        }
+        .emoji-opt:hover { background: rgba(255,255,255,0.1); transform: scale(1.1); }
+
+        .modal-actions { display: flex; gap: 10px; margin-top: 25px; }
+        .modal-btn { flex: 1; padding: 12px; border-radius: 12px; border: none; cursor: pointer; font-weight: 600; }
+        .modal-btn.cancel { background: transparent; border: 1px solid var(--text-muted); color: var(--text-muted); }
+        .modal-btn.confirm { background: var(--gradient); color: white; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+
+        /* RESPONSIVE */
+        @media (max-width: 480px) {
+            .form-row { grid-template-columns: 1fr; gap: 0; } /* Stack inputs on mobile */
+            .avatar-big { width: 100px; height: 100px; font-size: 2.8rem; }
+            .container { padding-top: 0; }
+            .header { position: sticky; top: 0; background: var(--dark); z-index: 10; padding-bottom: 10px; margin-bottom: 20px; }
+        }
     </style>
 </head>
 <body>
@@ -66,49 +145,55 @@
             <h2>Hồ Sơ Cá Nhân</h2>
         </div>
 
-        <div class="avatar-section" onclick="document.getElementById('avatarModal').style.display='flex'">
-            <div class="avatar-big" id="currentAvatar">U</div>
-            <div class="edit-icon"><i class="fas fa-camera"></i></div>
-        </div>
-
-        <div class="form-group">
-            <label>Email (Không thể sửa)</label>
-            <input type="text" id="emailDisplay" disabled>
-        </div>
-
-        <div class="form-group">
-            <label>Username (Định danh duy nhất)</label>
-            <input type="text" id="usernameInput" placeholder="Vd: nhan_cute123 (Viết liền không dấu)">
-        </div>
-
-        <div class="form-group">
-            <label>Họ và tên</label>
-            <input type="text" id="fullname" placeholder="Nhập tên của bạn">
-        </div>
-        
-        <div class="form-group">
-            <label>Tiểu sử (Bio)</label>
-            <textarea id="bio" placeholder="Giới thiệu ngắn về bản thân..."></textarea>
-        </div>
-
-        <div class="form-group">
-            <label>Sở thích (Ngăn cách bằng dấu phẩy)</label>
-            <input type="text" id="interests" placeholder="Vd: Đọc sách, Code, Game...">
-        </div>
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-            <div class="form-group">
-                <label>Lớp</label>
-                <input type="text" id="class" placeholder="VD: 12A1">
-            </div>
-            <div class="form-group">
-                <label>Trường</label>
-                <input type="text" id="school" placeholder="VD: THPT Chuyên">
+        <div class="avatar-section">
+            <div class="avatar-wrapper" onclick="document.getElementById('avatarModal').style.display='flex'">
+                <div class="avatar-big" id="currentAvatar">U</div>
+                <div class="edit-badge"><i class="fas fa-camera"></i></div>
             </div>
         </div>
 
-        <button class="btn-save" onclick="saveProfile()">Lưu Thay Đổi</button>
-        <button class="btn-outline" onclick="openPasswordModal()">Đổi Mật Khẩu</button>
+        <div class="form-card">
+            <div class="form-group">
+                <label><i class="fas fa-envelope"></i> Email</label>
+                <input type="text" id="emailDisplay" disabled value="Đang tải...">
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-at"></i> Username</label>
+                <input type="text" id="usernameInput" placeholder="nhan_cute123 (Viết liền không dấu)">
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-user"></i> Họ và tên</label>
+                <input type="text" id="fullname" placeholder="Nhập tên hiển thị">
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label><i class="fas fa-users"></i> Lớp</label>
+                    <input type="text" id="class" placeholder="VD: 12A1">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-school"></i> Trường</label>
+                    <input type="text" id="school" placeholder="VD: THPT Chuyên">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-heart"></i> Sở thích</label>
+                <input type="text" id="interests" placeholder="VD: Code, Game, Nhạc...">
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-pen"></i> Giới thiệu (Bio)</label>
+                <textarea id="bio" placeholder="Viết đôi dòng về bản thân..."></textarea>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn-save" onclick="saveProfile()">Lưu Thay Đổi</button>
+            <button class="btn-outline" onclick="openPasswordModal()"><i class="fas fa-key"></i> Đổi Mật Khẩu</button>
+        </div>
     </div>
 
     <!-- Avatar Picker Modal -->
@@ -116,6 +201,9 @@
         <div class="modal-content">
             <h3>Chọn Avatar</h3>
             <div class="emoji-grid">
+                <div class="emoji-opt" onclick="selectAvatar('👦')">👦</div>
+                <div class="emoji-opt" onclick="selectAvatar('👧')">👧</div>
+                <div class="emoji-opt" onclick="selectAvatar('🧑‍🎓')">🧑‍🎓</div>
                 <div class="emoji-opt" onclick="selectAvatar('🐯')">🐯</div>
                 <div class="emoji-opt" onclick="selectAvatar('🦁')">🦁</div>
                 <div class="emoji-opt" onclick="selectAvatar('🐼')">🐼</div>
@@ -126,30 +214,34 @@
                 <div class="emoji-opt" onclick="selectAvatar('🎃')">🎃</div>
                 <div class="emoji-opt" onclick="selectAvatar('🦄')">🦄</div>
                 <div class="emoji-opt" onclick="selectAvatar('🔥')">🔥</div>
+                <div class="emoji-opt" onclick="selectAvatar('🚀')">🚀</div>
+                <div class="emoji-opt" onclick="selectAvatar('⭐')">⭐</div>
             </div>
-            <button onclick="document.getElementById('avatarModal').style.display='none'" style="margin-top:20px; padding:10px; width:100%; border-radius:10px; border:none; background:#333; color:white;">Đóng</button>
+            <div class="modal-actions">
+                <button class="modal-btn cancel" onclick="document.getElementById('avatarModal').style.display='none'">Đóng</button>
+            </div>
         </div>
     </div>
 
     <!-- Password Modal -->
     <div class="modal" id="passwordModal">
         <div class="modal-content">
-            <h3>Đổi Mật Khẩu</h3>
-            <div class="form-group" style="margin-top: 20px; text-align: left;">
-                <label>Mật khẩu cũ</label>
-                <input type="password" id="oldPass" placeholder="Nhập mật khẩu hiện tại">
+            <h3 style="color: var(--text);">Đổi Mật Khẩu</h3>
+            <div class="form-group" style="text-align: left;">
+                <label>Mật khẩu hiện tại</label>
+                <input type="password" id="oldPass" placeholder="••••••">
             </div>
             <div class="form-group" style="text-align: left;">
                 <label>Mật khẩu mới</label>
-                <input type="password" id="newPass" placeholder="Mật khẩu mới (min 6 ký tự)">
+                <input type="password" id="newPass" placeholder="Min 6 ký tự">
             </div>
             <div class="form-group" style="text-align: left;">
-                <label>Xác nhận mật khẩu mới</label>
-                <input type="password" id="confirmNewPass" placeholder="Nhập lại mật khẩu mới">
+                <label>Nhập lại mật khẩu mới</label>
+                <input type="password" id="confirmNewPass" placeholder="Min 6 ký tự">
             </div>
             <div class="modal-actions">
-                <button onclick="document.getElementById('passwordModal').style.display='none'" style="background: transparent; border: 1px solid #aaa; color: #aaa;">Hủy</button>
-                <button onclick="handleChangePassword()" style="background: linear-gradient(135deg, #6C63FF, #00D2FF); color: white;">Đổi ngay</button>
+                <button class="modal-btn cancel" onclick="document.getElementById('passwordModal').style.display='none'">Hủy</button>
+                <button class="modal-btn confirm" onclick="handleChangePassword()">Xác Nhận</button>
             </div>
         </div>
     </div>
@@ -216,9 +308,10 @@
 
             btn.innerText = "Đang xử lý...";
             btn.disabled = true;
+            btn.style.opacity = "0.7";
 
             try {
-                // 1. Kiểm tra trùng username (Cần mở Rules mới chạy được dòng này)
+                // Kiểm tra trùng username
                 if(newUsername !== currentUsername) {
                     try {
                         const q = query(collection(db, "users"), where("username", "==", newUsername));
@@ -226,17 +319,15 @@
                         if(!querySnapshot.empty) {
                             btn.innerText = "Lưu Thay Đổi";
                             btn.disabled = false;
+                            btn.style.opacity = "1";
                             return alert("Username này đã có người sử dụng! Vui lòng chọn tên khác.");
                         }
                     } catch (permissionError) {
-                        // Bỏ qua lỗi quyền để cho phép lưu các thông tin khác, 
-                        // nhưng cảnh báo người dùng cập nhật Rules
-                        console.warn("Không thể kiểm tra trùng username do lỗi quyền (Rules). Vẫn tiến hành lưu thông tin.");
-                        alert("Lưu ý: Bạn cần cập nhật Firestore Rules để tính năng kiểm tra trùng tên và Tìm bạn hoạt động.");
+                        console.warn("Lỗi quyền kiểm tra username. Bỏ qua bước này.");
                     }
                 }
 
-                // 2. Lưu thông tin
+                // Lưu thông tin
                 const data = {
                     username: newUsername,
                     fullname: document.getElementById('fullname').value,
@@ -256,6 +347,7 @@
                 alert("Lỗi khi lưu: " + e.message);
                 btn.innerText = "Lưu Thay Đổi";
                 btn.disabled = false;
+                btn.style.opacity = "1";
             }
         }
 
