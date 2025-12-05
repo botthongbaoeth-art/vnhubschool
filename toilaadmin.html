@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel | HubSchool</title>
+    <title>Super Admin Panel | HubSchool</title>
     <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2997/2997320.png" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -14,52 +14,86 @@
             --primary: #6C63FF; --secondary: #00D2FF; --accent: #FF2E63;
             --gold: #FFD700; --dark: #0f172a; --dark-lighter: #1e293b;
             --text: #f8fafc; --text-muted: #94a3b8;
-            --glass-bg: rgba(30, 41, 59, 0.7);
             --glass-border: 1px solid rgba(255, 255, 255, 0.08);
         }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
         body { background-color: var(--dark); color: var(--text); min-height: 100vh; padding: 20px; }
 
         .admin-container {
-            max-width: 1200px; margin: 0 auto;
+            max-width: 1400px; margin: 0 auto;
             background: var(--dark-lighter);
             border-radius: 20px; border: var(--glass-border);
             padding: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            min-height: 800px;
         }
 
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px; }
+        /* HEADER & TABS */
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px; }
         .header h1 { background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
-        /* TABLE STYLES */
+        .nav-tabs { display: flex; gap: 10px; margin-bottom: 30px; }
+        .tab-btn {
+            padding: 12px 25px; background: rgba(255,255,255,0.05); border: none; color: var(--text-muted);
+            border-radius: 10px; cursor: pointer; font-weight: 600; transition: 0.3s;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .tab-btn:hover { background: rgba(255,255,255,0.1); color: white; }
+        .tab-btn.active { background: var(--primary); color: white; box-shadow: 0 5px 15px rgba(108, 99, 255, 0.4); }
+
+        .tab-content { display: none; animation: fadeIn 0.3s ease; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* USER TABLE STYLES */
         .user-table-wrapper { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; min-width: 800px; }
+        table { width: 100%; border-collapse: collapse; min-width: 900px; }
         th { text-align: left; padding: 15px; color: var(--text-muted); font-size: 0.9rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
         td { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: middle; }
         tr:hover { background: rgba(255,255,255,0.02); }
 
         .u-info { display: flex; align-items: center; gap: 15px; }
         .u-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: bold; }
-        .u-role { font-size: 0.7rem; padding: 3px 8px; border-radius: 10px; background: rgba(255,255,255,0.1); margin-left: 5px; }
-        .u-role.vip { background: var(--gold); color: black; font-weight: bold; }
-
-        .xu-badge { color: var(--gold); font-weight: bold; display: flex; align-items: center; gap: 5px; }
         
-        .action-btn {
-            border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.2s; color: white; margin-right: 5px;
-        }
-        .btn-add { background: rgba(0, 200, 83, 0.2); color: #00e676; }
-        .btn-add:hover { background: rgba(0, 200, 83, 0.4); }
-        .btn-sub { background: rgba(255, 46, 99, 0.2); color: #ff4757; }
-        .btn-sub:hover { background: rgba(255, 46, 99, 0.4); }
+        .stat-badge { display: inline-block; padding: 4px 8px; border-radius: 6px; font-size: 0.8rem; margin-right: 5px; min-width: 60px; text-align: center;}
+        .stat-xu { background: rgba(255, 215, 0, 0.1); color: var(--gold); border: 1px solid rgba(255, 215, 0, 0.2); }
+        .stat-xp { background: rgba(0, 210, 255, 0.1); color: var(--secondary); border: 1px solid rgba(0, 210, 255, 0.2); }
+        .stat-lv { background: rgba(108, 99, 255, 0.1); color: var(--primary); border: 1px solid rgba(108, 99, 255, 0.2); }
 
-        /* MODAL */
+        .action-group { display: flex; gap: 5px; flex-wrap: wrap; }
+        .btn-icon { width: 32px; height: 32px; border-radius: 6px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; color: white; }
+        .btn-green { background: rgba(0, 200, 83, 0.2); color: #00e676; }
+        .btn-red { background: rgba(255, 46, 99, 0.2); color: #ff4757; }
+        .btn-blue { background: rgba(0, 210, 255, 0.2); color: #00d2ff; }
+        .btn-gray { background: rgba(255,255,255,0.1); color: #ddd; }
+        .btn-icon:hover { filter: brightness(1.2); }
+
+        /* SHOP STYLES */
+        .shop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+        .shop-item { background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05); border-radius: 15px; padding: 20px; text-align: center; position: relative; }
+        .item-emoji { font-size: 3rem; margin-bottom: 10px; display: block; }
+        .item-price { color: var(--gold); font-weight: bold; font-size: 1.1rem; }
+        .item-sale { text-decoration: line-through; color: var(--text-muted); font-size: 0.9rem; }
+        .tag-sale { position: absolute; top: 10px; right: 10px; background: var(--accent); color: white; padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; font-weight: bold; }
+
+        /* PAYMENT STYLES */
+        .payment-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+        .payment-card { background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)); border-radius: 15px; padding: 20px; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 15px; }
+        .qr-preview { width: 80px; height: 80px; object-fit: cover; border-radius: 10px; background: white; }
+        
+        /* FORM & MODAL */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
         .modal.active { display: flex; }
-        .modal-box { background: #1e293b; padding: 30px; border-radius: 20px; width: 400px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-        .inp-amount { width: 100%; padding: 12px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: white; margin: 20px 0; outline: none; font-size: 1.1rem; }
-        .btn-confirm { width: 100%; padding: 12px; background: var(--primary); border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer; }
+        .modal-box { background: #1e293b; padding: 30px; border-radius: 20px; width: 500px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 20px 50px rgba(0,0,0,0.5); max-height: 90vh; overflow-y: auto; }
+        
+        .form-group { margin-bottom: 15px; }
+        .form-label { display: block; color: var(--text-muted); margin-bottom: 5px; font-size: 0.9rem; }
+        .form-input, .form-select { width: 100%; padding: 12px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: white; outline: none; }
+        
+        .btn-main { width: 100%; padding: 12px; background: var(--primary); border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .btn-danger { background: var(--accent); }
 
-        #loading { text-align: center; padding: 50px; color: var(--text-muted); }
+        .info-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .info-label { color: var(--text-muted); }
     </style>
 </head>
 <body>
@@ -68,56 +102,160 @@
         <div class="header">
             <div>
                 <h1>ADMIN QUẢN LÝ</h1>
-                <p style="color: var(--text-muted); font-size: 0.9rem;">Quản lý người dùng và tài chính (Xu)</p>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Hệ thống quản lý HubSchool</p>
             </div>
             <button onclick="window.location.href='home.html'" style="padding: 10px 20px; background: rgba(255,255,255,0.1); border:none; color: white; border-radius: 10px; cursor: pointer;">
-                <i class="fas fa-arrow-left"></i> Về Trang Chủ
+                <i class="fas fa-arrow-left"></i> Thoát
             </button>
         </div>
 
-        <div style="margin-bottom: 20px; display: flex; gap: 10px;">
-            <input type="text" id="searchInput" placeholder="Tìm kiếm theo tên hoặc email..." style="flex:1; padding: 12px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: white;" oninput="filterUsers()">
-            <div style="padding: 12px 20px; background: rgba(255,215,0,0.1); border-radius: 10px; color: var(--gold); font-weight: bold; border: 1px solid rgba(255,215,0,0.2);">
-                Tổng User: <span id="totalUsers">0</span>
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="switchTab('users')"><i class="fas fa-users"></i> Người dùng</button>
+            <button class="tab-btn" onclick="switchTab('shop')"><i class="fas fa-store"></i> Cửa hàng</button>
+            <button class="tab-btn" onclick="switchTab('payment')"><i class="fas fa-credit-card"></i> Thanh toán</button>
+            <button class="tab-btn" onclick="switchTab('noti')"><i class="fas fa-bell"></i> Thông báo</button>
+        </div>
+
+        <div id="tab-users" class="tab-content active">
+            <div style="margin-bottom: 20px; display: flex; gap: 10px;">
+                <input type="text" id="searchInput" placeholder="Tìm User..." style="flex:1; padding: 12px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: white;" oninput="filterUsers()">
+                <div style="padding: 12px 20px; background: rgba(255,215,0,0.1); border-radius: 10px; color: var(--gold); font-weight: bold; border: 1px solid rgba(255,215,0,0.2);">
+                    Total: <span id="totalUsers">0</span>
+                </div>
+            </div>
+            <div class="user-table-wrapper">
+                <table id="userTable">
+                    <thead>
+                        <tr>
+                            <th>User Info</th>
+                            <th>Stats (Xu | XP | Lv)</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
             </div>
         </div>
 
-        <div class="user-table-wrapper">
-            <table id="userTable">
-                <thead>
-                    <tr>
-                        <th>Người dùng</th>
-                        <th>Email / Username</th>
-                        <th>Cấp độ</th>
-                        <th>Số Xu hiện tại</th>
-                        <th>Hành động</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody">
-                    </tbody>
-            </table>
-            <div id="loading">Đang tải dữ liệu...</div>
+        <div id="tab-shop" class="tab-content">
+            <button class="btn-main" style="width: auto; margin-bottom: 20px; background: var(--secondary);" onclick="openShopModal()">
+                <i class="fas fa-plus"></i> Thêm sản phẩm mới
+            </button>
+            <div class="shop-grid" id="shopGrid">
+                </div>
+        </div>
+
+        <div id="tab-payment" class="tab-content">
+            <button class="btn-main" style="width: auto; margin-bottom: 20px; background: #00C853;" onclick="openPaymentModal()">
+                <i class="fas fa-university"></i> Thêm ngân hàng/Ví
+            </button>
+            <div class="payment-list" id="paymentList">
+                </div>
+        </div>
+
+        <div id="tab-noti" class="tab-content">
+            <div style="max-width: 600px; margin: 0 auto;">
+                <h3 style="margin-bottom: 20px;">Gửi thông báo hệ thống</h3>
+                <div class="form-group">
+                    <label class="form-label">Tiêu đề</label>
+                    <input type="text" id="notiTitle" class="form-input" placeholder="Ví dụ: Bảo trì hệ thống">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Nội dung</label>
+                    <textarea id="notiContent" class="form-input" rows="5" placeholder="Nhập nội dung thông báo..."></textarea>
+                </div>
+                <button class="btn-main" onclick="sendNotification()">Gửi Thông Báo</button>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="modal" id="statsModal">
+        <div class="modal-box" style="width: 400px;">
+            <h3 id="statsTitle">Điều chỉnh</h3>
+            <p style="color: var(--text-muted); margin-bottom: 20px;">User: <span id="statsUser"></span></p>
+            <input type="number" id="statsAmount" class="inp-amount form-input" placeholder="Nhập số lượng..." autofocus>
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button class="btn-main" id="btnConfirmStats" onclick="confirmStatsAction()">Xác Nhận</button>
+                <button class="btn-main" style="background: transparent; border: 1px solid var(--text-muted);" onclick="closeModal('statsModal')">Hủy</button>
+            </div>
         </div>
     </div>
 
-    <div class="modal" id="xuModal">
+    <div class="modal" id="infoModal">
         <div class="modal-box">
-            <h3 id="modalTitle">Cộng Xu</h3>
-            <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">Điều chỉnh số dư cho <b id="modalUser">User</b></p>
-            <input type="number" id="xuAmount" class="inp-amount" placeholder="Nhập số lượng..." autofocus>
-            <div style="display: flex; gap: 10px;">
-                <button class="btn-confirm" onclick="confirmAction()" id="btnConfirm">Xác Nhận</button>
-                <button class="btn-confirm" style="background: transparent; border: 1px solid var(--text-muted);" onclick="closeModal()">Hủy</button>
+            <h3>Thông tin chi tiết</h3>
+            <div id="infoContent" style="margin-top: 20px;"></div>
+            <button class="btn-main" style="background: transparent; border: 1px solid var(--text-muted); margin-top: 20px;" onclick="closeModal('infoModal')">Đóng</button>
+        </div>
+    </div>
+
+    <div class="modal" id="shopModal">
+        <div class="modal-box">
+            <h3 id="shopModalTitle">Thêm Sản Phẩm</h3>
+            <div class="form-group">
+                <label class="form-label">Tên sản phẩm</label>
+                <input type="text" id="itemName" class="form-input">
             </div>
+            <div class="form-group">
+                <label class="form-label">Emoji Icon (Windows + .)</label>
+                <input type="text" id="itemEmoji" class="form-input" placeholder="🍎">
+            </div>
+            <div class="form-group" style="display: flex; gap: 10px;">
+                <div style="flex:1">
+                    <label class="form-label">Giá (Xu)</label>
+                    <input type="number" id="itemPrice" class="form-input">
+                </div>
+                <div style="flex:1">
+                    <label class="form-label">Giá Khuyến mãi (Để trống nếu ko sale)</label>
+                    <input type="number" id="itemSalePrice" class="form-input">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Giới hạn mua (Số lượng tồn kho)</label>
+                <input type="number" id="itemStock" class="form-input" value="999">
+            </div>
+            <button class="btn-main" onclick="saveItem()">Lưu Sản Phẩm</button>
+            <button class="btn-main btn-danger" onclick="closeModal('shopModal')" style="margin-top: 5px;">Hủy</button>
+        </div>
+    </div>
+
+    <div class="modal" id="paymentModal">
+        <div class="modal-box">
+            <h3>Thêm Phương Thức Thanh Toán</h3>
+            <div class="form-group">
+                <label class="form-label">Tên Ngân hàng / Ví</label>
+                <select id="payBankName" class="form-select">
+                    <option value="MB Bank">MB Bank</option>
+                    <option value="Vietcombank">Vietcombank</option>
+                    <option value="Techcombank">Techcombank</option>
+                    <option value="Momo">Momo</option>
+                    <option value="ZaloPay">ZaloPay</option>
+                    <option value="Khác">Khác</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Số tài khoản / SĐT</label>
+                <input type="text" id="payNumber" class="form-input">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Chủ tài khoản</label>
+                <input type="text" id="payOwner" class="form-input">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Link ảnh QR Code (Upload lên Imgur rồi dán link)</label>
+                <input type="text" id="payQR" class="form-input" placeholder="https://...">
+            </div>
+            <button class="btn-main" onclick="savePayment()">Thêm Ngay</button>
+            <button class="btn-main btn-danger" onclick="closeModal('paymentModal')" style="margin-top: 5px;">Hủy</button>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, getDocs, doc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, doc, updateDoc, increment, setDoc, deleteDoc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // CẤU HÌNH FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSyDFzSBZjJS5RvCL9Ax7xRrk6q_WsNGkh_s",
             authDomain: "hubschoolvn-db841.firebaseapp.com",
@@ -134,85 +272,78 @@
 
         let allUsers = [];
         let selectedUserId = null;
-        let actionType = 'add'; 
+        let selectedActionField = ''; // 'xu', 'xp', 'level'
+        let selectedActionType = 'add'; // 'add', 'sub'
 
-        // Cấu hình Toast (Thông báo nhỏ góc phải)
+        // Toast setup
         const Toast = Swal.mixin({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            background: '#1e293b',
-            color: '#fff',
-            didOpen: (toast) => {
-                toast.addEventListener('mouseenter', Swal.stopTimer)
-                toast.addEventListener('mouseleave', Swal.resumeTimer)
-            }
+            toast: true, position: 'top-end', showConfirmButton: false, timer: 3000, background: '#1e293b', color: '#fff'
         });
 
+        // INIT
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 fetchAllUsers();
+                fetchShopItems();
+                fetchPaymentMethods();
             } else {
                 window.location.href = 'login.html';
             }
         });
 
+        // --- TAB LOGIC ---
+        window.switchTab = (tabId) => {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + tabId).classList.add('active');
+            event.target.closest('button').classList.add('active');
+        }
+
+        window.closeModal = (id) => document.getElementById(id).classList.remove('active');
+
+        // ==========================
+        // 1. USER MANAGEMENT LOGIC
+        // ==========================
         async function fetchAllUsers() {
             try {
-                const querySnapshot = await getDocs(collection(db, "users"));
+                const snap = await getDocs(collection(db, "users"));
                 allUsers = [];
-                querySnapshot.forEach((doc) => {
-                    allUsers.push({ id: doc.id, ...doc.data() });
-                });
+                snap.forEach(d => allUsers.push({ id: d.id, ...d.data() }));
                 document.getElementById('totalUsers').innerText = allUsers.length;
-                document.getElementById('loading').style.display = 'none';
                 renderTable(allUsers);
-            } catch (error) {
-                console.error("Lỗi lấy data:", error);
-                if (error.code === 'permission-denied') {
-                     Swal.fire({
-                        icon: 'error',
-                        title: 'Lỗi Quyền Truy Cập!',
-                        html: 'Database đang bị khóa. Hãy vào <b>Firebase Console > Firestore > Rules</b> và đổi thành:<br><code>allow read, write: if true;</code>',
-                        confirmButtonText: 'Đã hiểu'
-                    });
-                }
-            }
+            } catch (e) { console.error(e); }
         }
 
         function renderTable(users) {
             const tbody = document.getElementById('tableBody');
             tbody.innerHTML = '';
-            
             users.forEach(u => {
                 const tr = document.createElement('tr');
-                const avatar = u.avatarEmoji || (u.fullname ? u.fullname.charAt(0) : 'U');
-                const roleBadge = u.isVIP ? '<span class="u-role vip">VIP</span>' : '<span class="u-role">Member</span>';
-                
                 tr.innerHTML = `
                     <td>
                         <div class="u-info">
-                            <div class="u-avatar">${avatar}</div>
+                            <div class="u-avatar">${u.fullname ? u.fullname.charAt(0) : 'U'}</div>
                             <div>
-                                <div style="font-weight: 600;">${u.fullname || "Không tên"} ${roleBadge}</div>
-                                <div style="font-size: 0.75rem; color: var(--text-muted);">ID: ${u.id.substr(0, 8)}...</div>
+                                <div style="font-weight:600">${u.fullname || "No Name"}</div>
+                                <div style="font-size:0.8rem; color:var(--text-muted)">${u.email}</div>
                             </div>
                         </div>
                     </td>
-                    <td style="color: var(--text-muted);">${u.username || "Chưa set"} <br> ${u.email || ""}</td>
-                    <td><b style="color: var(--primary);">Lv.${u.level || 1}</b></td>
                     <td>
-                        <div class="xu-badge"><i class="fas fa-coins"></i> ${u.xu || 0}</div>
+                        <div class="stat-badge stat-xu"><i class="fas fa-coins"></i> ${u.xu || 0}</div>
+                        <div class="stat-badge stat-xp"><i class="fas fa-star"></i> ${u.xp || 0}</div>
+                        <div class="stat-badge stat-lv">LV. ${u.level || 1}</div>
                     </td>
                     <td>
-                        <button class="action-btn btn-add" onclick="openModal('${u.id}', '${u.fullname}', 'add')">
-                            <i class="fas fa-plus"></i> Cộng
-                        </button>
-                        <button class="action-btn btn-sub" onclick="openModal('${u.id}', '${u.fullname}', 'sub')">
-                            <i class="fas fa-minus"></i> Trừ
-                        </button>
+                        <div class="action-group">
+                            <button class="btn-icon btn-gray" title="Xem Info" onclick="viewUserInfo('${u.id}')"><i class="fas fa-info"></i></button>
+                            
+                            <button class="btn-icon btn-green" title="Cộng Xu" onclick="openStatsModal('${u.id}', '${u.fullname}', 'xu', 'add')"><i class="fas fa-plus"></i></button>
+                            <button class="btn-icon btn-red" title="Trừ Xu" onclick="openStatsModal('${u.id}', '${u.fullname}', 'xu', 'sub')"><i class="fas fa-minus"></i></button>
+                            
+                            <button class="btn-icon btn-blue" title="Cộng XP" onclick="openStatsModal('${u.id}', '${u.fullname}', 'xp', 'add')">XP+</button>
+                            <button class="btn-icon btn-blue" title="Cộng Level" onclick="openStatsModal('${u.id}', '${u.fullname}', 'level', 'add')" style="font-size:0.7rem">LV+</button>
+                        </div>
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -223,102 +354,199 @@
             const val = document.getElementById('searchInput').value.toLowerCase();
             const filtered = allUsers.filter(u => 
                 (u.fullname && u.fullname.toLowerCase().includes(val)) || 
-                (u.email && u.email.toLowerCase().includes(val)) ||
-                (u.username && u.username.toLowerCase().includes(val))
+                (u.email && u.email.toLowerCase().includes(val))
             );
             renderTable(filtered);
         }
 
-        // MODAL LOGIC
-        window.openModal = (uid, name, type) => {
+        window.viewUserInfo = (uid) => {
+            const u = allUsers.find(x => x.id === uid);
+            const content = document.getElementById('infoContent');
+            content.innerHTML = `
+                <div class="info-row"><span class="info-label">ID:</span> <span>${u.id}</span></div>
+                <div class="info-row"><span class="info-label">Tên:</span> <span>${u.fullname}</span></div>
+                <div class="info-row"><span class="info-label">Email:</span> <span>${u.email}</span></div>
+                <div class="info-row"><span class="info-label">Username:</span> <span>${u.username || 'Chưa đặt'}</span></div>
+                <div class="info-row"><span class="info-label">IP Address:</span> <span style="color:var(--accent)">${u.ip || 'Chưa lưu (Cần code login)'}</span></div>
+                <div class="info-row"><span class="info-label">Ngày tạo:</span> <span>${u.createdAt ? new Date(u.createdAt.seconds * 1000).toLocaleDateString('vi-VN') : 'N/A'}</span></div>
+            `;
+            document.getElementById('infoModal').classList.add('active');
+        }
+
+        // --- STATS ADJUSTMENT (XU, XP, LEVEL) ---
+        window.openStatsModal = (uid, name, field, type) => {
             selectedUserId = uid;
-            actionType = type;
-            document.getElementById('modalTitle').innerText = type === 'add' ? 'Cộng Xu' : 'Trừ Xu';
-            document.getElementById('modalUser').innerText = name;
-            document.getElementById('btnConfirm').style.background = type === 'add' ? 'var(--primary)' : '#ff4757';
-            document.getElementById('xuAmount').value = '';
-            document.getElementById('xuModal').classList.add('active');
+            selectedActionField = field;
+            selectedActionType = type;
+            document.getElementById('statsUser').innerText = name;
             
-            // Auto focus vào ô nhập
-            setTimeout(() => document.getElementById('xuAmount').focus(), 100);
+            let label = '';
+            if(field === 'xu') label = 'Xu';
+            else if(field === 'xp') label = 'XP';
+            else label = 'Level';
+
+            document.getElementById('statsTitle').innerText = (type === 'add' ? 'Cộng ' : 'Trừ ') + label;
+            document.getElementById('statsAmount').value = '';
+            document.getElementById('statsModal').classList.add('active');
+            setTimeout(() => document.getElementById('statsAmount').focus(), 100);
         }
 
-        window.closeModal = () => {
-            document.getElementById('xuModal').classList.remove('active');
-        }
-
-        window.confirmAction = async () => {
-            const amountInput = document.getElementById('xuAmount');
-            const amount = parseInt(amountInput.value);
+        window.confirmStatsAction = async () => {
+            const amount = parseInt(document.getElementById('statsAmount').value);
+            if(!amount || amount <= 0) return alert('Nhập số hợp lệ!');
             
-            // Thay alert bằng Swal
-            if(!amount || amount <= 0) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Lỗi nhập liệu',
-                    text: 'Vui lòng nhập số lượng xu hợp lệ!',
-                    confirmButtonColor: '#ff4757'
-                });
-                return;
-            }
-
-            const btn = document.getElementById('btnConfirm');
-            const originalText = btn.innerText;
+            const btn = document.getElementById('btnConfirmStats');
             btn.innerText = "Đang xử lý...";
-            btn.disabled = true;
             
             try {
-                const finalAmount = actionType === 'add' ? amount : -amount;
+                const finalAmount = selectedActionType === 'add' ? amount : -amount;
+                const updateData = {};
+                updateData[selectedActionField] = increment(finalAmount);
+
+                await updateDoc(doc(db, "users", selectedUserId), updateData);
                 
-                await updateDoc(doc(db, "users", selectedUserId), {
-                    xu: increment(finalAmount)
-                });
-                
-                // Cập nhật Local UI
-                const userIndex = allUsers.findIndex(u => u.id === selectedUserId);
-                if(userIndex !== -1) {
-                    if(!allUsers[userIndex].xu) allUsers[userIndex].xu = 0;
-                    allUsers[userIndex].xu += finalAmount;
-                    if(allUsers[userIndex].xu < 0) allUsers[userIndex].xu = 0; 
+                // Update Local
+                const u = allUsers.find(x => x.id === selectedUserId);
+                if(u) {
+                    if(!u[selectedActionField]) u[selectedActionField] = 0;
+                    u[selectedActionField] += finalAmount;
+                    if(u[selectedActionField] < 0) u[selectedActionField] = 0;
                 }
                 
-                filterUsers(); 
-                closeModal();
-                
-                // THÔNG BÁO THÀNH CÔNG DẠNG TOAST (GÓC PHẢI)
-                Toast.fire({
-                    icon: 'success',
-                    title: `Đã ${actionType === 'add' ? 'cộng' : 'trừ'} ${amount} Xu thành công!`
-                });
-
+                filterUsers();
+                closeModal('statsModal');
+                Toast.fire({ icon: 'success', title: 'Thành công!' });
             } catch (e) {
                 console.error(e);
-                closeModal();
-
-                // BẮT LỖI PERMISSION CỤ THỂ
-                if (e.code === 'permission-denied') {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Lỗi Quyền Truy Cập (Permissions)!',
-                        html: `
-                            Firebase chặn quyền ghi dữ liệu.<br>
-                            Hãy vào Console > Firestore Database > Rules và sửa thành:<br>
-                            <code style="background:#333; color:#0f0; padding:5px; display:block; margin-top:10px;">allow read, write: if true;</code>
-                        `,
-                        confirmButtonText: 'Đã hiểu, tôi sẽ sửa'
-                    });
-                } else {
-                    // Lỗi khác
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Có lỗi xảy ra',
-                        text: e.message
-                    });
-                }
+                alert("Lỗi: " + e.message);
             } finally {
-                btn.innerText = originalText;
-                btn.disabled = false;
+                btn.innerText = "Xác Nhận";
             }
+        }
+
+        // ==========================
+        // 2. SHOP MANAGEMENT LOGIC
+        // ==========================
+        async function fetchShopItems() {
+            const container = document.getElementById('shopGrid');
+            try {
+                const snap = await getDocs(collection(db, "items"));
+                container.innerHTML = '';
+                snap.forEach(doc => {
+                    const item = doc.data();
+                    const div = document.createElement('div');
+                    div.className = 'shop-item';
+                    div.innerHTML = `
+                        ${item.salePrice ? `<span class="tag-sale">SALE</span>` : ''}
+                        <span class="item-emoji">${item.emoji || '📦'}</span>
+                        <h4>${item.name}</h4>
+                        <div class="item-price">
+                            ${item.salePrice ? `<span class="item-sale">${item.price}</span> ${item.salePrice}` : item.price} Xu
+                        </div>
+                        <div style="font-size:0.8rem; color:#aaa; margin-top:5px;">Kho: ${item.stock}</div>
+                        <button onclick="deleteItem('${doc.id}')" style="margin-top:10px; background:transparent; border:1px solid #ff4757; color:#ff4757; padding:5px 10px; border-radius:5px; cursor:pointer;">Xóa</button>
+                    `;
+                    container.appendChild(div);
+                });
+            } catch (e) { console.log("Chưa có item hoặc lỗi permission"); }
+        }
+
+        window.openShopModal = () => document.getElementById('shopModal').classList.add('active');
+
+        window.saveItem = async () => {
+            const name = document.getElementById('itemName').value;
+            const emoji = document.getElementById('itemEmoji').value;
+            const price = parseInt(document.getElementById('itemPrice').value);
+            const salePrice = document.getElementById('itemSalePrice').value ? parseInt(document.getElementById('itemSalePrice').value) : null;
+            const stock = parseInt(document.getElementById('itemStock').value);
+
+            if(!name || !price) return alert("Thiếu tên hoặc giá!");
+
+            try {
+                await addDoc(collection(db, "items"), {
+                    name, emoji, price, salePrice, stock, createdAt: serverTimestamp()
+                });
+                closeModal('shopModal');
+                fetchShopItems();
+                Toast.fire({ icon: 'success', title: 'Đã thêm sản phẩm!' });
+            } catch (e) { alert(e.message); }
+        }
+
+        window.deleteItem = async (id) => {
+            if(!confirm("Xóa sản phẩm này?")) return;
+            await deleteDoc(doc(db, "items", id));
+            fetchShopItems();
+        }
+
+        // ==========================
+        // 3. PAYMENT LOGIC
+        // ==========================
+        async function fetchPaymentMethods() {
+            const container = document.getElementById('paymentList');
+            try {
+                const snap = await getDocs(collection(db, "payment_info"));
+                container.innerHTML = '';
+                snap.forEach(doc => {
+                    const p = doc.data();
+                    const div = document.createElement('div');
+                    div.className = 'payment-card';
+                    div.innerHTML = `
+                        <img src="${p.qrUrl || 'https://via.placeholder.com/150'}" class="qr-preview">
+                        <div>
+                            <div style="font-weight:bold; color:var(--secondary)">${p.bankName}</div>
+                            <div style="font-size:1.1rem; font-weight:800; letter-spacing:1px;">${p.number}</div>
+                            <div style="font-size:0.9rem; color:var(--text-muted)">${p.owner}</div>
+                        </div>
+                        <button onclick="deletePayment('${doc.id}')" style="margin-left:auto; background:none; border:none; color:#ff4757; cursor:pointer;"><i class="fas fa-trash"></i></button>
+                    `;
+                    container.appendChild(div);
+                });
+            } catch(e) { console.log(e); }
+        }
+
+        window.openPaymentModal = () => document.getElementById('paymentModal').classList.add('active');
+
+        window.savePayment = async () => {
+            const bankName = document.getElementById('payBankName').value;
+            const number = document.getElementById('payNumber').value;
+            const owner = document.getElementById('payOwner').value;
+            const qrUrl = document.getElementById('payQR').value;
+
+            if(!number || !owner) return alert("Điền đủ thông tin!");
+
+            try {
+                await addDoc(collection(db, "payment_info"), {
+                    bankName, number, owner, qrUrl
+                });
+                closeModal('paymentModal');
+                fetchPaymentMethods();
+                Toast.fire({ icon: 'success', title: 'Đã thêm ngân hàng!' });
+            } catch (e) { alert(e.message); }
+        }
+
+        window.deletePayment = async (id) => {
+            if(!confirm("Xóa ngân hàng này?")) return;
+            await deleteDoc(doc(db, "payment_info", id));
+            fetchPaymentMethods();
+        }
+
+        // ==========================
+        // 4. NOTIFICATION LOGIC
+        // ==========================
+        window.sendNotification = async () => {
+            const title = document.getElementById('notiTitle').value;
+            const content = document.getElementById('notiContent').value;
+            
+            if(!title || !content) return alert("Vui lòng nhập đủ!");
+
+            try {
+                await addDoc(collection(db, "notifications"), {
+                    title, content, date: serverTimestamp(), type: 'system'
+                });
+                Toast.fire({ icon: 'success', title: 'Đã gửi thông báo!' });
+                document.getElementById('notiTitle').value = '';
+                document.getElementById('notiContent').value = '';
+            } catch (e) { alert(e.message); }
         }
     </script>
 </body>
