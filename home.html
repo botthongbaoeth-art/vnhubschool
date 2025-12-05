@@ -291,6 +291,7 @@
             background: #1e293b; padding: 30px; border-radius: 24px; 
             width: 100%; max-width: 450px; border: 1px solid rgba(255,255,255,0.1); 
             box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); position: relative;
+            max-height: 80vh; overflow-y: auto;
         }
         .close-modal-btn { position: absolute; top: 20px; right: 20px; font-size: 1.5rem; cursor: pointer; color: var(--text-muted); transition: 0.2s; }
         .close-modal-btn:hover { color: white; transform: rotate(90deg); }
@@ -406,7 +407,6 @@
 </head>
 <body>
 
-    <!-- BAMBOO LOADING -->
     <div id="loadingOverlay">
         <div class="bamboo-container">
             <div class="bamboo-leaf l1"></div> <div class="bamboo-leaf l2"></div> <div class="bamboo-leaf l3"></div>
@@ -416,7 +416,6 @@
     </div>
 
     <div class="wrapper">
-        <!-- SIDEBAR (PC) -->
         <nav class="sidebar">
             <div class="brand" onclick="window.location.href='home.html'"><i class="fas fa-graduation-cap"></i> HubSchool</div>
             <div class="nav-links">
@@ -432,24 +431,20 @@
             <div class="nav-item" onclick="logout()" style="margin-top: auto; color: var(--accent); border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;"><i class="fas fa-sign-out-alt"></i> Đăng Xuất</div>
         </nav>
 
-        <!-- MAIN -->
         <div class="main-content">
             <div class="top-bar">
                 <h2 id="pageTitle">Tổng Quan</h2>
                 <div class="action-group">
-                    <!-- Notif -->
                     <div class="notif-btn" onclick="toggleNotifPanel()">
                         <i class="fas fa-bell"></i>
                         <div class="notif-badge" id="notifCount" style="display:none;">0</div>
                     </div>
-                    <!-- Coin -->
                     <div class="currency-badge" onclick="openRechargeModal()">
                         <i class="fas fa-coins"></i> <span id="userXu">0</span> <i class="fas fa-plus-circle" style="margin-left:5px;"></i>
                     </div>
                 </div>
             </div>
 
-            <!-- NOTIFICATION DROPDOWN -->
             <div class="notif-panel" id="notifPanel">
                 <div class="notif-header">
                     <span>Thông Báo</span>
@@ -460,9 +455,7 @@
                 </div>
             </div>
 
-            <!-- DASHBOARD TAB -->
             <div id="tab-dashboard" class="tab-content">
-                <!-- Profile Widget -->
                 <div class="profile-widget" id="profileCard" onclick="window.location.href='profile.html'">
                     <div class="avatar-wrapper">
                         <div class="avatar" id="userAvatar">U</div>
@@ -509,7 +502,6 @@
                 </div>
             </div>
 
-            <!-- LIBRARY TAB -->
             <div id="tab-library" class="tab-content" style="display:none;">
                 <div class="search-container">
                     <i class="fas fa-search"></i>
@@ -525,20 +517,17 @@
                 <div class="grid-layout" id="libraryContainer"></div>
             </div>
 
-            <!-- EXAM TAB -->
             <div id="tab-exam" class="tab-content" style="display:none;">
                 <h3 style="margin-bottom: 20px;">Danh Sách Đề Thi THPTQG</h3>
                 <div class="grid-layout" id="examListContainer"></div>
             </div>
 
-            <!-- LEADERBOARD TAB -->
             <div id="tab-leaderboard" class="tab-content" style="display:none;">
                 <div class="lb-container">
                     <ul class="lb-list" id="lbList"></ul>
                 </div>
             </div>
 
-            <!-- FRIENDS TAB -->
             <div id="tab-friends" class="tab-content" style="display:none;">
                 <div class="search-container">
                     <i class="fas fa-search"></i>
@@ -548,11 +537,9 @@
                 <div id="friendResult" class="grid-layout"></div>
             </div>
 
-            <!-- SHOP TAB -->
             <div id="tab-shop" class="tab-content" style="display:none;">
                 <h3 style="margin-bottom: 20px;">Cửa Hàng Vật Phẩm</h3>
                 <div class="grid-layout">
-                    <!-- VIP PACKS -->
                     <div class="content-card vip-pack shop-item">
                         <span class="card-badge" style="background: var(--gold); color: #000;">VIP TUẦN</span>
                         <div class="card-icon-box" style="background: rgba(255,215,0,0.1); color: var(--gold);">
@@ -614,13 +601,12 @@
                         </div>
                         <button class="btn-action" onclick="buyItem(300, 'Đổi Màu Tên')">Mua</button>
                     </div>
-                </div>
+                    </div>
             </div>
 
         </div>
     </div>
 
-    <!-- MOBILE NAV -->
     <div class="mobile-nav">
         <button class="m-nav-item active" onclick="switchTab('dashboard')"><i class="fas fa-home"></i><span>Home</span></button>
         <button class="m-nav-item" onclick="switchTab('library')"><i class="fas fa-folder-open"></i><span>Tài liệu</span></button>
@@ -629,7 +615,6 @@
         <button class="m-nav-item" onclick="switchTab('shop')"><i class="fas fa-store"></i><span>Shop</span></button>
     </div>
 
-    <!-- USER PROFILE MODAL -->
     <div class="modal" id="userProfileModal">
         <div class="modal-content">
             <div class="close-modal-btn" onclick="closeUserProfile()"><i class="fas fa-times"></i></div>
@@ -645,7 +630,6 @@
         </div>
     </div>
 
-    <!-- EXAM INTERFACE -->
     <div id="examInterface">
         <div class="exam-header">
             <div style="display:flex; align-items:center; gap:10px;">
@@ -658,7 +642,6 @@
         <button class="btn-submit-exam" onclick="submitExam()">Nộp Bài</button>
     </div>
 
-    <!-- RECHARGE MODAL -->
     <div class="modal" id="rechargeModal">
         <div class="modal-content">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
@@ -684,7 +667,6 @@
         </div>
     </div>
 
-    <!-- SCRIPT -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -709,53 +691,203 @@
         onAuthStateChanged(auth, async (user) => {
             if(user) {
                 currentUser = user;
-                loadUserData(user.uid);
+                
+                // 1. KÍCH HOẠT LẮNG NGHE DỮ LIỆU USER REAL-TIME (Thay cho loadUserData cũ)
+                listenToUserData(user.uid); 
+                
+                // 2. KÍCH HOẠT CÁC MODULE MỚI (Shop, Payment, Noti hệ thống)
+                initShopListener();
+                initPaymentListener();
+                initSystemNotiListener();
+
+                // Giữ lại chức năng Friend cũ
                 initNotificationListener(user.uid);
             } else {
                 window.location.replace('login.html');
             }
         });
 
-        async function loadUserData(uid) {
-            const docSnap = await getDoc(doc(db, "users", uid));
-            if(docSnap.exists()) {
-                const data = docSnap.data();
-                document.getElementById('userName').innerText = data.fullname || "Học viên";
-                document.getElementById('userAvatar').childNodes[0].nodeValue = (data.avatarEmoji || data.fullname.charAt(0).toUpperCase()) + " ";
-                document.getElementById('userXu').innerText = data.xu || 0;
-                if (data.isVIP) document.getElementById('profileCard').classList.add('is-vip');
-                
-                const nextLevel = (data.level || 1) * 1000;
-                const percent = Math.min(((data.xp || 0) / nextLevel) * 100, 100);
-                document.getElementById('xpBar').style.width = percent + "%";
-                document.getElementById('userLv').innerText = data.level || 1;
-                document.getElementById('userXp').innerText = data.xp || 0;
-                
-                let rankName = "Tập Sự";
-                const lvl = data.level || 1;
-                if (lvl >= 5) rankName = "Học Giả";
-                if (lvl >= 10) rankName = "Chuyên Gia";
-                if (lvl >= 50) rankName = "Tiến Sĩ";
-                document.getElementById('userRankTitle').innerText = rankName;
-            }
-            const loading = document.getElementById('loadingOverlay');
-            loading.style.opacity = '0';
-            setTimeout(() => loading.style.display = 'none', 500);
+        // ============================================================
+        // CÁC HÀM REAL-TIME MỚI
+        // ============================================================
+
+        // 1. Hàm nghe User thay đổi (Thay thế loadUserData cũ)
+        function listenToUserData(uid) {
+            onSnapshot(doc(db, "users", uid), (docSnap) => {
+                if(docSnap.exists()) {
+                    const data = docSnap.data();
+                    
+                    // Cập nhật giao diện
+                    document.getElementById('userName').innerText = data.fullname || "Học viên";
+                    if(document.getElementById('userAvatar').childNodes[0]) {
+                         document.getElementById('userAvatar').childNodes[0].nodeValue = (data.avatarEmoji || (data.fullname ? data.fullname.charAt(0) : "U")) + " ";
+                    }
+                    
+                    // CẬP NHẬT XU NGAY LẬP TỨC
+                    document.getElementById('userXu').innerText = data.xu || 0;
+                    
+                    if (data.isVIP) document.getElementById('profileCard').classList.add('is-vip');
+
+                    // Xử lý XP Bar
+                    const nextLevel = (data.level || 1) * 1000;
+                    const percent = Math.min(((data.xp || 0) / nextLevel) * 100, 100);
+                    if(document.getElementById('xpBar')) document.getElementById('xpBar').style.width = percent + "%";
+                    
+                    if(document.getElementById('userLv')) document.getElementById('userLv').innerText = data.level || 1;
+                    if(document.getElementById('userXp')) document.getElementById('userXp').innerText = data.xp || 0;
+
+                    // Rank
+                    let rankName = "Tập Sự";
+                    const lvl = data.level || 1;
+                    if (lvl >= 5) rankName = "Học Giả";
+                    if (lvl >= 10) rankName = "Chuyên Gia";
+                    if (lvl >= 50) rankName = "Tiến Sĩ";
+                    document.getElementById('userRankTitle').innerText = rankName;
+
+                    // Tắt màn hình chờ Bamboo
+                    const loading = document.getElementById('loadingOverlay');
+                    if(loading) { 
+                        loading.style.opacity = '0'; 
+                        setTimeout(() => loading.style.display = 'none', 500); 
+                    }
+                }
+            });
         }
 
-        // NOTIFICATIONS
+        // 2. Hàm nghe Shop (Admin thêm đồ -> Tự hiện ở đây)
+        function initShopListener() {
+            const shopContainer = document.querySelector('#tab-shop .grid-layout');
+            if(!shopContainer) return;
+
+            onSnapshot(collection(db, "items"), (snapshot) => {
+                // Tạo container riêng cho đồ admin để ko đè lên đồ cũ
+                let dynContainer = document.getElementById('dynamic-shop-items');
+                if(!dynContainer) {
+                    dynContainer = document.createElement('div');
+                    dynContainer.id = 'dynamic-shop-items';
+                    dynContainer.style.display = 'contents'; // Giữ grid layout
+                    shopContainer.appendChild(dynContainer);
+                }
+
+                let html = '';
+                snapshot.forEach(doc => {
+                    const item = doc.data();
+                    html += `
+                        <div class="content-card shop-item">
+                            <div class="card-icon-box" style="font-size:2rem;">${item.emoji || '📦'}</div>
+                            <div>
+                                <h3 class="card-title">${item.name}</h3>
+                                <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:5px;">Còn lại: ${item.stock}</p>
+                                <div class="price-tag">
+                                    ${item.salePrice ? `<span style="text-decoration:line-through;color:grey;font-size:0.8rem;margin-right:5px">${item.price}</span> <span style="color:#FF2E63">${item.salePrice}</span>` : item.price} 
+                                    <i class="fas fa-coins" style="color:gold"></i>
+                                </div>
+                            </div>
+                            <button class="btn-action" onclick="buyDynamicItem('${doc.id}', ${item.salePrice || item.price}, '${item.name}')">Mua</button>
+                        </div>
+                    `;
+                });
+                dynContainer.innerHTML = html;
+            });
+        }
+
+        window.buyDynamicItem = async (id, price, name) => {
+            const curXu = parseInt(document.getElementById('userXu').innerText);
+            if(curXu < price) return alert("Không đủ Xu!");
+            if(confirm("Mua " + name + " với giá " + price + " Xu?")) {
+                await updateDoc(doc(db, "users", currentUser.uid), { xu: increment(-price) });
+                alert("Mua thành công!");
+            }
+        }
+
+        // 3. Hàm nghe Ngân hàng (Hiện QR Code Admin up)
+        function initPaymentListener() {
+            onSnapshot(collection(db, "payment_info"), (snapshot) => {
+                const rechargeTab = document.getElementById('recharge-quick');
+                if(!rechargeTab) return;
+                
+                let bankDiv = document.getElementById('admin-banks');
+                if(!bankDiv) {
+                    bankDiv = document.createElement('div');
+                    bankDiv.id = 'admin-banks';
+                    bankDiv.style.marginBottom = '20px';
+                    rechargeTab.prepend(bankDiv);
+                }
+
+                let html = '<p style="margin-bottom:10px; color:var(--secondary); font-weight:bold;">Thông tin chuyển khoản:</p>';
+                if(snapshot.empty) html = '';
+
+                snapshot.forEach(doc => {
+                    const p = doc.data();
+                    html += `
+                        <div style="background:rgba(255,255,255,0.05); padding:10px; border-radius:10px; margin-bottom:10px; display:flex; gap:10px; align-items:center; border:1px solid rgba(255,255,255,0.1);">
+                            <img src="${p.qrUrl}" style="width:60px;height:60px;object-fit:cover;background:white;border-radius:5px;" onclick="window.open(this.src)">
+                            <div>
+                                <div style="font-weight:bold;color:#00e676">${p.bankName}</div>
+                                <div style="font-weight:800; font-size:1.1rem; letter-spacing:1px;">${p.number}</div>
+                                <div style="font-size:0.8rem;color:#aaa">${p.owner}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+                bankDiv.innerHTML = html;
+            });
+        }
+
+        // 4. Hàm nghe Thông báo Hệ thống
+        function initSystemNotiListener() {
+            const q = query(collection(db, "notifications"), orderBy("date", "desc"), limit(5));
+            onSnapshot(q, (snapshot) => {
+                const notifList = document.getElementById('notifList');
+                if(!notifList) return;
+
+                let sysContainer = document.getElementById('sys-notifs');
+                if(!sysContainer) {
+                    sysContainer = document.createElement('div');
+                    sysContainer.id = 'sys-notifs';
+                    notifList.prepend(sysContainer); 
+                }
+
+                let sysHtml = '';
+                snapshot.forEach(doc => {
+                    const n = doc.data();
+                    sysHtml += `
+                        <div class="notif-item" style="background:rgba(108,99,255,0.15); border-left: 3px solid var(--primary);">
+                            <div class="notif-avatar" style="background:var(--primary);"><i class="fas fa-bullhorn"></i></div>
+                            <div class="notif-content">
+                                <strong style="color:white;">${n.title}</strong>
+                                <div style="margin-top:2px; color:#ddd;">${n.content}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+                sysContainer.innerHTML = sysHtml;
+
+                if(!snapshot.empty) {
+                    const badge = document.getElementById('notifCount');
+                    badge.style.display = 'flex';
+                    badge.innerText = '!';
+                }
+            });
+        }
+
+        // ============================================================
+        // CÁC CHỨC NĂNG CŨ (GIỮ NGUYÊN)
+        // ============================================================
+
+        // NOTIFICATIONS (Friend)
         window.toggleNotifPanel = () => document.getElementById('notifPanel').classList.toggle('active');
         function initNotificationListener(uid) {
             onSnapshot(collection(db, "users", uid, "notifications"), (snapshot) => {
                 const list = document.getElementById('notifList');
-                const badge = document.getElementById('notifCount');
-                let html = "";
+                // Lưu ý: Chỉ update phần friend request, không đè lên sys noti
+                let friendHtml = "";
                 let count = 0;
                 snapshot.forEach(doc => {
                     const n = doc.data();
                     count++;
                     if(n.type === 'friend_request') {
-                        html += `<div class="notif-item">
+                        friendHtml += `<div class="notif-item">
                             <div class="notif-avatar">${n.fromAvatar}</div>
                             <div class="notif-content"><strong>${n.fromName}</strong> đã gửi kết bạn.
                             <div style="margin-top:8px;display:flex;gap:10px;">
@@ -764,9 +896,21 @@
                             </div></div></div>`;
                     }
                 });
-                list.innerHTML = count > 0 ? html : '<div style="padding:20px;text-align:center;color:var(--text-muted);">Không có thông báo.</div>';
-                badge.innerText = count;
-                badge.style.display = count > 0 ? 'flex' : 'none';
+                
+                // Tạo div riêng cho friend requests
+                let friendContainer = document.getElementById('friend-reqs');
+                if(!friendContainer) {
+                    friendContainer = document.createElement('div');
+                    friendContainer.id = 'friend-reqs';
+                    list.appendChild(friendContainer);
+                }
+                friendContainer.innerHTML = friendHtml;
+
+                const badge = document.getElementById('notifCount');
+                if(count > 0) {
+                    badge.innerText = count;
+                    badge.style.display = 'flex';
+                }
             });
         }
         window.handleRequest = async (id, fromUid, accept) => {
@@ -983,7 +1127,6 @@
             
             if(xpEarned > 0) {
                 await updateDoc(doc(db, "users", currentUser.uid), { xp: increment(xpEarned) });
-                loadUserData(currentUser.uid);
             }
             
             alert(`Kết quả: ${correct}/${currentExam.questions.length} câu đúng.\nBạn nhận được +${xpEarned} XP!`);
@@ -1057,13 +1200,15 @@
         window.recharge = async (amount) => {
             if(confirm(`Nạp ${amount} Xu?`)) {
                 await updateDoc(doc(db, "users", currentUser.uid), { xu: increment(amount) });
-                alert("Thành công!"); loadUserData(currentUser.uid); closeRechargeModal();
+                alert("Thành công!"); 
+                closeRechargeModal();
             }
         }
         window.submitTicket = async () => {
             if(document.getElementById('ticketCode').value === "ONLYADMIN") {
                 await updateDoc(doc(db, "users", currentUser.uid), { xu: increment(500) });
-                alert("Nhận 500 Xu!"); loadUserData(currentUser.uid); closeRechargeModal();
+                alert("Nhận 500 Xu!"); 
+                closeRechargeModal();
             } else alert("Mã sai!");
         }
         window.buyItem = async (price, name, type) => {
@@ -1073,7 +1218,7 @@
                 const updates = { xu: increment(-price) };
                 if(type==='vip') updates.isVIP = true;
                 await updateDoc(doc(db, "users", currentUser.uid), updates);
-                alert("Đã mua!"); loadUserData(currentUser.uid);
+                alert("Đã mua!");
             }
         }
 
