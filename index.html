@@ -2,780 +2,873 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <!-- Thêm viewport-fit=cover để hỗ trợ tai thỏ trên iPhone -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
-    <title>HighSchool Hub | Nền Tảng Học Tập 4.0</title>
+    <meta name="description" content="HighSchool Hub - Nền tảng học tập số 1 dành cho học sinh THPT Việt Nam. Kho tài liệu, đề thi thử, công cụ hỗ trợ học tập miễn phí.">
+    <meta name="keywords" content="học tập, thpt, ôn thi, đại học, tài liệu, đề thi, toán, lý, hóa, anh, văn, sử, địa">
+    <meta name="author" content="HighSchool Hub Team">
+    <meta property="og:title" content="HighSchool Hub | Bứt Phá Điểm Số">
+    <meta property="og:description" content="Nền tảng học tập thông minh, kết nối cộng đồng học sinh THPT toàn quốc.">
+    <meta property="og:image" content="https://cdn-icons-png.flaticon.com/512/2997/2997320.png">
+    
+    <title>HighSchool Hub | Hệ Sinh Thái Học Tập 4.0</title>
     
     <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2997/2997320.png" type="image/x-icon">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Animate.css (Optional but good for big pages) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     
     <style>
-        /* --- CSS VARIABLES & RESET --- */
+        /* =========================================
+           1. GLOBAL VARIABLES & RESET
+           ========================================= */
         :root {
+            /* Primary Colors */
             --primary: #6C63FF;
-            --secondary: #00D2FF;
-            --dark: #0f172a;
-            --dark-light: #1e293b;
-            --text: #f1f5f9;
-            --text-muted: #94a3b8;
-            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
-            --glass: rgba(30, 41, 59, 0.95); /* Tăng độ mờ nền để dễ đọc trên mobile */
+            --primary-dark: #5a52d5;
+            --primary-light: #8f87ff;
             
-            /* Safe area variables cho iOS */
+            /* Secondary Colors */
+            --secondary: #00D2FF;
+            --secondary-dark: #00a6cc;
+            
+            /* Accent Colors */
+            --accent: #FF2E63;
+            --gold: #FFD700;
+            --gold-dark: #d4b106;
+            --success: #00c853;
+            --warning: #ff9f43;
+            --info: #0abde3;
+
+            /* Backgrounds */
+            --dark: #0f172a;
+            --dark-lighter: #1e293b;
+            --dark-card: #2d3748;
+            --dark-overlay: rgba(15, 23, 42, 0.95);
+
+            /* Text Colors */
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --text-dark: #334155;
+
+            /* Gradients */
+            --gradient-main: linear-gradient(135deg, var(--primary), var(--secondary));
+            --gradient-hover: linear-gradient(135deg, var(--secondary), var(--primary));
+            --gradient-gold: linear-gradient(135deg, #FFD700, #FFA500);
+            --gradient-dark: linear-gradient(to bottom, var(--dark), var(--dark-lighter));
+
+            /* Effects */
+            --glass: rgba(30, 41, 59, 0.7);
+            --glass-strong: rgba(30, 41, 59, 0.9);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.08);
+            --shadow-glow: 0 0 20px rgba(108, 99, 255, 0.3);
+            --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.3);
+            --shadow-float: 0 20px 40px rgba(0,0,0,0.4);
+
+            /* Spacing */
             --safe-top: env(safe-area-inset-top);
             --safe-bottom: env(safe-area-inset-bottom);
+            --container-width: 1200px;
+            --header-height: 80px;
         }
 
-        html { scroll-behavior: smooth; }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; -webkit-tap-highlight-color: transparent; }
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: 'Montserrat', sans-serif; 
+            -webkit-tap-highlight-color: transparent; 
+        }
         
+        html { 
+            scroll-behavior: smooth; 
+            font-size: 16px;
+        }
+
         body {
             background-color: var(--dark);
             color: var(--text);
             overflow-x: hidden;
-            /* Padding bottom để tránh cấn thanh home ảo trên iOS */
-            padding-bottom: var(--safe-bottom);
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 40px 40px;
+            position: relative;
         }
 
-        a { text-decoration: none; color: inherit; transition: 0.3s; }
+        /* Scrollbar Customization */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--dark); }
+        ::-webkit-scrollbar-thumb { 
+            background: var(--dark-lighter); 
+            border-radius: 10px; 
+            border: 2px solid var(--dark);
+        }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+        /* Typography Utilities */
+        h1, h2, h3, h4, h5, h6 { font-family: 'Space Grotesk', sans-serif; font-weight: 700; line-height: 1.2; }
+        a { text-decoration: none; color: inherit; transition: all 0.3s ease; }
         ul { list-style: none; }
+        .text-gradient {
+            background: var(--gradient-main);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .text-center { text-align: center; }
+        .mb-10 { margin-bottom: 10px; }
+        .mb-20 { margin-bottom: 20px; }
+        .mb-30 { margin-bottom: 30px; }
+        .mb-50 { margin-bottom: 50px; }
+
+        /* Layout Utilities */
+        .container {
+            width: 100%;
+            max-width: var(--container-width);
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .section-padding { padding: 100px 0; position: relative; }
         
-        /* --- HEADER & NAV --- */
+        /* =========================================
+           2. COMPONENTS
+           ========================================= */
+        
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            gap: 10px;
+        }
+        .btn-primary {
+            background: var(--gradient-main);
+            color: white;
+            box-shadow: var(--shadow-glow);
+        }
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(108, 99, 255, 0.5);
+        }
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+        .btn-white {
+            background: white;
+            color: var(--primary);
+        }
+        .btn-white:hover {
+            background: #f1f5f9;
+            transform: translateY(-3px);
+        }
+
+        /* Section Titles */
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .section-tag {
+            display: inline-block;
+            padding: 6px 16px;
+            background: rgba(108, 99, 255, 0.1);
+            color: var(--primary);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: 1px solid rgba(108, 99, 255, 0.2);
+        }
+        .section-header h2 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+        .section-header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        /* Animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* =========================================
+           3. HEADER & NAVIGATION
+           ========================================= */
         header {
             position: fixed;
-            top: 0; left: 0; width: 100%;
-            /* Thêm padding top cho tai thỏ */
-            padding: calc(15px + var(--safe-top)) 5% 15px 5%;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 95%;
+            max-width: 1300px;
+            padding: 10px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: var(--glass);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px); /* Cho Safari */
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(20px);
+            border-radius: 50px;
+            border: var(--glass-border);
             z-index: 1000;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: 0.3s;
+        }
+        header.scrolled {
+            top: 0;
+            width: 100%;
+            border-radius: 0;
+            padding: 15px 5%;
+            background: rgba(15, 23, 42, 0.95);
         }
 
         .logo {
-            font-size: 1.3rem; /* Giảm nhẹ size logo trên mobile */
+            font-size: 1.5rem;
             font-weight: 800;
-            background: var(--gradient);
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--gradient-main);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 10px;
-            z-index: 1002; /* Luôn nằm trên mobile menu */
+            gap: 12px;
+            cursor: pointer;
         }
-        
         .logo i {
-            background: var(--gradient);
+            font-size: 1.8rem;
+            background: var(--gradient-main);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        /* Desktop Nav */
         nav ul { display: flex; gap: 30px; }
-        nav a:hover { color: var(--secondary); text-shadow: 0 0 10px var(--secondary); }
-
-        /* Mobile Menu Toggle Button */
-        .mobile-menu-btn {
-            display: none;
-            font-size: 1.5rem;
-            color: var(--text);
-            cursor: pointer;
-            z-index: 1002;
-        }
-
-        /* Mobile Nav Overlay */
-        .mobile-nav-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100vh;
-            background: var(--dark);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 1001;
-            transform: translateX(100%);
-            transition: transform 0.3s ease-in-out;
-            padding-top: var(--safe-top);
-        }
-        
-        .mobile-nav-overlay.active {
-            transform: translateX(0);
-        }
-
-        .mobile-nav-overlay a {
-            font-size: 1.5rem;
-            margin: 20px 0;
+        nav a {
             font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            position: relative;
+            padding: 5px 0;
         }
-
-        .btn-cta {
-            padding: 10px 20px;
-            background: var(--gradient);
-            border-radius: 30px;
-            font-weight: 600;
-            border: none;
-            cursor: pointer;
-            color: white;
-            box-shadow: 0 4px 15px rgba(108, 99, 255, 0.4);
-            white-space: nowrap;
-            font-size: 0.9rem;
+        nav a:hover, nav a.active { color: white; }
+        nav a::after {
+            content: ''; position: absolute; bottom: 0; left: 0; width: 0%; height: 2px;
+            background: var(--primary); transition: 0.3s;
         }
-        .btn-cta:hover { transform: translateY(-2px); }
-        .btn-cta:active { transform: translateY(0); } /* Feedback khi chạm */
+        nav a:hover::after { width: 100%; }
 
         /* Auth Area */
-        #authArea { display: flex; align-items: center; }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .user-name {
-            font-weight: 600;
-            color: var(--secondary);
-            max-width: 100px; /* Giới hạn chiều dài tên trên mobile */
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-        .btn-logout {
-            background: transparent;
-            border: 1px solid var(--text-muted);
-            color: var(--text-muted);
-            padding: 6px 12px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 0.75rem;
+        .auth-area { display: flex; align-items: center; gap: 15px; }
+        .user-info { display: flex; align-items: center; gap: 10px; }
+        .user-avatar {
+            width: 40px; height: 40px; border-radius: 50%;
+            background: var(--gradient-main);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; border: 2px solid var(--dark);
         }
 
-        /* --- HERO SECTION --- */
+        /* Mobile Menu */
+        .mobile-menu-toggle { display: none; font-size: 1.5rem; cursor: pointer; color: white; }
+        
+        /* =========================================
+           4. HERO SECTION
+           ========================================= */
         .hero {
             min-height: 100vh;
-            /* Fix chiều cao trên mobile browser */
-            min-height: 100dvh; 
-            padding: 120px 5% 50px 5%;
+            padding-top: 120px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
             position: relative;
+            overflow: hidden;
+        }
+        
+        /* Animated Background Shapes */
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.4;
+            animation: floatShape 10s infinite alternate;
+        }
+        .shape-1 { width: 400px; height: 400px; background: var(--primary); top: -100px; left: -100px; }
+        .shape-2 { width: 300px; height: 300px; background: var(--secondary); bottom: 100px; right: -50px; animation-delay: 2s; }
+        .shape-3 { width: 200px; height: 200px; background: var(--accent); top: 40%; left: 50%; transform: translate(-50%, -50%); opacity: 0.2; }
+
+        @keyframes floatShape {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(30px, 50px); }
         }
 
-        .hero-content { max-width: 600px; z-index: 1; }
-        .hero h1 { font-size: 2.8rem; line-height: 1.2; margin-bottom: 20px; }
-        .hero span { color: var(--secondary); }
-        .hero p { color: var(--text-muted); margin-bottom: 30px; font-size: 1rem; }
-        
-        .hero-img {
-            width: 45%;
-            animation: float 6s ease-in-out infinite;
-            text-align: center;
+        .hero-content { flex: 1; padding-right: 50px; z-index: 2; }
+        .hero-title {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            line-height: 1.1;
+            letter-spacing: -1px;
         }
+        .hero-title span {
+            background: var(--gradient-main);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero-desc {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-bottom: 40px;
+            max-width: 600px;
+            line-height: 1.8;
+        }
+        .hero-stats {
+            display: flex;
+            gap: 40px;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        .stat-item h3 { font-size: 2rem; color: white; margin-bottom: 5px; }
+        .stat-item p { color: var(--text-muted); font-size: 0.9rem; }
+
+        .hero-visual { flex: 1; position: relative; height: 500px; display: flex; justify-content: center; align-items: center; }
         
-        @keyframes float {
-            0% { transform: translateY(0px); }
+        /* 3D Floating Elements */
+        .floating-card {
+            position: absolute;
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(20px);
+            border: var(--glass-border);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: var(--shadow-float);
+            animation: floatCard 6s ease-in-out infinite;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .fc-1 { top: 10%; left: 0; animation-delay: 0s; }
+        .fc-2 { bottom: 15%; right: 0; animation-delay: 2s; }
+        .fc-3 { top: 40%; right: -20px; animation-delay: 1s; }
+
+        .fc-icon {
+            width: 50px; height: 50px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; color: white;
+        }
+
+        @keyframes floatCard {
+            0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-20px); }
-            100% { transform: translateY(0px); }
         }
 
-        /* --- LIBRARY SECTION --- */
-        .section-padding { padding: 60px 5%; } /* Giảm padding ngang cho mobile */
-        .section-title { text-align: center; margin-bottom: 40px; }
-        .section-title h2 { font-size: 2rem; margin-bottom: 10px; }
-        .section-title p { color: var(--text-muted); font-size: 0.9rem; }
+        /* =========================================
+           5. FEATURES SECTION (Bento Grid)
+           ========================================= */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 300px);
+            gap: 24px;
+        }
 
-        /* Toolbar */
-        .toolbar {
+        .bento-item {
+            background: var(--dark-lighter);
+            border-radius: 30px;
+            padding: 40px;
+            border: var(--glass-border);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .bento-item:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+            box-shadow: var(--shadow-glow);
+        }
+        .bento-item.large { grid-column: span 2; }
+        .bento-item.tall { grid-row: span 2; }
+
+        .bento-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            background: rgba(255,255,255,0.05);
+            width: 80px; height: 80px;
+            border-radius: 20px;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--primary);
+        }
+        .bento-content h3 { font-size: 1.5rem; margin-bottom: 10px; }
+        .bento-content p { color: var(--text-muted); }
+
+        /* =========================================
+           6. LIBRARY SECTION
+           ========================================= */
+        .library-toolbar {
             display: flex;
             justify-content: space-between;
             margin-bottom: 40px;
-            flex-wrap: wrap;
-            gap: 15px;
+            background: var(--dark-lighter);
+            padding: 10px;
+            border-radius: 20px;
+            border: var(--glass-border);
         }
-
-        .search-box {
-            background: var(--dark-light);
-            padding: 12px 20px; /* Tăng vùng chạm */
-            border-radius: 50px;
-            display: flex;
-            align-items: center;
-            border: 1px solid rgba(255,255,255,0.1);
+        .lib-search {
             flex: 1;
-            min-width: 280px; /* Đảm bảo không quá nhỏ */
-        }
-        .search-box input {
             background: transparent;
             border: none;
             color: white;
-            width: 100%;
+            padding: 15px;
+            font-size: 1rem;
             outline: none;
-            margin-left: 10px;
-            font-size: 16px; /* Font size 16px để iOS không zoom */
         }
-
-        .filters {
-            display: flex;
-            gap: 10px;
-            overflow-x: auto; /* Cho phép cuộn ngang nếu nhiều nút */
-            padding-bottom: 5px;
-            -webkit-overflow-scrolling: touch;
-            width: 100%; /* Mobile: full width */
-        }
-        
-        .filters::-webkit-scrollbar { display: none; } /* Ẩn scrollbar */
-
-        .filters button {
-            background: transparent;
-            border: 1px solid var(--text-muted);
+        .lib-filters { display: flex; gap: 10px; }
+        .lib-filter-btn {
+            padding: 10px 20px;
+            background: var(--dark);
+            border: 1px solid rgba(255,255,255,0.1);
             color: var(--text-muted);
-            padding: 8px 16px;
-            border-radius: 20px;
+            border-radius: 15px;
             cursor: pointer;
-            white-space: nowrap; /* Không xuống dòng chữ trong nút */
-            flex-shrink: 0;
-            font-size: 0.9rem;
+            transition: 0.3s;
         }
-        .filters button.active, .filters button:hover {
+        .lib-filter-btn.active, .lib-filter-btn:hover {
             background: var(--primary);
-            border-color: var(--primary);
             color: white;
+            border-color: var(--primary);
         }
 
-        /* Document Grid */
         .doc-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
         }
-
         .doc-card {
-            background: var(--dark-light);
-            border-radius: 20px;
-            padding: 20px;
+            background: var(--dark-lighter);
+            border-radius: 24px;
+            padding: 25px;
+            border: var(--glass-border);
+            transition: 0.3s;
             position: relative;
             overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.05);
-            transition: 0.3s;
-            display: flex;
-            flex-direction: column;
         }
+        .doc-card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
+            background: var(--gradient-main); transition: 0.3s;
+        }
+        .doc-card:hover { transform: translateY(-5px); background: #232d42; }
+        .doc-badge {
+            position: absolute; top: 20px; right: 20px;
+            background: rgba(108, 99, 255, 0.1); color: var(--primary);
+            padding: 5px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 700;
+        }
+        .doc-icon { font-size: 2.5rem; color: var(--secondary); margin-bottom: 20px; }
+        .doc-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; }
+        .doc-meta { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px; display: flex; gap: 10px; }
         
-        .badge {
-            position: absolute;
-            top: 15px; right: 15px;
-            padding: 4px 8px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 8px;
-            font-size: 0.75rem;
-            color: var(--secondary);
+        /* =========================================
+           7. TOOLS SECTION
+           ========================================= */
+        .tools-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 40px;
         }
-
-        .doc-icon {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-            color: var(--primary);
+        .gpa-tool {
+            background: linear-gradient(145deg, rgba(30,41,59,0.6), rgba(15,23,42,0.8));
+            padding: 40px; border-radius: 30px; border: var(--glass-border);
         }
-
-        .doc-info h3 { font-size: 1.1rem; margin-bottom: 8px; line-height: 1.4; }
-        .doc-info p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px; }
-        
-        .download-btn {
-            width: 100%;
-            padding: 12px; /* Tăng vùng chạm */
-            background: transparent;
-            border: 2px solid var(--primary);
-            color: white;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: 600;
-            margin-top: auto; /* Đẩy nút xuống đáy card */
-            font-size: 0.9rem;
+        .gpa-row {
+            display: grid; grid-template-columns: 2fr 1fr 40px; gap: 15px; margin-bottom: 15px;
+            background: rgba(255,255,255,0.03); padding: 10px; border-radius: 15px;
         }
-        .download-btn:active { background: rgba(108, 99, 255, 0.2); }
-
-        /* --- TOOLS SECTION REDESIGN --- */
-        .tools-container {
-            background: var(--dark-light);
-            padding: 25px;
-            border-radius: 20px;
+        .gpa-input {
+            background: transparent; border: none; color: white; outline: none; font-size: 1rem; width: 100%;
+        }
+        .gpa-result-box {
+            background: var(--dark); padding: 20px; border-radius: 20px; text-align: center; margin-top: 30px;
             border: 1px solid rgba(255,255,255,0.1);
-            max-width: 800px;
-            margin: 0 auto;
-            min-height: 400px;
         }
+        .gpa-score { font-size: 3rem; font-weight: 800; color: var(--primary); display: block; }
 
-        /* Tool Tabs */
-        .tool-tabs {
-            display: flex;
-            gap: 10px;
-            overflow-x: auto;
-            padding-bottom: 15px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            margin-bottom: 25px;
-            -webkit-overflow-scrolling: touch;
+        /* Pomodoro Preview */
+        .pomo-preview {
+            background: var(--dark-lighter); border-radius: 30px; padding: 30px;
+            text-align: center; border: 1px solid rgba(255,255,255,0.05);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
         }
-        .tool-tabs::-webkit-scrollbar { height: 4px; }
-        .tool-tabs::-webkit-scrollbar-thumb { background: var(--secondary); border-radius: 4px; }
+        .pomo-timer { font-size: 3.5rem; font-weight: 800; font-family: 'Space Grotesk'; color: var(--accent); margin: 20px 0; }
 
-        .tool-tab-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            padding: 10px 15px;
-            cursor: pointer;
-            white-space: nowrap;
-            font-weight: 600;
-            border-radius: 10px;
-            transition: 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        /* =========================================
+           8. TESTIMONIALS (NEW)
+           ========================================= */
+        .testimonial-slider {
+            display: flex; gap: 30px; overflow-x: auto; padding-bottom: 20px;
+            scroll-snap-type: x mandatory;
         }
-        .tool-tab-btn:hover { background: rgba(255,255,255,0.05); color: white; }
-        .tool-tab-btn.active { background: rgba(108, 99, 255, 0.2); color: var(--secondary); }
-
-        .tool-content { display: none; animation: fadeIn 0.3s; }
-        .tool-content.active { display: block; }
-
-        /* Common Tool Inputs */
-        .tool-input-group { margin-bottom: 15px; }
-        .tool-input-group label { display: block; margin-bottom: 5px; color: var(--text-muted); font-size: 0.9rem; }
-        
-        /* CẬP NHẬT CSS: Áp dụng style cho tất cả input trong tools-container */
-        .tools-container input, .tools-container textarea {
-            width: 100%;
-            padding: 12px;
-            background: rgba(0,0,0,0.2);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: white;
-            border-radius: 8px;
-            outline: none;
-            font-size: 16px;
+        .testimonial-card {
+            min-width: 350px; background: var(--dark-lighter); padding: 30px;
+            border-radius: 20px; border: var(--glass-border); scroll-snap-align: center;
         }
-        
-        .tool-result {
-            margin-top: 20px;
-            padding: 15px;
-            background: rgba(0,210,255,0.1);
-            border-radius: 10px;
-            text-align: center;
-            color: var(--secondary);
-            font-weight: 700;
-        }
+        .t-header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
+        .t-avatar { width: 50px; height: 50px; border-radius: 50%; background: #ccc; }
+        .t-name { font-weight: 700; display: block; }
+        .t-role { font-size: 0.8rem; color: var(--text-muted); }
+        .t-content { font-style: italic; color: #cbd5e1; }
 
-        /* GPA Tool Specifics */
-        .gpa-row { 
-            display: grid; 
-            grid-template-columns: 1fr 80px 40px; 
-            gap: 10px; 
-            margin-bottom: 10px; 
-            align-items: center; /* Căn giữa theo chiều dọc */
-        }
-        
-        /* Todo Tool Specifics */
-        .todo-item { display: flex; align-items: center; justify-content: space-between; padding: 10px; background: rgba(255,255,255,0.05); margin-bottom: 5px; border-radius: 8px; }
-        .todo-item.completed span { text-decoration: line-through; color: var(--text-muted); opacity: 0.6; }
-        .todo-checkbox { width: 20px; height: 20px; accent-color: var(--secondary); cursor: pointer; }
-
-        /* Breathing Tool */
-        .breath-circle {
-            width: 150px; height: 150px;
-            background: var(--gradient);
-            border-radius: 50%;
-            margin: 40px auto;
-            box-shadow: 0 0 30px var(--primary);
-            transition: transform 4s ease-in-out;
-        }
-        .breath-circle.inhale { transform: scale(1.5); }
-        .breath-circle.exhale { transform: scale(1); }
-        .breath-text { text-align: center; font-size: 1.5rem; font-weight: 700; min-height: 40px; }
-
-        /* --- FOOTER --- */
+        /* =========================================
+           9. FOOTER
+           ========================================= */
         footer {
-            background: #050911;
-            padding: 40px 5% calc(40px + var(--safe-bottom)) 5%;
-            text-align: center;
-            border-top: 1px solid rgba(255,255,255,0.05);
+            background: #020617; padding: 80px 0 30px; border-top: 1px solid rgba(255,255,255,0.05);
         }
-        .social-links { margin: 20px 0; }
-        .social-links a {
-            font-size: 1.8rem; /* Icon to hơn dễ bấm */
-            margin: 0 15px;
-            color: var(--text-muted);
-            display: inline-block;
-            padding: 10px;
-        }
-
-        /* --- WIDGETS --- */
-        .pomodoro-widget {
-            position: fixed;
-            bottom: calc(90px + var(--safe-bottom)); /* Tránh nút FAB */
-            right: 20px;
-            background: var(--dark-light);
-            padding: 20px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            border: 1px solid var(--secondary);
-            text-align: center;
-            z-index: 900;
-            width: 220px;
-            display: none;
-        }
-        .pomodoro-widget.active { display: block; animation: slideIn 0.3s; }
-        
-        .timer-controls button {
-            width: 40px; height: 40px; /* Touch target to hơn */
-            margin: 0 5px;
-            font-size: 1rem;
-            background: rgba(255,255,255,0.1);
-            border: none;
-            color: white;
-            border-radius: 50%;
-            cursor: pointer;
-        }
-        .timer-controls button:hover { background: var(--primary); }
-
-        .fab-btn {
-            position: fixed;
-            bottom: calc(20px + var(--safe-bottom)); 
-            right: 20px;
-            width: 56px; height: 56px;
-            background: var(--gradient);
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.5rem;
-            color: white;
-            cursor: pointer;
-            box-shadow: 0 5px 20px rgba(108, 99, 255, 0.5);
-            z-index: 901;
-            border: none;
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 60px; }
+        .footer-brand p { color: var(--text-muted); margin-top: 20px; max-width: 300px; }
+        .footer-col h4 { color: white; margin-bottom: 25px; font-size: 1.1rem; }
+        .footer-col ul li { margin-bottom: 15px; }
+        .footer-col a { color: var(--text-muted); font-size: 0.95rem; }
+        .footer-col a:hover { color: var(--primary); padding-left: 5px; }
+        .footer-bottom { 
+            text-align: center; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.05); 
+            color: var(--text-muted); font-size: 0.9rem;
         }
 
-        .toast {
-            position: fixed;
-            top: calc(80px + var(--safe-top)); 
-            right: -300px;
-            background: var(--dark-light);
-            border-left: 4px solid var(--secondary);
-            padding: 15px 20px;
-            border-radius: 8px;
-            color: white;
-            transition: 0.5s;
-            z-index: 2000;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            max-width: 90%;
+        /* --- RESPONSIVE --- */
+        @media (max-width: 1024px) {
+            .hero { padding-top: 150px; flex-direction: column; text-align: center; }
+            .hero-content { padding-right: 0; margin-bottom: 60px; }
+            .hero-title { font-size: 3rem; }
+            .hero-stats { justify-content: center; }
+            .bento-grid { grid-template-columns: 1fr; grid-template-rows: auto; }
+            .bento-item.large, .bento-item.tall { grid-column: span 1; grid-row: span 1; }
+            .tools-wrapper { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr 1fr; }
         }
 
-        /* --- CUSTOM MODAL --- */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(5px);
-            z-index: 2000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            visibility: hidden;
-            transition: 0.3s;
-        }
-        .modal-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-        .modal-box {
-            background: var(--dark-light);
-            padding: 30px;
-            border-radius: 20px;
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transform: scale(0.8);
-            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-        }
-        .modal-overlay.active .modal-box {
-            transform: scale(1);
-        }
-        .modal-icon {
-            font-size: 3rem;
-            color: var(--secondary);
-            margin-bottom: 20px;
-        }
-        .modal-box h3 { margin-bottom: 10px; font-size: 1.5rem; }
-        .modal-box p { color: var(--text-muted); margin-bottom: 25px; line-height: 1.5; }
-        .modal-actions {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-        }
-        .btn-modal {
-            padding: 10px 25px;
-            border-radius: 50px;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-            flex: 1;
-        }
-        .btn-modal.cancel {
-            background: transparent;
-            border: 1px solid var(--text-muted);
-            color: var(--text-muted);
-        }
-        .btn-modal.confirm {
-            background: var(--gradient);
-            color: white;
-            box-shadow: 0 4px 15px rgba(108, 99, 255, 0.3);
-        }
-
-        @keyframes slideIn { from {opacity:0; transform: translateY(20px);} to {opacity:1; transform: translateY(0);} }
-        @keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
-
-        /* --- RESPONSIVE QUERIES --- */
         @media (max-width: 768px) {
-            header { padding-right: 5%; padding-left: 5%; }
-            nav ul { display: none; } /* Ẩn nav desktop */
-            .mobile-menu-btn { display: block; } /* Hiện nút hamburger */
-            
-            .hero { flex-direction: column; text-align: center; justify-content: center; padding-top: 100px; }
-            .hero-content { margin-bottom: 40px; width: 100%; }
-            .hero h1 { font-size: 2.2rem; }
-            .hero-img { width: 70%; max-width: 300px; }
-            
-            .doc-grid { grid-template-columns: 1fr; } /* 1 cột trên mobile */
-            
-            .gpa-row { grid-template-columns: 1fr 70px 40px; }
+            header { top: 0; left: 0; transform: none; width: 100%; border-radius: 0; padding: 15px 20px; }
+            nav ul { display: none; }
+            .mobile-menu-btn { display: block; font-size: 1.5rem; cursor: pointer; }
+            .hero-title { font-size: 2.5rem; }
+            .toolbar { flex-direction: column; }
+            .footer-grid { grid-template-columns: 1fr; text-align: center; }
         }
     </style>
 </head>
 <body>
 
+    <!-- HEADER -->
     <header>
-        <a href="index.html" class="logo">
-            <i class="fas fa-graduation-cap"></i> Hub
-        </a>
+        <div class="logo" onclick="window.location.href='index.html'">
+            <i class="fas fa-graduation-cap"></i> HighSchool Hub
+        </div>
         
-        <!-- Desktop Nav -->
         <nav>
             <ul>
                 <li><a href="#home">Trang chủ</a></li>
+                <li><a href="#features">Tính năng</a></li>
                 <li><a href="#library">Tài liệu</a></li>
-                <li><a href="#tools">Tiện ích</a></li>
+                <li><a href="#tools">Công cụ</a></li>
                 <li><a href="#contact">Liên hệ</a></li>
             </ul>
         </nav>
-        
-        <div style="display: flex; align-items: center; gap: 15px;">
-            <div id="authArea">
-                <button class="btn-cta" onclick="window.location.href='login.html'">Đăng nhập</button>
-            </div>
-            <!-- Nút Hamburger cho Mobile -->
-            <div class="mobile-menu-btn" onclick="toggleMobileMenu()">
-                <i class="fas fa-bars"></i>
-            </div>
+
+        <div id="authArea">
+            <button class="btn btn-primary" onclick="window.location.href='login.html'">Đăng nhập</button>
         </div>
+        
+        <div class="mobile-menu-btn"><i class="fas fa-bars"></i></div>
     </header>
 
-    <!-- Mobile Navigation Overlay -->
-    <div class="mobile-nav-overlay" id="mobileNav">
-        <div style="position: absolute; top: 20px; right: 20px; font-size: 2rem; cursor: pointer;" onclick="toggleMobileMenu()">
-            <i class="fas fa-times"></i>
-        </div>
-        <a href="#home" onclick="toggleMobileMenu()">Trang chủ</a>
-        <a href="#library" onclick="toggleMobileMenu()">Tài liệu</a>
-        <a href="#tools" onclick="toggleMobileMenu()">Tiện ích</a>
-        <a href="#contact" onclick="toggleMobileMenu()">Liên hệ</a>
-    </div>
-
+    <!-- HERO SECTION -->
     <section class="hero" id="home">
-        <div class="hero-content">
-            <h1>Học Tập Không Giới Hạn <br> <span>Bứt Phá Điểm Số</span></h1>
-            <p>Kho tài liệu ôn thi THPT Quốc Gia, đề thi thử và bộ công cụ hỗ trợ học tập dành riêng cho Gen Z.</p>
-            <!-- ĐÃ SỬA: Chuyển hướng tới home.html -->
-            <button class="btn-cta" onclick="window.location.href='home.html'">Khám Phá Ngay</button>
-        </div>
-        <div class="hero-img">
-            <i class="fas fa-rocket" style="font-size: 10rem; color: var(--secondary); filter: drop-shadow(0 0 30px var(--primary));"></i>
-        </div>
-    </section>
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
 
-    <section class="section-padding" id="library">
-        <div class="section-title">
-            <h2>Kho Tài Liệu Chất</h2>
-            <p>Chọn lọc đề thi, lý thuyết từ các trường chuyên hàng đầu.</p>
-        </div>
+        <div class="container">
+            <div class="hero-content reveal active">
+                <div class="section-tag">🚀 Education Platform 4.0</div>
+                <h1 class="hero-title">Học Tập Thông Minh <br> <span>Chinh Phục Tương Lai</span></h1>
+                <p class="hero-desc">Kho tài liệu khổng lồ, công cụ tính điểm chuẩn xác và cộng đồng học tập sôi động. Tất cả những gì bạn cần cho kỳ thi THPT Quốc Gia đều có tại đây.</p>
+                
+                <div style="display: flex; gap: 15px; justify-content: flex-start; flex-wrap: wrap;">
+                    <button class="btn btn-primary" onclick="window.location.href='home.html'">Khám Phá Ngay <i class="fas fa-arrow-right"></i></button>
+                    <button class="btn btn-outline" onclick="document.getElementById('library').scrollIntoView()">Tìm Tài Liệu</button>
+                </div>
 
-        <div class="toolbar">
-            <div class="search-box">
-                <i class="fas fa-search"></i>
-                <input type="text" id="searchInput" placeholder="Tìm kiếm tài liệu...">
-            </div>
-            <div class="filters">
-                <button class="filter-btn active" data-filter="all">Tất cả</button>
-                <button class="filter-btn" data-filter="12">Lớp 12</button>
-                <button class="filter-btn" data-filter="11">Lớp 11</button>
-                <button class="filter-btn" data-filter="10">Lớp 10</button>
-            </div>
-        </div>
-
-        <div class="doc-grid" id="docContainer">
-            <!-- Documents will be rendered here -->
-        </div>
-    </section>
-
-    <section class="section-padding" id="tools" style="background: rgba(0,0,0,0.2);">
-        <div class="section-title">
-            <h2>Góc Tiện Ích</h2>
-            <p>Bộ công cụ 6-trong-1 giúp bạn tối ưu hóa việc học.</p>
-        </div>
-
-        <div class="tools-container">
-            <!-- Tool Tabs Navigation -->
-            <div class="tool-tabs">
-                <button class="tool-tab-btn active" onclick="switchTool('gpa')"><i class="fas fa-calculator"></i> Tính GPA</button>
-                <button class="tool-tab-btn" onclick="switchTool('target')"><i class="fas fa-bullseye"></i> Điểm Mục Tiêu</button>
-                <button class="tool-tab-btn" onclick="switchTool('todo')"><i class="fas fa-list-check"></i> To-Do List</button>
-                <button class="tool-tab-btn" onclick="switchTool('countdown')"><i class="fas fa-hourglass-half"></i> Đếm Ngược</button>
-                <button class="tool-tab-btn" onclick="switchTool('note')"><i class="fas fa-sticky-note"></i> Ghi Chú</button>
-                <button class="tool-tab-btn" onclick="switchTool('breath')"><i class="fas fa-spa"></i> Thư Giãn</button>
-            </div>
-
-            <!-- 1. GPA Calculator -->
-            <div id="tool-gpa" class="tool-content active">
-                <div id="gpaRows">
-                    <div class="gpa-row">
-                        <input type="text" placeholder="Môn (VD: Toán)" value="Toán">
-                        <input type="number" class="score-input" placeholder="Điểm" max="10" min="0">
-                        <button class="btn-remove" onclick="removeRow(this)"><i class="fas fa-times"></i></button>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <h3>10K+</h3>
+                        <p>Học viên</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3>500+</h3>
+                        <p>Đề thi thử</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3>4.9/5</h3>
+                        <p>Đánh giá</p>
                     </div>
                 </div>
-                <div style="margin-top: 20px; display: flex; gap: 10px;">
-                    <button class="btn-cta" onclick="addSubjectRow()" style="background: var(--dark); border: 1px solid var(--primary); flex: 1;">+ Thêm</button>
-                    <button class="btn-cta" onclick="calculateGPA()" style="flex: 2;">Tính Ngay</button>
-                </div>
-                <div class="gpa-result">GPA: <span id="gpaValue">0.0</span></div>
             </div>
 
-            <!-- 2. Target Score Calculator -->
-            <div id="tool-target" class="tool-content">
-                <div class="tool-input-group">
-                    <label>Điểm trung bình hiện tại:</label>
-                    <input type="number" id="currentAvg" placeholder="VD: 7.5">
+            <div class="hero-visual reveal active">
+                <!-- Icon bay lơ lửng -->
+                <div class="floating-card fc-1">
+                    <div class="fc-icon" style="background: #FF2E63;"><i class="fas fa-calculator"></i></div>
+                    <div>
+                        <h4>Toán 12</h4>
+                        <p style="font-size:0.8rem; color:#ccc">Đã học 85%</p>
+                    </div>
                 </div>
-                <div class="tool-input-group">
-                    <label>Điểm trung bình mong muốn:</label>
-                    <input type="number" id="desiredAvg" placeholder="VD: 8.0">
+                
+                <div class="floating-card fc-2">
+                    <div class="fc-icon" style="background: #00D2FF;"><i class="fas fa-atom"></i></div>
+                    <div>
+                        <h4>Vật Lý</h4>
+                        <p style="font-size:0.8rem; color:#ccc">Luyện đề</p>
+                    </div>
                 </div>
-                <div class="tool-input-group">
-                    <label>Trọng số bài thi cuối kỳ (0.1 - 1.0):</label>
-                    <input type="number" id="finalWeight" placeholder="VD: 0.3 (30%)">
+                
+                <div class="main-hero-img">
+                    <i class="fas fa-rocket" style="background: var(--gradient-main); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
                 </div>
-                <button class="btn-cta" style="width: 100%;" onclick="calcTargetScore()">Tính Điểm Cần Thi</button>
-                <div id="targetResult" class="tool-result" style="display: none;"></div>
             </div>
-
-            <!-- 3. To-Do List -->
-            <div id="tool-todo" class="tool-content">
-                <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-                    <input type="text" id="todoInput" placeholder="Thêm bài tập cần làm..." style="flex: 1; padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2); color: white;">
-                    <button class="btn-cta" onclick="addTodo()">Thêm</button>
-                </div>
-                <div id="todoList"></div>
-            </div>
-
-            <!-- 4. Countdown -->
-            <div id="tool-countdown" class="tool-content">
-                <div class="tool-input-group">
-                    <label>Chọn ngày thi quan trọng:</label>
-                    <input type="date" id="examDate" onchange="saveDate()">
-                </div>
-                <div id="countdownDisplay" style="font-size: 3rem; text-align: center; color: var(--secondary); font-weight: 800; margin-top: 30px;">
-                    00 : 00 : 00
-                </div>
-                <p style="text-align: center; color: var(--text-muted);">đến ngày thi!</p>
-            </div>
-
-            <!-- 5. Quick Notes -->
-            <div id="tool-note" class="tool-content">
-                <textarea id="quickNoteArea" rows="10" placeholder="Viết nháp ý tưởng, công thức..." oninput="saveNote()"></textarea>
-                <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 5px;">*Tự động lưu vào trình duyệt</p>
-            </div>
-
-            <!-- 6. Breathing -->
-            <div id="tool-breath" class="tool-content" style="text-align: center;">
-                <p style="margin-bottom: 20px;">Bài tập thở 4-7-8 giúp giảm căng thẳng</p>
-                <div class="breath-circle" id="breathCircle"></div>
-                <div class="breath-text" id="breathText">Sẵn sàng?</div>
-                <button class="btn-cta" onclick="toggleBreathing()" id="btnBreath">Bắt đầu</button>
-            </div>
-
         </div>
     </section>
 
-    <footer id="contact">
-        <div class="logo" style="justify-content: center; margin-bottom: 20px;">
-            <i class="fas fa-graduation-cap"></i> Hub
-        </div>
-        <p style="color: var(--text-muted);">Đồng hành cùng học sinh Việt Nam chinh phục cánh cổng đại học.</p>
-        <div class="social-links">
-            <a href="#"><i class="fab fa-facebook"></i></a>
-            <a href="#"><i class="fab fa-youtube"></i></a>
-            <a href="#"><i class="fab fa-tiktok"></i></a>
-        </div>
-        <p style="font-size: 0.8rem; color: #555;">© 2025 HighSchool Hub. All rights reserved.</p>
-    </footer>
+    <!-- FEATURES SECTION (BENTO GRID) -->
+    <section class="section-padding" id="features">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-tag">Tính Năng Nổi Bật</span>
+                <h2>Hệ Sinh Thái Toàn Diện</h2>
+                <p>Không chỉ là kho tài liệu, chúng tôi cung cấp bộ công cụ hỗ trợ đắc lực cho việc học của bạn.</p>
+            </div>
 
-    <button class="fab-btn" onclick="togglePomodoro()"><i class="fas fa-clock"></i></button>
-    
-    <div class="pomodoro-widget" id="pomodoro">
-        <h4>Pomodoro Focus</h4>
-        <div class="timer-display" id="timer">25:00</div>
-        <div class="timer-controls">
-            <button onclick="startTimer()"><i class="fas fa-play"></i></button>
-            <button onclick="pauseTimer()"><i class="fas fa-pause"></i></button>
-            <button onclick="resetTimer()"><i class="fas fa-redo"></i></button>
-        </div>
-    </div>
-
-    <!-- NOTIFICATION TOAST (Success message) -->
-    <div class="toast" id="toast">
-        <i class="fas fa-info-circle"></i>
-        <span id="toastMsg">Đang tải xuống tài liệu...</span>
-    </div>
-
-    <!-- CUSTOM LOGIN MODAL -->
-    <div class="modal-overlay" id="loginModal">
-        <div class="modal-box">
-            <div class="modal-icon"><i class="fas fa-lock"></i></div>
-            <h3>Yêu cầu đăng nhập</h3>
-            <p>Bạn cần đăng nhập tài khoản để tải tài liệu miễn phí và sử dụng đầy đủ tính năng.</p>
-            <div class="modal-actions">
-                <button class="btn-modal cancel" onclick="closeLoginModal()">Để sau</button>
-                <button class="btn-modal confirm" onclick="window.location.href='login.html'">Đăng nhập ngay</button>
+            <div class="bento-grid reveal">
+                <div class="bento-item large">
+                    <div class="bento-content">
+                        <h3>Kho Tài Liệu Khổng Lồ</h3>
+                        <p>Hơn 1000+ đề thi, giáo án, sách tham khảo từ các trường chuyên.</p>
+                        <button class="btn btn-white" style="margin-top: 20px;">Truy cập ngay</button>
+                    </div>
+                    <div class="bento-icon"><i class="fas fa-folder-open"></i></div>
+                </div>
+                <div class="bento-item">
+                    <div class="bento-icon"><i class="fas fa-file-signature"></i></div>
+                    <div class="bento-content">
+                        <h3>Thi Thử Online</h3>
+                        <p>Làm bài thi trắc nghiệm có tính giờ và chấm điểm tự động.</p>
+                    </div>
+                </div>
+                <div class="bento-item">
+                    <div class="bento-icon"><i class="fas fa-users"></i></div>
+                    <div class="bento-content">
+                        <h3>Tìm Bạn Học</h3>
+                        <p>Kết nối với bạn bè cùng chí hướng để cùng nhau tiến bộ.</p>
+                    </div>
+                </div>
+                <div class="bento-item large">
+                    <div class="bento-content">
+                        <h3>Công Cụ Hỗ Trợ</h3>
+                        <p>Tính điểm GPA, Pomodoro, Đếm ngược ngày thi và nhiều hơn nữa.</p>
+                    </div>
+                    <div class="bento-icon"><i class="fas fa-tools"></i></div>
+                </div>
             </div>
         </div>
-    </div>
+    </section>
 
-    <!-- FIREBASE LOGIC & MAIN SCRIPT -->
+    <!-- LIBRARY SECTION -->
+    <section class="section-padding" id="library" style="background: #0b1121;">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-tag">Tài Liệu Mới Nhất</span>
+                <h2>Cập Nhật Liên Tục</h2>
+            </div>
+
+            <div class="library-toolbar reveal">
+                <input type="text" class="lib-search" id="searchInput" placeholder="Nhập tên tài liệu, môn học...">
+                <div class="lib-filters">
+                    <button class="lib-filter-btn active" data-filter="all">Tất cả</button>
+                    <button class="lib-filter-btn" data-filter="12">Lớp 12</button>
+                    <button class="lib-filter-btn" data-filter="11">Lớp 11</button>
+                </div>
+            </div>
+
+            <div class="doc-grid" id="docContainer">
+                <!-- Docs JS Rendered -->
+            </div>
+            
+            <div class="text-center mt-5" style="margin-top: 50px;">
+                <button class="btn btn-outline">Xem Tất Cả Tài Liệu</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- TOOLS SECTION -->
+    <section class="section-padding" id="tools">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-tag">Góc Công Cụ</span>
+                <h2>Tiện Ích Học Tập</h2>
+            </div>
+
+            <div class="tools-wrapper reveal">
+                <!-- GPA Tool -->
+                <div class="gpa-tool">
+                    <h3 style="margin-bottom: 20px;"><i class="fas fa-calculator"></i> Tính Điểm GPA</h3>
+                    <div id="gpaRows">
+                        <div class="gpa-row">
+                            <input type="text" placeholder="Môn (VD: Toán)" value="Toán">
+                            <input type="number" class="score-input" placeholder="Điểm">
+                            <button class="btn-remove"><i class="fas fa-times"></i></button>
+                        </div>
+                        <div class="gpa-row">
+                            <input type="text" placeholder="Môn" value="Văn">
+                            <input type="number" class="score-input" placeholder="Điểm">
+                            <button class="btn-remove"><i class="fas fa-times"></i></button>
+                        </div>
+                    </div>
+                    <div style="text-align: center; margin-top: 15px;">
+                        <button class="btn btn-white" style="padding: 8px 20px; font-size: 0.9rem;" onclick="addSubjectRow()">+ Thêm môn</button>
+                    </div>
+                    <div class="gpa-result-box">
+                        <span style="color: var(--text-muted);">Trung bình môn:</span>
+                        <span class="gpa-score" id="gpaValue">0.0</span>
+                        <button class="btn btn-primary" style="width: 100%; margin-top: 10px;" onclick="calculateGPA()">Tính Ngay</button>
+                    </div>
+                </div>
+
+                <!-- Pomodoro Preview -->
+                <div class="pomo-preview">
+                    <h3><i class="fas fa-clock"></i> Pomodoro</h3>
+                    <p style="color:var(--text-muted);">Phương pháp tập trung</p>
+                    <div class="pomo-timer">25:00</div>
+                    <button class="btn btn-outline" onclick="startTimer()">Bắt Đầu</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section class="section-padding" style="background: #0b1121;">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-tag">Cảm Nhận</span>
+                <h2>Học Sinh Nói Gì?</h2>
+            </div>
+            
+            <div class="testimonial-slider reveal">
+                <div class="testimonial-card">
+                    <div class="t-header">
+                        <img src="https://i.pravatar.cc/150?img=1" class="t-avatar">
+                        <div>
+                            <span class="t-name">Nguyễn Văn A</span>
+                            <span class="t-role">THPT Chuyên Lê Hồng Phong</span>
+                        </div>
+                    </div>
+                    <p class="t-content">"Website rất hữu ích, nhờ kho đề thi thử mà mình đã tự tin hơn rất nhiều trong kỳ thi vừa qua. Cảm ơn đội ngũ phát triển!"</p>
+                </div>
+                <div class="testimonial-card">
+                    <div class="t-header">
+                        <img src="https://i.pravatar.cc/150?img=5" class="t-avatar">
+                        <div>
+                            <span class="t-name">Trần Thị B</span>
+                            <span class="t-role">THPT Nguyễn Thượng Hiền</span>
+                        </div>
+                    </div>
+                    <p class="t-content">"Giao diện đẹp, dễ sử dụng. Tính năng Pomodoro giúp mình tập trung học bài hơn hẳn. Rất recommend cho các bạn 2k7."</p>
+                </div>
+                <div class="testimonial-card">
+                    <div class="t-header">
+                        <img src="https://i.pravatar.cc/150?img=3" class="t-avatar">
+                        <div>
+                            <span class="t-name">Lê Hoàng C</span>
+                            <span class="t-role">THPT Marie Curie</span>
+                        </div>
+                    </div>
+                    <p class="t-content">"Tính năng tính điểm GPA cực tiện lợi. Mong web sẽ phát triển thêm nhiều tính năng hay ho nữa."</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer id="contact">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="logo"><i class="fas fa-graduation-cap"></i> HighSchool Hub</div>
+                    <p>Nền tảng học tập toàn diện dành cho học sinh phổ thông Việt Nam. Kết nối, chia sẻ và cùng nhau tiến bộ.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Khám Phá</h4>
+                    <ul>
+                        <li><a href="#home">Trang chủ</a></li>
+                        <li><a href="#library">Tài liệu</a></li>
+                        <li><a href="#tools">Công cụ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Hỗ Trợ</h4>
+                    <ul>
+                        <li><a href="faq.html">Câu hỏi thường gặp</a></li>
+                        <li><a href="dieu-khoan-su-dung.html">Điều khoản sử dụng</a></li>
+                        <li><a href="chinh-sach-bao-mat.html">Chính sách bảo mật</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Kết Nối</h4>
+                    <div class="social-links" style="margin: 0;">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-tiktok"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                    <p style="margin-top: 15px; color: var(--text-muted);">Email: contact@hubschool.vn</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                © 2025 HighSchool Hub. Designed with <i class="fas fa-heart" style="color: var(--accent);"></i> by YourTeam.
+            </div>
+        </div>
+    </footer>
+
+    <!-- FIREBASE & LOGIC -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         
-        // --- CẤU HÌNH FIREBASE ---
         const firebaseConfig = {
             apiKey: "AIzaSyDFzSBZjJS5RvCL9Ax7xRrk6q_WsNGkh_s",
             authDomain: "hubschoolvn-db841.firebaseapp.com",
@@ -789,21 +882,16 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        let currentUser = null;
 
-        // 1. Auth Listener
+        // Auth State Listener
         onAuthStateChanged(auth, async (user) => {
             const authArea = document.getElementById('authArea');
             if (user) {
-                currentUser = user;
                 let displayName = user.email.split('@')[0];
                 try {
-                    const docRef = doc(db, "users", user.uid);
-                    const docSnap = await getDoc(docRef);
-                    if (docSnap.exists()) {
-                        displayName = docSnap.data().fullname.split(' ').pop();
-                    }
-                } catch(e) { console.error(e); }
+                    const snap = await getDoc(doc(db, "users", user.uid));
+                    if (snap.exists()) displayName = snap.data().fullname;
+                } catch(e) {}
 
                 authArea.innerHTML = `
                     <div class="user-info">
@@ -811,243 +899,50 @@
                         <button class="btn-logout" id="btnLogout"><i class="fas fa-sign-out-alt"></i></button>
                     </div>
                 `;
-                document.getElementById('btnLogout').addEventListener('click', () => {
-                    signOut(auth).then(() => window.location.reload());
-                });
+                document.getElementById('btnLogout').addEventListener('click', () => signOut(auth).then(() => window.location.reload()));
             } else {
-                currentUser = null;
-                authArea.innerHTML = `<button class="btn-cta" onclick="window.location.href='login.html'">Đăng nhập</button>`;
+                authArea.innerHTML = `<button class="btn btn-primary" onclick="window.location.href='login.html'">Đăng nhập</button>`;
             }
         });
 
-        // 2. Mobile Menu
-        window.toggleMobileMenu = () => {
-            document.getElementById('mobileNav').classList.toggle('active');
-        }
-
-        // 3. Modal Logic
-        window.openLoginModal = () => {
-            document.getElementById('loginModal').classList.add('active');
-        }
+        // --- JS LOGIC (Mock Data & Interactions) ---
         
-        window.closeLoginModal = () => {
-            document.getElementById('loginModal').classList.remove('active');
-        }
-
-        // 4. Download Logic (Updated to use Modal)
-        window.simulateDownload = (title) => {
-            if (!currentUser) {
-                // Show custom modal instead of window.confirm
-                openLoginModal();
-                return;
-            }
-            const toast = document.getElementById('toast');
-            document.getElementById('toastMsg').innerText = `Đang tải: ${title}...`;
-            toast.style.right = "20px";
-            setTimeout(() => {
-                toast.style.background = "#00c853";
-                document.getElementById('toastMsg').innerText = "Tải thành công!";
-                setTimeout(() => {
-                    toast.style.right = "-300px";
-                    setTimeout(() => { 
-                        toast.style.background = "var(--dark-light)"; 
-                        toast.style.borderLeft = "4px solid var(--secondary)";
-                    }, 500);
-                }, 2000);
-            }, 1500);
-        }
-
-        // 5. --- TOOLS LOGIC ---
-        
-        // Tab Switching
-        window.switchTool = (toolId) => {
-            document.querySelectorAll('.tool-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.tool-tab-btn').forEach(el => el.classList.remove('active'));
-            
-            document.getElementById(`tool-${toolId}`).classList.add('active');
-            event.currentTarget.classList.add('active');
-        }
-
-        // GPA Logic
-        window.addSubjectRow = () => {
-            const div = document.createElement('div');
-            div.className = 'gpa-row';
-            div.innerHTML = `
-                <input type="text" placeholder="Môn (VD: Toán)" value="Toán">
-                <input type="number" class="score-input" placeholder="Điểm" max="10" min="0">
-                <button class="btn-remove" onclick="removeRow(this)"><i class="fas fa-times"></i></button>
-            `;
-            document.getElementById('gpaRows').appendChild(div);
-        }
-        window.removeRow = (btn) => btn.parentElement.remove();
-        window.calculateGPA = () => {
-            const inputs = document.querySelectorAll('.score-input');
-            let total = 0, count = 0;
-            inputs.forEach(inp => {
-                const v = parseFloat(inp.value);
-                if (!isNaN(v)) { total += v; count++; }
-            });
-            const gpa = count ? (total/count).toFixed(2) : "0.0";
-            const d = document.getElementById('gpaValue');
-            d.innerText = gpa;
-            d.style.color = gpa >= 8 ? "#00c853" : (gpa >= 5 ? "#ffd600" : "#ff4757");
-        }
-
-        // Target Score Logic
-        window.calcTargetScore = () => {
-            const curr = parseFloat(document.getElementById('currentAvg').value);
-            const target = parseFloat(document.getElementById('desiredAvg').value);
-            const weight = parseFloat(document.getElementById('finalWeight').value);
-            const res = document.getElementById('targetResult');
-            
-            if(!curr || !target || !weight) {
-                res.innerText = "Vui lòng nhập đủ thông tin!";
-                res.style.display = 'block'; return;
-            }
-            
-            // Formula: Target = (Current * (1-W)) + (Final * W)
-            // => Final = (Target - (Current * (1-W))) / W
-            const required = (target - (curr * (1 - weight))) / weight;
-            
-            res.style.display = 'block';
-            res.innerText = `Bạn cần thi đạt: ${required.toFixed(2)} điểm`;
-            res.style.color = required > 10 ? '#ff4757' : '#00c853';
-            if(required > 10) res.innerText += " (Khó quá bỏ qua!)";
-        }
-
-        // To-Do Logic
-        const todoList = document.getElementById('todoList');
-        // Load from storage
-        const savedTodos = JSON.parse(localStorage.getItem('hubTodos')) || [];
-        const renderTodos = () => {
-            todoList.innerHTML = '';
-            savedTodos.forEach((todo, idx) => {
-                const div = document.createElement('div');
-                div.className = `todo-item ${todo.done ? 'completed' : ''}`;
-                div.innerHTML = `
-                    <div style="display:flex; align-items:center; gap:10px;">
-                        <input type="checkbox" class="todo-checkbox" ${todo.done ? 'checked' : ''} onclick="toggleTodo(${idx})">
-                        <span>${todo.text}</span>
-                    </div>
-                    <button class="btn-remove" style="width:30px; height:30px;" onclick="deleteTodo(${idx})"><i class="fas fa-trash"></i></button>
-                `;
-                todoList.appendChild(div);
-            });
-            localStorage.setItem('hubTodos', JSON.stringify(savedTodos));
-        }
-        window.addTodo = () => {
-            const inp = document.getElementById('todoInput');
-            if(inp.value.trim()) {
-                savedTodos.push({ text: inp.value, done: false });
-                inp.value = '';
-                renderTodos();
-            }
-        }
-        window.toggleTodo = (idx) => { savedTodos[idx].done = !savedTodos[idx].done; renderTodos(); }
-        window.deleteTodo = (idx) => { savedTodos.splice(idx, 1); renderTodos(); }
-        renderTodos(); // Init load
-
-        // Countdown Logic
-        let countdownInt;
-        const examDateInp = document.getElementById('examDate');
-        if(localStorage.getItem('examDate')) {
-            examDateInp.value = localStorage.getItem('examDate');
-            startCountdown();
-        }
-        window.saveDate = () => {
-            localStorage.setItem('examDate', examDateInp.value);
-            startCountdown();
-        }
-        function startCountdown() {
-            clearInterval(countdownInt);
-            const target = new Date(examDateInp.value).getTime();
-            const display = document.getElementById('countdownDisplay');
-            
-            countdownInt = setInterval(() => {
-                const now = new Date().getTime();
-                const dist = target - now;
-                
-                if (dist < 0) {
-                    display.innerText = "Đã đến ngày thi!";
-                    return;
+        // 1. Scroll Animation
+        const revealElements = document.querySelectorAll('.reveal');
+        const revealOnScroll = () => {
+            const windowHeight = window.innerHeight;
+            const elementVisible = 150;
+            revealElements.forEach((reveal) => {
+                const elementTop = reveal.getBoundingClientRect().top;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveal.classList.add("active");
                 }
-                
-                const days = Math.floor(dist / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((dist % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((dist % (1000 * 60 * 60)) / (1000 * 60));
-                
-                display.innerText = `${days} Ngày ${hours} Giờ`;
-            }, 1000);
-        }
+            });
+        };
+        window.addEventListener("scroll", revealOnScroll);
 
-        // Quick Note Logic
-        const noteArea = document.getElementById('quickNoteArea');
-        if(localStorage.getItem('quickNote')) noteArea.value = localStorage.getItem('quickNote');
-        window.saveNote = () => localStorage.setItem('quickNote', noteArea.value);
-
-        // Breathing Logic
-        let breathing = false;
-        window.toggleBreathing = () => {
-            breathing = !breathing;
-            const btn = document.getElementById('btnBreath');
-            const circle = document.getElementById('breathCircle');
-            const text = document.getElementById('breathText');
-            
-            if(breathing) {
-                btn.innerText = "Dừng lại";
-                btn.style.background = "#ff4757";
-                runBreathCycle(circle, text);
-            } else {
-                btn.innerText = "Bắt đầu";
-                btn.style.background = "var(--gradient)";
-                circle.className = "breath-circle"; // Reset
-                text.innerText = "Sẵn sàng?";
-                clearTimeout(window.breathTimeout);
-            }
-        }
-        
-        function runBreathCycle(circle, text) {
-            if(!breathing) return;
-            text.innerText = "Hít vào... (4s)";
-            circle.className = "breath-circle inhale";
-            
-            window.breathTimeout = setTimeout(() => {
-                if(!breathing) return;
-                text.innerText = "Giữ hơi... (7s)";
-                
-                window.breathTimeout = setTimeout(() => {
-                    if(!breathing) return;
-                    text.innerText = "Thở ra... (8s)";
-                    circle.className = "breath-circle exhale";
-                    
-                    window.breathTimeout = setTimeout(() => {
-                        runBreathCycle(circle, text); // Loop
-                    }, 8000);
-                }, 7000);
-            }, 4000);
-        }
-
-        // --- OLD LOGIC (Pomodoro, Search...) ---
+        // 2. Library Render
         const documents = [
-            { id: 1, title: "Công thức Toán 12", subject: "Toán", grade: "12", type: "PDF", views: 1200 },
-            { id: 2, title: "Đề thi Lý 2025", subject: "Vật Lý", grade: "12", type: "DOCX", views: 850 },
-            { id: 3, title: "Ngữ pháp Anh cơ bản", subject: "Tiếng Anh", grade: "10", type: "PDF", views: 2000 },
-            { id: 4, title: "Mindmap Sử 11", subject: "Lịch Sử", grade: "11", type: "IMG", views: 500 },
-            { id: 5, title: "Hóa hữu cơ - Chuyên đề", subject: "Hóa Học", grade: "12", type: "PDF", views: 900 },
-            { id: 6, title: "Hình học không gian", subject: "Toán", grade: "11", type: "PDF", views: 600 },
+            { title: "Tổng hợp công thức Toán 12", subject: "Toán", grade: "12", type: "PDF", views: 1200 },
+            { title: "Đề thi thử THPTQG Vật Lý 2025", subject: "Vật Lý", grade: "12", type: "DOCX", views: 850 },
+            { title: "Ngữ pháp Tiếng Anh cơ bản", subject: "Tiếng Anh", grade: "10", type: "PDF", views: 2000 },
+            { title: "Sơ đồ tư duy Lịch Sử 11", subject: "Lịch Sử", grade: "11", type: "IMG", views: 500 },
         ];
-        const container = document.getElementById('docContainer');
-        const searchInput = document.getElementById('searchInput');
-        const filterBtns = document.querySelectorAll('.filter-btn');
 
-        function renderDocs(data) {
-            container.innerHTML = '';
+        const docContainer = document.getElementById('docContainer');
+        const renderDocs = (data) => {
+            docContainer.innerHTML = '';
             data.forEach(doc => {
-                const card = document.createElement('div');
-                card.className = 'doc-card';
-                card.innerHTML = `
+                let icon = 'fa-book';
+                if(doc.subject.includes('Toán')) icon = 'fa-square-root-alt';
+                if(doc.subject.includes('Lý')) icon = 'fa-atom';
+                if(doc.subject.includes('Anh')) icon = 'fa-language';
+
+                const div = document.createElement('div');
+                div.className = 'doc-card';
+                div.innerHTML = `
                     <div class="badge">Lớp ${doc.grade}</div>
-                    <div class="doc-icon"><i class="fas ${getIcon(doc.subject)}"></i></div>
+                    <div class="doc-icon"><i class="fas ${icon}"></i></div>
                     <div class="doc-info">
                         <h3>${doc.title}</h3>
                         <p>${doc.subject} • ${doc.type} • <i class="fas fa-eye"></i> ${doc.views}</p>
@@ -1056,55 +951,61 @@
                         <i class="fas fa-download"></i> Tải Ngay
                     </button>
                 `;
-                container.appendChild(card);
+                docContainer.appendChild(div);
             });
-        }
-        function getIcon(subject) {
-            if(subject.includes("Toán")) return "fa-square-root-alt";
-            if(subject.includes("Lý")) return "fa-atom";
-            if(subject.includes("Hóa")) return "fa-flask";
-            if(subject.includes("Anh")) return "fa-language";
-            return "fa-book";
-        }
+        };
         renderDocs(documents);
-        filterBtns.forEach(btn => {
+
+        // Filter Logic
+        document.querySelectorAll('.filter-btn').forEach(btn => {
             btn.addEventListener('click', () => {
-                document.querySelector('.filter-btn.active').classList.remove('active');
+                document.querySelector('.filters .active').classList.remove('active');
                 btn.classList.add('active');
-                const filterValue = btn.getAttribute('data-filter');
-                if (filterValue === 'all') renderDocs(documents);
-                else renderDocs(documents.filter(doc => doc.grade === filterValue));
+                const filter = btn.getAttribute('data-filter');
+                if (filter === 'all') renderDocs(documents);
+                else renderDocs(documents.filter(d => d.grade === filter));
             });
         });
-        searchInput.addEventListener('input', (e) => {
-            const keyword = e.target.value.toLowerCase();
-            renderDocs(documents.filter(doc => doc.title.toLowerCase().includes(keyword) || doc.subject.toLowerCase().includes(keyword)));
+        
+        // Search Logic
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const val = e.target.value.toLowerCase();
+            renderDocs(documents.filter(d => d.title.toLowerCase().includes(val)));
         });
 
-        // Pomodoro (Simple)
-        let timerInterval;
-        let timeLeft = 1500;
-        let isRunning = false;
-        window.togglePomodoro = () => {
-            const w = document.getElementById('pomodoro');
-            w.style.display = w.style.display === 'block' ? 'none' : 'block';
-            w.classList.add('active');
-        }
-        function updateDisplay() {
-            const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
-            const s = (timeLeft % 60).toString().padStart(2, '0');
-            document.getElementById('timer').innerText = `${m}:${s}`;
-        }
-        window.startTimer = () => {
-            if (isRunning) return;
-            isRunning = true;
-            timerInterval = setInterval(() => {
-                if (timeLeft > 0) { timeLeft--; updateDisplay(); }
-                else { clearInterval(timerInterval); alert("Hết giờ!"); resetTimer(); }
-            }, 1000);
-        }
-        window.pauseTimer = () => { clearInterval(timerInterval); isRunning = false; }
-        window.resetTimer = () => { window.pauseTimer(); timeLeft = 1500; updateDisplay(); }
+        // 3. GPA & Timer Logic (Global Functions)
+        window.addSubjectRow = () => {
+            const div = document.createElement('div');
+            div.className = 'gpa-row';
+            div.innerHTML = `<input type="text" placeholder="Môn"><input type="number" class="score-input" placeholder="Điểm"><button class="btn-remove" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>`;
+            document.getElementById('gpaRows').appendChild(div);
+        };
+        
+        window.calculateGPA = () => {
+            const inps = document.querySelectorAll('.score-input');
+            let t = 0, c = 0;
+            inps.forEach(i => { const v = parseFloat(i.value); if(!isNaN(v)){ t+=v; c++; }});
+            const gpa = c ? (t/c).toFixed(2) : "0.0";
+            const d = document.getElementById('gpaValue');
+            d.innerText = gpa;
+            d.style.color = gpa >= 8 ? "#00c853" : (gpa >= 5 ? "#FFD700" : "#FF2E63");
+        };
+
+        window.simulateDownload = (t) => {
+            alert(`Đang tải tài liệu: ${t} (Cần đăng nhập để tải thật)`);
+        };
+        
+        // Mobile Menu Toggle
+        document.querySelector('.mobile-menu-btn').addEventListener('click', () => {
+            alert("Mobile menu clicked (Implement toggle logic)");
+        });
+        
+        // Header Scroll Effect
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) header.classList.add('scrolled');
+            else header.classList.remove('scrolled');
+        });
 
     </script>
 </body>
