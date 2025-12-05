@@ -7,9 +7,9 @@
     <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2997/2997320.png" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <style>
-        /* Tận dụng lại CSS cũ để đồng bộ giao diện */
         :root {
             --primary: #6C63FF; --secondary: #00D2FF; --accent: #FF2E63;
             --gold: #FFD700; --dark: #0f172a; --dark-lighter: #1e293b;
@@ -117,7 +117,7 @@
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, collection, getDocs, doc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // CẤU HÌNH FIREBASE (GIỐNG FILE CŨ)
+        // CẤU HÌNH FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSyDFzSBZjJS5RvCL9Ax7xRrk6q_WsNGkh_s",
             authDomain: "hubschoolvn-db841.firebaseapp.com",
@@ -134,20 +134,25 @@
 
         let allUsers = [];
         let selectedUserId = null;
-        let actionType = 'add'; // 'add' or 'sub'
+        let actionType = 'add'; 
 
-        // EMAIL CỦA ADMIN (BẠN HÃY THAY EMAIL CỦA BẠN VÀO ĐÂY ĐỂ TRÁNH NGƯỜI KHÁC VÀO)
-        // Nếu muốn test thì cứ để trống hoặc xóa đoạn check logic
-        const ADMIN_EMAILS = ["admin@gmail.com", "nhan@gmail.com"]; 
+        // Cấu hình Toast (Thông báo nhỏ góc phải)
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            background: '#1e293b',
+            color: '#fff',
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                // Bảo mật cơ bản phía client
-                // if (!ADMIN_EMAILS.includes(user.email)) {
-                //     alert("Bạn không có quyền truy cập trang này!");
-                //     window.location.href = 'home.html';
-                //     return;
-                // }
                 fetchAllUsers();
             } else {
                 window.location.href = 'login.html';
@@ -155,14 +160,26 @@
         });
 
         async function fetchAllUsers() {
-            const querySnapshot = await getDocs(collection(db, "users"));
-            allUsers = [];
-            querySnapshot.forEach((doc) => {
-                allUsers.push({ id: doc.id, ...doc.data() });
-            });
-            document.getElementById('totalUsers').innerText = allUsers.length;
-            document.getElementById('loading').style.display = 'none';
-            renderTable(allUsers);
+            try {
+                const querySnapshot = await getDocs(collection(db, "users"));
+                allUsers = [];
+                querySnapshot.forEach((doc) => {
+                    allUsers.push({ id: doc.id, ...doc.data() });
+                });
+                document.getElementById('totalUsers').innerText = allUsers.length;
+                document.getElementById('loading').style.display = 'none';
+                renderTable(allUsers);
+            } catch (error) {
+                console.error("Lỗi lấy data:", error);
+                if (error.code === 'permission-denied') {
+                     Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi Quyền Truy Cập!',
+                        html: 'Database đang bị khóa. Hãy vào <b>Firebase Console > Firestore > Rules</b> và đổi thành:<br><code>allow read, write: if true;</code>',
+                        confirmButtonText: 'Đã hiểu'
+                    });
+                }
+            }
         }
 
         function renderTable(users) {
@@ -221,6 +238,9 @@
             document.getElementById('btnConfirm').style.background = type === 'add' ? 'var(--primary)' : '#ff4757';
             document.getElementById('xuAmount').value = '';
             document.getElementById('xuModal').classList.add('active');
+            
+            // Auto focus vào ô nhập
+            setTimeout(() => document.getElementById('xuAmount').focus(), 100);
         }
 
         window.closeModal = () => {
@@ -228,36 +248,76 @@
         }
 
         window.confirmAction = async () => {
-            const amount = parseInt(document.getElementById('xuAmount').value);
-            if(!amount || amount <= 0) return alert("Vui lòng nhập số hợp lệ!");
+            const amountInput = document.getElementById('xuAmount');
+            const amount = parseInt(amountInput.value);
+            
+            // Thay alert bằng Swal
+            if(!amount || amount <= 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Lỗi nhập liệu',
+                    text: 'Vui lòng nhập số lượng xu hợp lệ!',
+                    confirmButtonColor: '#ff4757'
+                });
+                return;
+            }
 
             const btn = document.getElementById('btnConfirm');
+            const originalText = btn.innerText;
             btn.innerText = "Đang xử lý...";
+            btn.disabled = true;
             
             try {
-                // Nếu là trừ tiền thì đổi dấu thành âm
                 const finalAmount = actionType === 'add' ? amount : -amount;
                 
                 await updateDoc(doc(db, "users", selectedUserId), {
                     xu: increment(finalAmount)
                 });
                 
-                // Cập nhật lại dữ liệu local để không phải load lại trang
+                // Cập nhật Local UI
                 const userIndex = allUsers.findIndex(u => u.id === selectedUserId);
                 if(userIndex !== -1) {
                     if(!allUsers[userIndex].xu) allUsers[userIndex].xu = 0;
                     allUsers[userIndex].xu += finalAmount;
-                    if(allUsers[userIndex].xu < 0) allUsers[userIndex].xu = 0; // Không cho âm tiền
+                    if(allUsers[userIndex].xu < 0) allUsers[userIndex].xu = 0; 
                 }
                 
-                filterUsers(); // Render lại bảng
+                filterUsers(); 
                 closeModal();
-                alert("Thành công!");
+                
+                // THÔNG BÁO THÀNH CÔNG DẠNG TOAST (GÓC PHẢI)
+                Toast.fire({
+                    icon: 'success',
+                    title: `Đã ${actionType === 'add' ? 'cộng' : 'trừ'} ${amount} Xu thành công!`
+                });
+
             } catch (e) {
                 console.error(e);
-                alert("Có lỗi xảy ra: " + e.message);
+                closeModal();
+
+                // BẮT LỖI PERMISSION CỤ THỂ
+                if (e.code === 'permission-denied') {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi Quyền Truy Cập (Permissions)!',
+                        html: `
+                            Firebase chặn quyền ghi dữ liệu.<br>
+                            Hãy vào Console > Firestore Database > Rules và sửa thành:<br>
+                            <code style="background:#333; color:#0f0; padding:5px; display:block; margin-top:10px;">allow read, write: if true;</code>
+                        `,
+                        confirmButtonText: 'Đã hiểu, tôi sẽ sửa'
+                    });
+                } else {
+                    // Lỗi khác
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Có lỗi xảy ra',
+                        text: e.message
+                    });
+                }
             } finally {
-                btn.innerText = "Xác Nhận";
+                btn.innerText = originalText;
+                btn.disabled = false;
             }
         }
     </script>
