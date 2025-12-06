@@ -79,7 +79,6 @@
     <div id="mobileOverlay" class="fixed inset-0 bg-black/60 z-40 hidden backdrop-blur-sm transition-opacity xl:hidden" onclick="toggleMobileNav()"></div>
 
     <!-- ==================== LEFT SIDEBAR (260px) ==================== -->
-    <!-- Sửa đổi: Thêm ID, thay đổi class hidden thành fixed/transform để hỗ trợ mobile -->
     <aside id="mainSidebar" class="w-[260px] bg-dark-sidebar flex flex-col border-r border-dark-border z-50 fixed inset-y-0 left-0 transform -translate-x-full transition-transform duration-300 xl:translate-x-0 xl:static xl:z-20">
         
         <div class="h-20 flex items-center justify-between px-6 border-b border-dark-border/50">
@@ -130,7 +129,7 @@
         <!-- Header Sticky -->
         <header class="h-20 glass-panel flex items-center justify-between px-6 sticky top-0 z-30 shrink-0">
             <div class="flex items-center gap-4">
-                <!-- Mobile Toggle Button (Đã sửa onclick) -->
+                <!-- Mobile Toggle Button -->
                 <button class="xl:hidden text-white text-xl p-2 hover:bg-white/10 rounded-lg transition" onclick="toggleMobileNav()">
                     <i class="fas fa-bars"></i>
                 </button>
@@ -184,8 +183,10 @@
 
                         <!-- Info -->
                         <div class="flex-1 text-center md:text-left space-y-2 w-full">
-                            <div class="flex flex-col md:flex-row items-center gap-3">
+                            <div class="flex flex-col md:flex-row items-center gap-3 justify-center md:justify-start">
                                 <h2 id="userName" class="text-2xl md:text-3xl font-bold text-white">Học Viên</h2>
+                                <!-- Verified Badge Placeholder (Will be filled by JS) -->
+                                <span id="mainProfileBadge"></span>
                                 <span id="userRankTitle" class="px-3 py-0.5 bg-brand-purple/20 text-brand-purple text-xs font-bold rounded-full border border-brand-purple/20">Tập Sự</span>
                             </div>
                             <p id="userBio" class="text-gray-400 text-sm italic">Chưa có tiểu sử</p>
@@ -332,7 +333,7 @@
                         <p class="text-xs text-gray-400 mb-4">Nổi bật trên BXH</p>
                         <div class="mt-auto w-full">
                             <div class="text-brand-gold font-bold text-xl mb-3"><i class="fas fa-coins"></i> 300</div>
-                            <button class="w-full py-2 bg-brand-purple text-white font-bold rounded-xl hover:bg-purple-600" onclick="buyItem(300, 'Đổi Màu Tên')">Mua Ngay</button>
+                            <button class="w-full py-2 bg-brand-purple text-white font-bold rounded-xl hover:bg-purple-600" onclick="buyItem(300, 'Đổi Màu Tên', 'item')">Mua Ngay</button>
                         </div>
                      </div>
                 </div>
@@ -366,17 +367,9 @@
         <!-- Mini Leaderboard -->
         <div class="flex-1 overflow-y-auto">
             <h4 class="font-bold text-white mb-4 flex justify-between">Top Học Sinh <span class="text-brand-primary text-xs cursor-pointer hover:underline" onclick="switchTab('leaderboard')">Xem tất cả</span></h4>
-            <div class="space-y-3">
-                <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-dark-hover">
-                    <span class="text-brand-gold font-bold">1</span>
-                    <div class="w-8 h-8 rounded-full bg-brand-gold text-black flex items-center justify-center font-bold">A</div>
-                    <div class="flex-1"><p class="text-sm text-white font-bold">Anh Thư</p><p class="text-xs text-gray-500">12k XP</p></div>
-                </div>
-                <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-dark-hover">
-                    <span class="text-gray-400 font-bold">2</span>
-                    <div class="w-8 h-8 rounded-full bg-gray-500 text-white flex items-center justify-center font-bold">M</div>
-                    <div class="flex-1"><p class="text-sm text-white font-bold">Minh Tuấn</p><p class="text-xs text-gray-500">10k XP</p></div>
-                </div>
+            <!-- ID để JS render dữ liệu thật vào đây -->
+            <div class="space-y-3" id="miniLeaderboardList">
+                <p class="text-center text-xs text-gray-500">Đang tải...</p>
             </div>
         </div>
     </aside>
@@ -398,7 +391,7 @@
             <button class="absolute top-4 right-4 text-gray-400 hover:text-white" onclick="closeUserProfile()"><i class="fas fa-times text-xl"></i></button>
             <div class="flex flex-col items-center">
                 <div id="upAvatar" class="w-24 h-24 rounded-full bg-gradient-to-tr from-brand-primary to-brand-purple flex items-center justify-center text-4xl font-bold text-white mb-4 border-4 border-dark-card shadow-lg">U</div>
-                <h2 id="upName" class="text-2xl font-bold text-white">User Name</h2>
+                <h2 id="upName" class="text-2xl font-bold text-white flex items-center gap-1">User Name</h2>
                 <p id="upUsername" class="text-brand-primary text-sm mb-4">@username</p>
                 <p id="upBio" class="text-gray-400 text-center text-sm mb-6 bg-dark-main/50 p-3 rounded-xl w-full">...</p>
                 <div class="flex gap-4 w-full mb-6">
@@ -498,12 +491,23 @@
         let currentUser = null;
         let currentViewedUser = null;
 
+        // --- HELPER: RENDER VERIFIED BADGE (META STYLE) ---
+        const VERIFIED_USERS = ['lenhanzxc', 'lenhanismee'];
+        function getVerifiedHtml(username) {
+            if (VERIFIED_USERS.includes(username)) {
+                return `<span class="relative inline-block ml-1 align-middle" title="Verified">
+                    <i class="fas fa-certificate text-blue-500 text-lg"></i>
+                    <i class="fas fa-check text-white text-[10px] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-bold"></i>
+                </span>`;
+            }
+            return '';
+        }
+
         // --- NEW: TOGGLE MOBILE NAV FUNCTION ---
         window.toggleMobileNav = () => {
             const sidebar = document.getElementById('mainSidebar');
             const overlay = document.getElementById('mobileOverlay');
             
-            // Toggle translate class to show/hide sidebar
             if (sidebar.classList.contains('-translate-x-full')) {
                 sidebar.classList.remove('-translate-x-full');
                 overlay.classList.remove('hidden');
@@ -521,6 +525,7 @@
                 initPaymentListener();
                 initSystemNotiListener();
                 initNotificationListener(user.uid);
+                loadMiniLeaderboard(); // Load right sidebar LB
             } else {
                 window.location.replace('login.html');
             }
@@ -531,7 +536,10 @@
             onSnapshot(doc(db, "users", uid), (docSnap) => {
                 if(docSnap.exists()) {
                     const data = docSnap.data();
-                    document.getElementById('userName').innerText = data.fullname || "Học viên";
+                    
+                    // User Name with Verified Badge
+                    const nameEl = document.getElementById('userName');
+                    nameEl.innerHTML = (data.fullname || "Học viên") + getVerifiedHtml(data.username);
                     
                     const avtEl = document.getElementById('userAvatar');
                     avtEl.innerText = (data.avatarEmoji || (data.fullname ? data.fullname.charAt(0) : "U"));
@@ -735,10 +743,14 @@
                     const div = document.createElement('div');
                     div.className = 'bg-dark-card p-4 rounded-xl border border-dark-border cursor-pointer hover:border-brand-primary transition flex items-center gap-4';
                     div.onclick = () => openUserProfile(doc.id, u);
+                    
+                    // Add verified badge here
+                    const badgeHtml = getVerifiedHtml(u.username);
+                    
                     div.innerHTML = `
                         <div class="w-12 h-12 rounded-full bg-dark-main border border-dark-border flex items-center justify-center text-xl font-bold text-white">${u.avatarEmoji || u.fullname.charAt(0)}</div>
                         <div>
-                            <h4 class="font-bold text-white">${u.fullname}</h4>
+                            <h4 class="font-bold text-white flex items-center gap-1">${u.fullname} ${badgeHtml}</h4>
                             <p class="text-xs text-gray-500">@${u.username}</p>
                             <div class="text-xs text-brand-primary mt-1">Lv.${u.level || 1} • ${u.xp || 0} XP</div>
                         </div>`;
@@ -751,7 +763,10 @@
             if(uid === currentUser.uid) return;
             currentViewedUser = uid;
             document.getElementById('upAvatar').innerText = data.avatarEmoji || data.fullname.charAt(0);
-            document.getElementById('upName').innerText = data.fullname;
+            
+            // Add Verified Badge
+            document.getElementById('upName').innerHTML = data.fullname + getVerifiedHtml(data.username);
+            
             document.getElementById('upUsername').innerText = "@" + data.username;
             document.getElementById('upBio').innerText = data.bio || "Chưa có tiểu sử";
             document.getElementById('upLvl').innerText = data.level || 1;
@@ -985,7 +1000,7 @@
             if(tag==='all') renderDocs(DOCUMENTS); else renderDocs(DOCUMENTS.filter(d => d.subject === tag));
         }
 
-        // LEADERBOARD LOGIC
+        // LEADERBOARD LOGIC (Main Tab)
         async function loadLeaderboard() {
             const q = query(collection(db, "users"), orderBy("xp", "desc"), limit(50));
             const snap = await getDocs(q);
@@ -999,18 +1014,61 @@
                 if(rank===2) colorClass = 'text-gray-300';
                 if(rank===3) colorClass = 'text-orange-600';
 
+                // Add verified badge here
+                const badgeHtml = getVerifiedHtml(u.username);
+
                 list.insertAdjacentHTML('beforeend', `
                     <li class="flex items-center p-3 rounded-xl bg-dark-main border border-dark-border gap-4">
                         <div class="font-black text-xl w-6 text-center ${colorClass}">${rank}</div>
                         <div class="w-10 h-10 rounded-full bg-dark-card flex items-center justify-center font-bold text-white border border-dark-border">${u.avatarEmoji||u.fullname.charAt(0)}</div>
                         <div class="flex-1 min-w-0">
-                            <div class="font-bold text-white truncate">${u.fullname}</div>
+                            <div class="font-bold text-white truncate flex items-center gap-1">${u.fullname} ${badgeHtml}</div>
                             <div class="text-xs text-gray-500 truncate">@${u.username}</div>
                         </div>
                         <div class="font-bold text-brand-secondary">${u.xp} XP</div>
                     </li>`);
                 rank++;
             });
+        }
+
+        // --- NEW: MINI LEADERBOARD FOR SIDEBAR ---
+        async function loadMiniLeaderboard() {
+            const container = document.getElementById('miniLeaderboardList');
+            if (!container) return;
+            
+            try {
+                const q = query(collection(db, "users"), orderBy("xp", "desc"), limit(5));
+                const snap = await getDocs(q);
+                container.innerHTML = "";
+                
+                let rank = 1;
+                snap.forEach(doc => {
+                    const u = doc.data();
+                    let colorClass = 'text-gray-500';
+                    if(rank===1) colorClass = 'text-brand-gold';
+                    if(rank===2) colorClass = 'text-gray-300';
+                    if(rank===3) colorClass = 'text-orange-600';
+
+                    const badgeHtml = getVerifiedHtml(u.username);
+
+                    container.insertAdjacentHTML('beforeend', `
+                        <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-dark-hover transition">
+                            <span class="font-bold w-4 text-center ${colorClass}">${rank}</span>
+                            <div class="w-8 h-8 rounded-full bg-dark-main border border-dark-border text-white flex items-center justify-center font-bold text-xs">
+                                ${u.avatarEmoji || u.fullname.charAt(0)}
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm text-white font-bold truncate flex items-center gap-1">${u.fullname} ${badgeHtml}</p>
+                                <p class="text-xs text-gray-500">${u.xp} XP</p>
+                            </div>
+                        </div>
+                    `);
+                    rank++;
+                });
+            } catch (e) {
+                console.error("Error loading mini LB", e);
+                container.innerHTML = '<p class="text-center text-xs text-red-500">Lỗi tải BXH</p>';
+            }
         }
 
         // SHOP & RECHARGE MODALS
@@ -1052,9 +1110,18 @@
             if(cur < price) return alert("Không đủ Xu!");
             if(confirm(`Mua ${name}?`)) {
                 const updates = { xu: increment(-price) };
-                if(type==='vip') updates.isVIP = true;
+                
+                if(type === 'vip') {
+                    updates.isVIP = true;
+                } else {
+                    // For generic items, we can store them in an array or subcollection
+                    // Simple implementation: just mark a flag or add to inventory array if existed
+                    // For this demo, we just deduct coins and show success
+                    // In a real app: await addDoc(collection(db, "users", currentUser.uid, "inventory"), { name: name, date: new Date() });
+                }
+
                 await updateDoc(doc(db, "users", currentUser.uid), updates);
-                alert("Đã mua!");
+                alert("Đã mua thành công: " + name);
             }
         }
 
