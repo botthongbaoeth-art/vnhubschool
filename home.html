@@ -30,7 +30,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <!-- 3. CUSTOM CSS (Giữ lại Bamboo Loader & Animations) -->
     <style>
         body { font-family: 'Montserrat', sans-serif; overflow: hidden; }
         
@@ -40,7 +39,7 @@
         ::-webkit-scrollbar-thumb { background: #323248; border-radius: 3px; }
         ::-webkit-scrollbar-thumb:hover { background: #3699ff; }
 
-        /* Bamboo Loader Styles (Giữ nguyên từ code gốc) */
+        /* Bamboo Loader Styles */
         #loadingOverlay { position: fixed; inset: 0; background: #0f172a; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s; }
         .bamboo-container { width: 80px; height: 200px; position: relative; display: flex; flex-direction: column-reverse; align-items: center; margin-bottom: 20px; }
         .bamboo-joint { width: 30px; height: 0; opacity: 0; background: linear-gradient(90deg, #66BB6A 0%, #43A047 50%, #66BB6A 100%); border-radius: 4px; margin-bottom: 2px; animation: growJoint 0.4s ease-out forwards; }
@@ -76,33 +75,44 @@
         <p class="loading-text">Đang tải dữ liệu...</p>
     </div>
 
+    <!-- MOBILE OVERLAY (NEW) -->
+    <div id="mobileOverlay" class="fixed inset-0 bg-black/60 z-40 hidden backdrop-blur-sm transition-opacity xl:hidden" onclick="toggleMobileNav()"></div>
+
     <!-- ==================== LEFT SIDEBAR (260px) ==================== -->
-    <aside class="w-[260px] bg-dark-sidebar flex-col border-r border-dark-border z-20 hidden xl:flex shrink-0">
-        <div class="h-20 flex items-center px-6 border-b border-dark-border/50 cursor-pointer" onclick="window.location.href='index.html'">
-            <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-brand-primary to-brand-purple flex items-center justify-center text-white shadow-glow-blue mr-3">
-                <i class="fas fa-graduation-cap text-xl"></i>
+    <!-- Sửa đổi: Thêm ID, thay đổi class hidden thành fixed/transform để hỗ trợ mobile -->
+    <aside id="mainSidebar" class="w-[260px] bg-dark-sidebar flex flex-col border-r border-dark-border z-50 fixed inset-y-0 left-0 transform -translate-x-full transition-transform duration-300 xl:translate-x-0 xl:static xl:z-20">
+        
+        <div class="h-20 flex items-center justify-between px-6 border-b border-dark-border/50">
+            <div class="flex items-center gap-3 cursor-pointer" onclick="window.location.href='index.html'">
+                <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-brand-primary to-brand-purple flex items-center justify-center text-white shadow-glow-blue">
+                    <i class="fas fa-graduation-cap text-xl"></i>
+                </div>
+                <h1 class="text-xl font-bold text-white tracking-tight">Hub<span class="text-brand-primary">School</span></h1>
             </div>
-            <h1 class="text-xl font-bold text-white tracking-tight">Hub<span class="text-brand-primary">School</span></h1>
+            <!-- Close Button for Mobile -->
+            <button class="xl:hidden text-gray-400 hover:text-white" onclick="toggleMobileNav()">
+                <i class="fas fa-times text-xl"></i>
+            </button>
         </div>
 
         <nav class="flex-1 overflow-y-auto py-6 px-4 space-y-1">
             <p class="px-4 text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Menu Chính</p>
-            <div class="nav-item active-nav flex items-center px-4 py-3 rounded-xl font-medium cursor-pointer transition-all hover:bg-dark-hover hover:text-white mb-1" onclick="switchTab('dashboard')">
+            <div class="nav-item active-nav flex items-center px-4 py-3 rounded-xl font-medium cursor-pointer transition-all hover:bg-dark-hover hover:text-white mb-1" onclick="switchTab('dashboard'); toggleMobileNav()">
                 <i class="fas fa-home w-6"></i> <span>Tổng Quan</span>
             </div>
-            <div class="nav-item flex items-center px-4 py-3 rounded-xl font-medium cursor-pointer text-gray-400 hover:bg-dark-hover hover:text-white mb-1" onclick="switchTab('library')">
+            <div class="nav-item flex items-center px-4 py-3 rounded-xl font-medium cursor-pointer text-gray-400 hover:bg-dark-hover hover:text-white mb-1" onclick="switchTab('library'); toggleMobileNav()">
                 <i class="fas fa-folder-open w-6"></i> <span>Kho Tài Liệu</span>
             </div>
-            <div class="nav-item flex items-center px-4 py-3 rounded-xl font-medium cursor-pointer text-gray-400 hover:bg-dark-hover hover:text-white mb-1" onclick="switchTab('exam')">
+            <div class="nav-item flex items-center px-4 py-3 rounded-xl font-medium cursor-pointer text-gray-400 hover:bg-dark-hover hover:text-white mb-1" onclick="switchTab('exam'); toggleMobileNav()">
                 <i class="fas fa-file-signature w-6"></i> <span>Thi Thử</span>
             </div>
-            <div class="nav-item flex items-center px-4 py-3 rounded-xl font-medium cursor-pointer text-gray-400 hover:bg-dark-hover hover:text-white mb-1" onclick="switchTab('leaderboard')">
+            <div class="nav-item flex items-center px-4 py-3 rounded-xl font-medium cursor-pointer text-gray-400 hover:bg-dark-hover hover:text-white mb-1" onclick="switchTab('leaderboard'); toggleMobileNav()">
                 <i class="fas fa-trophy w-6"></i> <span>Bảng Xếp Hạng</span>
             </div>
-            <div class="nav-item flex items-center px-4 py-3 rounded-xl font-medium cursor-pointer text-gray-400 hover:bg-dark-hover hover:text-white mb-1" onclick="switchTab('friends')">
+            <div class="nav-item flex items-center px-4 py-3 rounded-xl font-medium cursor-pointer text-gray-400 hover:bg-dark-hover hover:text-white mb-1" onclick="switchTab('friends'); toggleMobileNav()">
                 <i class="fas fa-users w-6"></i> <span>Tìm Bạn</span>
             </div>
-            <div class="nav-item flex items-center px-4 py-3 rounded-xl font-medium cursor-pointer text-gray-400 hover:bg-dark-hover hover:text-white mb-1" onclick="switchTab('shop')">
+            <div class="nav-item flex items-center px-4 py-3 rounded-xl font-medium cursor-pointer text-gray-400 hover:bg-dark-hover hover:text-white mb-1" onclick="switchTab('shop'); toggleMobileNav()">
                 <i class="fas fa-store w-6"></i> <span>Cửa Hàng</span>
             </div>
             
@@ -119,13 +129,16 @@
         
         <!-- Header Sticky -->
         <header class="h-20 glass-panel flex items-center justify-between px-6 sticky top-0 z-30 shrink-0">
-            <h2 id="pageTitle" class="text-xl font-bold text-white hidden md:block">Tổng Quan</h2>
-            
-            <!-- Mobile Toggle -->
-            <button class="xl:hidden text-white text-xl" onclick="toggleMobileNav()"><i class="fas fa-bars"></i></button>
-
             <div class="flex items-center gap-4">
-                <!-- Coin Display (Click to Recharge) -->
+                <!-- Mobile Toggle Button (Đã sửa onclick) -->
+                <button class="xl:hidden text-white text-xl p-2 hover:bg-white/10 rounded-lg transition" onclick="toggleMobileNav()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h2 id="pageTitle" class="text-xl font-bold text-white hidden md:block">Tổng Quan</h2>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <!-- Coin Display -->
                 <div class="flex items-center bg-dark-sidebar border border-brand-gold/30 px-3 py-1.5 rounded-full shadow-glow-gold cursor-pointer hover:scale-105 transition" onclick="openRechargeModal()">
                     <img src="https://cdn-icons-png.flaticon.com/512/11559/11559400.png" class="w-5 h-5 mr-2 animate-bounce">
                     <span id="userXu" class="text-brand-gold font-bold text-sm tracking-wide mr-2">0</span>
@@ -146,7 +159,6 @@
                 <span>Thông Báo</span> <span class="text-xs text-brand-primary cursor-pointer">Đã đọc</span>
             </div>
             <div id="notifList" class="flex flex-col">
-                <!-- Notifications injected here -->
                 <div class="p-4 text-center text-gray-500 text-sm">Không có thông báo mới</div>
             </div>
         </div>
@@ -369,7 +381,7 @@
         </div>
     </aside>
 
-    <!-- ==================== MOBILE NAV ==================== -->
+    <!-- ==================== MOBILE NAV BOTTOM ==================== -->
     <div class="fixed bottom-0 left-0 w-full bg-dark-sidebar/95 backdrop-blur border-t border-dark-border p-2 flex justify-around xl:hidden z-40 pb-safe">
         <button class="m-nav-item flex flex-col items-center text-brand-primary p-2" onclick="switchTab('dashboard')"><i class="fas fa-home text-xl mb-1"></i><span class="text-[10px]">Home</span></button>
         <button class="m-nav-item flex flex-col items-center text-gray-500 p-2" onclick="switchTab('library')"><i class="fas fa-folder-open text-xl mb-1"></i><span class="text-[10px]">Tài liệu</span></button>
@@ -464,7 +476,7 @@
     </div>
 
 
-    <!-- ==================== JAVASCRIPT LOGIC (GIỮ NGUYÊN 100%) ==================== -->
+    <!-- ==================== JAVASCRIPT LOGIC ==================== -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -486,6 +498,21 @@
         let currentUser = null;
         let currentViewedUser = null;
 
+        // --- NEW: TOGGLE MOBILE NAV FUNCTION ---
+        window.toggleMobileNav = () => {
+            const sidebar = document.getElementById('mainSidebar');
+            const overlay = document.getElementById('mobileOverlay');
+            
+            // Toggle translate class to show/hide sidebar
+            if (sidebar.classList.contains('-translate-x-full')) {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+            }
+        }
+
         onAuthStateChanged(auth, async (user) => {
             if(user) {
                 currentUser = user;
@@ -506,17 +533,15 @@
                     const data = docSnap.data();
                     document.getElementById('userName').innerText = data.fullname || "Học viên";
                     
-                    // Xử lý avatar: Nếu là Text Node thì update text, ko thì giữ nguyên structure
                     const avtEl = document.getElementById('userAvatar');
                     avtEl.innerText = (data.avatarEmoji || (data.fullname ? data.fullname.charAt(0) : "U"));
                     
                     document.getElementById('userXu').innerText = data.xu || 0;
                     
-                    // VIP Styling
                     const crowns = document.querySelectorAll('.vip-crown');
                     if (data.isVIP) {
                         crowns.forEach(el => el.classList.remove('hidden'));
-                        crowns.forEach(el => el.style.display = 'flex'); // Force flex for tailwind logic
+                        crowns.forEach(el => el.style.display = 'flex'); 
                     }
 
                     const nextLevel = (data.level || 1) * 1000;
@@ -544,8 +569,6 @@
 
         // 2. SHOP LISTENER
         function initShopListener() {
-            const shopContainer = document.querySelector('#tab-shop'); 
-            // Lưu ý: Code gốc append vào grid-layout. Ở đây ta có #dynamic-shop-items
             onSnapshot(collection(db, "items"), (snapshot) => {
                 let dynContainer = document.getElementById('dynamic-shop-items');
                 if(!dynContainer) return;
@@ -553,7 +576,6 @@
                 let html = '';
                 snapshot.forEach(doc => {
                     const item = doc.data();
-                    // Style lại theo Tailwind
                     html += `
                         <div class="bg-dark-card p-5 rounded-2xl border border-dark-border flex flex-col items-center text-center">
                             <div class="w-16 h-16 bg-brand-primary/10 text-brand-primary rounded-full flex items-center justify-center text-3xl mb-4">${item.emoji || '📦'}</div>
@@ -1055,7 +1077,6 @@
                 el.classList.remove('active-nav');
                 el.classList.add('text-gray-400', 'hover:bg-dark-hover', 'hover:text-white');
             });
-            // Simple active state logic for demonstration (Ideally match by ID)
             // Reset mobile nav
             document.querySelectorAll('.m-nav-item').forEach(el => el.classList.remove('text-brand-primary'));
 
@@ -1067,7 +1088,6 @@
         }
 
         window.logout = () => signOut(auth).then(() => window.location.href = 'index.html');
-        window.toggleMobileNav = () => { /* Logic toggle nếu cần */ }
     </script>
 </body>
 </html>
