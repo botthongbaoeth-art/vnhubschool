@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>HubSchool Pro | Hệ Thống Học Tập 2025</title>
+    <title>HubSchool Pro | Hệ Thống Học Tập</title>
     
-    <!-- 1. TAILWIND CSS & CONFIG (Giúp giao diện đẹp mà code ngắn gọn) -->
+    <!-- 1. TAILWIND CSS & CONFIG -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -33,55 +33,54 @@
     <style>
         body { font-family: 'Montserrat', sans-serif; overflow: hidden; }
         
-        /* Tùy chỉnh thanh cuộn cho đẹp */
+        /* Scrollbar */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #323248; border-radius: 3px; }
         ::-webkit-scrollbar-thumb:hover { background: #3699ff; }
 
-        /* Loader Xoay */
+        /* Bamboo Loader Styles */
         #loadingOverlay { position: fixed; inset: 0; background: #0f172a; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s; }
-        .spinner { width: 50px; height: 50px; border: 5px solid rgba(54, 153, 255, 0.3); border-radius: 50%; border-top-color: #3699ff; animation: spin 1s ease-in-out infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        .bamboo-container { width: 80px; height: 200px; position: relative; display: flex; flex-direction: column-reverse; align-items: center; margin-bottom: 20px; }
+        .bamboo-joint { width: 30px; height: 0; opacity: 0; background: linear-gradient(90deg, #66BB6A 0%, #43A047 50%, #66BB6A 100%); border-radius: 4px; margin-bottom: 2px; animation: growJoint 0.4s ease-out forwards; }
+        .bamboo-joint::before { content: ''; position: absolute; width: 34px; height: 4px; background: #1B5E20; border-radius: 5px; margin-left: -2px; margin-top: -2px; }
+        .bamboo-leaf { position: absolute; width: 0; height: 0; background: #66BB6A; border-radius: 0 50% 50% 50%; opacity: 0; animation: growLeaf 0.4s ease-out forwards; }
+        .j1 { animation-delay: 0.2s; height: 40px; } .j2 { animation-delay: 0.6s; height: 40px; } .j3 { animation-delay: 1.0s; height: 40px; } .j4 { animation-delay: 1.4s; height: 40px; }
+        .l1 { top: 140px; left: 40px; transform: rotate(-20deg); animation-delay: 0.7s; } .l2 { top: 100px; right: 40px; transform: rotate(200deg); animation-delay: 1.1s; }
+        @keyframes growJoint { to { height: 45px; opacity: 1; } } @keyframes growLeaf { to { width: 35px; height: 12px; opacity: 1; } }
+        .loading-text { color: #66BB6A; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; animation: blink 1.5s infinite; }
+        @keyframes blink { 50% { opacity: 0.5; } }
 
-        /* Hiệu ứng kính mờ (Glassmorphism) */
+        /* Glassmorphism */
         .glass-panel { background: rgba(30, 30, 45, 0.7); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
         .active-nav { background: rgba(54, 153, 255, 0.1); color: #3699ff; border: 1px solid rgba(54, 153, 255, 0.2); }
         
-        /* Hiệu ứng ánh sáng chạy qua thanh XP */
-        .shimmer-effect { position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); animation: shimmer 2s infinite; }
+        /* Shimmer Effect cho XP Bar */
         @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
-        
-        /* Hiệu ứng Modal hiện ra */
+        .shimmer-effect { position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); animation: shimmer 2s infinite; }
+
+        /* Animation cho Modal */
         @keyframes modalIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
         .modal-animate { animation: modalIn 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
-
-        /* CSS cho Lịch Học */
-        .calendar-day { transition: all 0.2s; cursor: pointer; border-radius: 8px; position: relative; }
-        .calendar-day:hover { background: #2a2a3c; }
-        .calendar-day.active { background: #3699ff; color: white; box-shadow: 0 0 10px rgba(54, 153, 255, 0.5); }
-        .calendar-day.today { border: 1px solid #3699ff; color: #3699ff; }
-        .calendar-day.today.active { color: white; }
-        .has-event::after { content: ''; position: absolute; bottom: 3px; left: 50%; transform: translateX(-50%); width: 4px; height: 4px; background: #f64e60; border-radius: 50%; }
-        
-        /* CSS cho Bài Thi */
-        .question-part-header { color: #3699ff; font-weight: 800; font-size: 1.1rem; margin-bottom: 1rem; border-bottom: 1px solid rgba(54, 153, 255, 0.2); padding-bottom: 0.5rem; }
     </style>
 </head>
 <body class="bg-dark-main text-gray-300 h-screen flex overflow-hidden selection:bg-brand-primary selection:text-white">
 
-    <!-- LOADING SCREEN -->
+    <!-- BAMBOO LOADING SCREEN -->
     <div id="loadingOverlay">
-        <div class="spinner mb-4"></div>
-        <p class="text-brand-primary font-bold tracking-widest text-sm uppercase animate-pulse">Đang tải dữ liệu...</p>
+        <div class="bamboo-container">
+            <div class="bamboo-leaf l1"></div> <div class="bamboo-leaf l2"></div>
+            <div class="bamboo-joint j4"></div> <div class="bamboo-joint j3"></div> <div class="bamboo-joint j2"></div> <div class="bamboo-joint j1"></div>
+        </div>
+        <p class="loading-text">Đang tải dữ liệu...</p>
     </div>
 
-    <!-- MOBILE OVERLAY (Nền đen khi mở menu mobile) -->
+    <!-- MOBILE OVERLAY (NEW) -->
     <div id="mobileOverlay" class="fixed inset-0 bg-black/60 z-40 hidden backdrop-blur-sm transition-opacity xl:hidden" onclick="toggleMobileNav()"></div>
 
-    <!-- ==================== LEFT SIDEBAR (THANH BÊN TRÁI) ==================== -->
+    <!-- ==================== LEFT SIDEBAR (260px) ==================== -->
     <aside id="mainSidebar" class="w-[260px] bg-dark-sidebar flex flex-col border-r border-dark-border z-50 fixed inset-y-0 left-0 transform -translate-x-full transition-transform duration-300 xl:translate-x-0 xl:static xl:z-20">
-        <!-- Logo -->
+        
         <div class="h-20 flex items-center justify-between px-6 border-b border-dark-border/50">
             <div class="flex items-center gap-3 cursor-pointer" onclick="window.location.href='index.html'">
                 <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-brand-primary to-brand-purple flex items-center justify-center text-white shadow-glow-blue">
@@ -89,29 +88,30 @@
                 </div>
                 <h1 class="text-xl font-bold text-white tracking-tight">Hub<span class="text-brand-primary">School</span></h1>
             </div>
-            <!-- Nút đóng menu trên mobile -->
-            <button class="xl:hidden text-gray-400 hover:text-white" onclick="toggleMobileNav()"><i class="fas fa-times text-xl"></i></button>
+            <!-- Close Button for Mobile -->
+            <button class="xl:hidden text-gray-400 hover:text-white" onclick="toggleMobileNav()">
+                <i class="fas fa-times text-xl"></i>
+            </button>
         </div>
 
-        <!-- Menu Links -->
         <nav class="flex-1 overflow-y-auto py-6 px-4 space-y-1">
             <p class="px-4 text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Menu Chính</p>
-            <div id="nav-dashboard" class="nav-item active-nav flex items-center px-4 py-3 rounded-xl font-medium cursor-pointer transition-all hover:bg-dark-hover hover:text-white mb-1" onclick="switchTab('dashboard')">
+            <div class="nav-item active-nav flex items-center px-4 py-3 rounded-xl font-medium cursor-pointer transition-all hover:bg-dark-hover hover:text-white mb-1" onclick="switchTab('dashboard'); toggleMobileNav()">
                 <i class="fas fa-home w-6"></i> <span>Tổng Quan</span>
             </div>
-            <div id="nav-library" class="nav-item flex items-center px-4 py-3 rounded-xl font-medium cursor-pointer text-gray-400 hover:bg-dark-hover hover:text-white mb-1" onclick="switchTab('library')">
+            <div class="nav-item flex items-center px-4 py-3 rounded-xl font-medium cursor-pointer text-gray-400 hover:bg-dark-hover hover:text-white mb-1" onclick="switchTab('library'); toggleMobileNav()">
                 <i class="fas fa-folder-open w-6"></i> <span>Kho Tài Liệu</span>
             </div>
-            <div id="nav-exam" class="nav-item flex items-center px-4 py-3 rounded-xl font-medium cursor-pointer text-gray-400 hover:bg-dark-hover hover:text-white mb-1" onclick="switchTab('exam')">
+            <div class="nav-item flex items-center px-4 py-3 rounded-xl font-medium cursor-pointer text-gray-400 hover:bg-dark-hover hover:text-white mb-1" onclick="switchTab('exam'); toggleMobileNav()">
                 <i class="fas fa-file-signature w-6"></i> <span>Thi Thử</span>
             </div>
-            <div id="nav-leaderboard" class="nav-item flex items-center px-4 py-3 rounded-xl font-medium cursor-pointer text-gray-400 hover:bg-dark-hover hover:text-white mb-1" onclick="switchTab('leaderboard')">
+            <div class="nav-item flex items-center px-4 py-3 rounded-xl font-medium cursor-pointer text-gray-400 hover:bg-dark-hover hover:text-white mb-1" onclick="switchTab('leaderboard'); toggleMobileNav()">
                 <i class="fas fa-trophy w-6"></i> <span>Bảng Xếp Hạng</span>
             </div>
-            <div id="nav-friends" class="nav-item flex items-center px-4 py-3 rounded-xl font-medium cursor-pointer text-gray-400 hover:bg-dark-hover hover:text-white mb-1" onclick="switchTab('friends')">
+            <div class="nav-item flex items-center px-4 py-3 rounded-xl font-medium cursor-pointer text-gray-400 hover:bg-dark-hover hover:text-white mb-1" onclick="switchTab('friends'); toggleMobileNav()">
                 <i class="fas fa-users w-6"></i> <span>Tìm Bạn</span>
             </div>
-            <div id="nav-shop" class="nav-item flex items-center px-4 py-3 rounded-xl font-medium cursor-pointer text-gray-400 hover:bg-dark-hover hover:text-white mb-1" onclick="switchTab('shop')">
+            <div class="nav-item flex items-center px-4 py-3 rounded-xl font-medium cursor-pointer text-gray-400 hover:bg-dark-hover hover:text-white mb-1" onclick="switchTab('shop'); toggleMobileNav()">
                 <i class="fas fa-store w-6"></i> <span>Cửa Hàng</span>
             </div>
             
@@ -123,24 +123,28 @@
         </nav>
     </aside>
 
-    <!-- ==================== MAIN CONTENT (KHU VỰC CHÍNH) ==================== -->
+    <!-- ==================== MAIN CONTENT ==================== -->
     <main class="flex-1 flex flex-col relative overflow-hidden bg-dark-main">
         
-        <!-- Header -->
+        <!-- Header Sticky -->
         <header class="h-20 glass-panel flex items-center justify-between px-6 sticky top-0 z-30 shrink-0">
             <div class="flex items-center gap-4">
-                <!-- Nút mở menu mobile -->
-                <button class="xl:hidden text-white text-xl p-2 hover:bg-white/10 rounded-lg transition" onclick="toggleMobileNav()"><i class="fas fa-bars"></i></button>
+                <!-- Mobile Toggle Button -->
+                <button class="xl:hidden text-white text-xl p-2 hover:bg-white/10 rounded-lg transition" onclick="toggleMobileNav()">
+                    <i class="fas fa-bars"></i>
+                </button>
                 <h2 id="pageTitle" class="text-xl font-bold text-white hidden md:block">Tổng Quan</h2>
             </div>
             
-            <!-- Khu vực hiển thị Tiền & Thông báo -->
             <div class="flex items-center gap-4">
+                <!-- Coin Display -->
                 <div class="flex items-center bg-dark-sidebar border border-brand-gold/30 px-3 py-1.5 rounded-full shadow-glow-gold cursor-pointer hover:scale-105 transition" onclick="openRechargeModal()">
                     <img src="https://cdn-icons-png.flaticon.com/512/11559/11559400.png" class="w-5 h-5 mr-2 animate-bounce">
                     <span id="userXu" class="text-brand-gold font-bold text-sm tracking-wide mr-2">0</span>
                     <i class="fas fa-plus-circle text-brand-gold text-xs"></i>
                 </div>
+
+                <!-- Noti Bell -->
                 <button class="relative w-10 h-10 rounded-full bg-dark-hover flex items-center justify-center hover:bg-brand-primary hover:text-white transition-colors text-gray-400" onclick="toggleNotifPanel()">
                     <i class="fas fa-bell"></i>
                     <div id="notifCount" class="absolute top-0 right-0 w-4 h-4 bg-brand-danger text-white text-[10px] font-bold rounded-full flex items-center justify-center hidden">0</div>
@@ -148,7 +152,7 @@
             </div>
         </header>
 
-        <!-- Dropdown Thông báo -->
+        <!-- Notification Panel Dropdown -->
         <div id="notifPanel" class="absolute top-20 right-6 w-80 bg-dark-card border border-dark-border rounded-xl shadow-2xl z-50 hidden flex-col max-h-96 overflow-y-auto transform origin-top-right transition-all">
             <div class="p-3 border-b border-dark-border font-bold text-white flex justify-between">
                 <span>Thông Báo</span> <span class="text-xs text-brand-primary cursor-pointer">Đã đọc</span>
@@ -158,29 +162,36 @@
             </div>
         </div>
 
-        <!-- VÙNG NỘI DUNG CUỘN (Scrollable) -->
+        <!-- SCROLLABLE CONTENT AREA -->
         <div class="flex-1 overflow-y-auto p-4 md:p-8 scroll-smooth pb-24 md:pb-8">
             
-            <!-- TAB: DASHBOARD (Trang chủ) -->
-            <div id="tab-dashboard" class="tab-content block max-w-6xl mx-auto space-y-8">
+            <!-- TAB: DASHBOARD -->
+            <div id="tab-dashboard" class="tab-content block max-w-5xl mx-auto space-y-8">
                 
-                <!-- Profile Banner (Thẻ thông tin cá nhân lớn) -->
+                <!-- Hero Profile Card -->
                 <div id="profileCard" class="bg-gradient-to-r from-dark-card to-[#232336] rounded-3xl p-6 md:p-8 border border-dark-border relative overflow-hidden shadow-2xl cursor-pointer group" onclick="window.location.href='profile.html'">
                     <div class="absolute right-0 top-0 w-96 h-96 bg-brand-primary/5 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
+                    
                     <div class="flex flex-col md:flex-row gap-6 relative z-10 items-center md:items-start">
+                        <!-- Avatar -->
                         <div class="relative">
                             <div class="w-24 h-24 md:w-32 md:h-32 rounded-full p-1 bg-gradient-to-tr from-brand-gold to-brand-primary shadow-lg">
                                 <div id="userAvatar" class="w-full h-full rounded-full bg-dark-card flex items-center justify-center text-4xl font-bold text-white overflow-hidden">U</div>
                             </div>
                             <div class="vip-crown absolute -top-2 -right-2 bg-brand-gold text-black w-8 h-8 rounded-full flex items-center justify-center border-2 border-dark-main hidden shadow-lg"><i class="fas fa-crown"></i></div>
                         </div>
+
+                        <!-- Info -->
                         <div class="flex-1 text-center md:text-left space-y-2 w-full">
                             <div class="flex flex-col md:flex-row items-center gap-3 justify-center md:justify-start">
-                                <h2 id="userName" class="text-2xl md:text-3xl font-bold text-white flex items-center gap-2">Học Viên</h2>
+                                <h2 id="userName" class="text-2xl md:text-3xl font-bold text-white">Học Viên</h2>
+                                <!-- Verified Badge Placeholder (Will be filled by JS) -->
+                                <span id="mainProfileBadge"></span>
                                 <span id="userRankTitle" class="px-3 py-0.5 bg-brand-purple/20 text-brand-purple text-xs font-bold rounded-full border border-brand-purple/20">Tập Sự</span>
                             </div>
                             <p id="userBio" class="text-gray-400 text-sm italic">Chưa có tiểu sử</p>
-                            <!-- Thanh XP -->
+                            
+                            <!-- XP Bar -->
                             <div class="bg-dark-main p-3 rounded-xl border border-dark-border mt-4 w-full">
                                 <div class="flex justify-between text-xs font-bold mb-1.5">
                                     <span class="text-brand-secondary">Level <span id="userLv">1</span></span>
@@ -196,50 +207,111 @@
                     </div>
                 </div>
 
-                <!-- 4 Ô Thống Kê (Sync Real-time) -->
+                <!-- Stats Grid -->
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                      <div class="bg-dark-card p-4 rounded-2xl border border-dark-border flex flex-col items-center justify-center text-center hover:border-brand-primary/50 transition">
                         <i class="fas fa-fire text-brand-danger text-2xl mb-2"></i>
-                        <span id="statStreak" class="text-xl font-bold text-white">0</span>
+                        <span class="text-xl font-bold text-white">12</span>
                         <span class="text-xs text-gray-500">Ngày liên tiếp</span>
                      </div>
                      <div class="bg-dark-card p-4 rounded-2xl border border-dark-border flex flex-col items-center justify-center text-center hover:border-brand-success/50 transition">
                         <i class="fas fa-check-circle text-brand-success text-2xl mb-2"></i>
-                        <span id="statQuestions" class="text-xl font-bold text-white">0</span>
+                        <span class="text-xl font-bold text-white">85</span>
                         <span class="text-xs text-gray-500">Bài đã làm</span>
                      </div>
                      <div class="bg-dark-card p-4 rounded-2xl border border-dark-border flex flex-col items-center justify-center text-center hover:border-brand-gold/50 transition">
                         <i class="fas fa-star text-brand-gold text-2xl mb-2"></i>
-                        <span id="statRank" class="text-xl font-bold text-white">--</span>
+                        <span class="text-xl font-bold text-white">Top 5%</span>
                         <span class="text-xs text-gray-500">Hạng tuần</span>
                      </div>
                      <div class="bg-dark-card p-4 rounded-2xl border border-dark-border flex flex-col items-center justify-center text-center hover:border-brand-purple/50 transition">
                         <i class="fas fa-clock text-brand-purple text-2xl mb-2"></i>
-                        <span id="statHours" class="text-xl font-bold text-white">0h</span>
+                        <span class="text-xl font-bold text-white">42h</span>
                         <span class="text-xs text-gray-500">Giờ học</span>
                      </div>
                 </div>
 
-                <!-- Đề xuất bài học -->
+                <!-- Recommendations -->
                 <div>
                     <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2"><span class="w-1 h-5 bg-brand-primary rounded-full"></span> Đề xuất hôm nay</h3>
-                    <div id="recommendationContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- JS sẽ tự động điền các đề thi vào đây -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Card 1 -->
+                        <div class="bg-dark-card p-5 rounded-2xl border border-brand-gold/30 relative group hover:shadow-glow-gold hover:-translate-y-1 transition-all">
+                            <span class="absolute top-3 right-3 bg-brand-gold text-black text-[10px] font-black px-2 py-0.5 rounded">HOT</span>
+                            <div class="flex gap-4 mb-4">
+                                <div class="w-14 h-14 rounded-xl bg-brand-gold/10 text-brand-gold flex items-center justify-center text-2xl"><i class="fas fa-graduation-cap"></i></div>
+                                <div>
+                                    <h4 class="text-lg font-bold text-white">Toán 12 - Cuối Kỳ 1</h4>
+                                    <div class="text-xs text-gray-400 mt-1 flex gap-3">
+                                        <span><i class="far fa-file-alt"></i> 40 Câu</span> <span><i class="far fa-clock"></i> 90p</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="w-full py-2.5 rounded-xl bg-gradient-to-r from-brand-gold to-yellow-600 text-black font-bold shadow-lg text-sm" onclick="startExam('math_12_hk1')">Làm Bài Ngay</button>
+                        </div>
+                        <!-- Card 2 -->
+                        <div class="bg-dark-card p-5 rounded-2xl border border-dark-border relative group hover:border-brand-primary/50 hover:shadow-glow-blue hover:-translate-y-1 transition-all">
+                            <div class="flex gap-4 mb-4">
+                                <div class="w-14 h-14 rounded-xl bg-brand-secondary/10 text-brand-secondary flex items-center justify-center text-2xl"><i class="fas fa-bolt"></i></div>
+                                <div>
+                                    <h4 class="text-lg font-bold text-white">Thi Thử Nhanh</h4>
+                                    <div class="text-xs text-gray-400 mt-1 flex gap-3">
+                                        <span><i class="far fa-file-alt"></i> 10 Câu</span> <span><i class="far fa-clock"></i> 15p</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="w-full py-2.5 rounded-xl bg-brand-primary text-white font-bold shadow-lg shadow-brand-primary/30 text-sm" onclick="startExam('random')">Bắt Đầu</button>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- TAB: CÁC TRANG KHÁC (Ẩn mặc định) -->
-            <div id="tab-library" class="tab-content hidden max-w-6xl mx-auto"><h3 class="text-white mb-4">Kho Tài Liệu</h3><div id="libraryContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div></div>
-            <div id="tab-exam" class="tab-content hidden max-w-6xl mx-auto"><h3 class="text-white mb-4">Danh Sách Đề Thi</h3><div id="examListContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div></div>
-            <div id="tab-leaderboard" class="tab-content hidden max-w-4xl mx-auto"><h3 class="text-center text-brand-gold font-bold text-xl mb-6">Bảng Xếp Hạng Top 50</h3><div class="bg-dark-card rounded-2xl border border-dark-border p-4"><ul id="lbList" class="space-y-2"></ul></div></div>
-            <div id="tab-friends" class="tab-content hidden max-w-4xl mx-auto"><div class="flex gap-2 mb-6"><input type="text" id="friendSearchInput" class="flex-1 bg-dark-card border border-dark-border rounded-xl px-4 py-3 text-white outline-none focus:border-brand-primary" placeholder="Tìm bạn..."><button class="bg-brand-primary text-white px-6 rounded-xl font-bold" onclick="searchFriend()">Tìm</button></div><div id="friendResult" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div></div>
-            
-            <!-- TAB: SHOP (Cửa hàng vật phẩm) -->
-            <div id="tab-shop" class="tab-content hidden max-w-6xl mx-auto">
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="shopContainer">
-                    <!-- Gói VIP (Tĩnh) -->
-                    <div class="bg-dark-card p-5 rounded-2xl border border-brand-gold flex flex-col items-center text-center relative overflow-hidden group">
+            <!-- TAB: LIBRARY -->
+            <div id="tab-library" class="tab-content hidden max-w-5xl mx-auto">
+                <div class="relative mb-6">
+                    <i class="fas fa-search absolute left-4 top-3.5 text-gray-500"></i>
+                    <input type="text" class="w-full bg-dark-card border border-dark-border rounded-full py-3 pl-12 pr-4 text-white focus:border-brand-primary outline-none" placeholder="Tìm kiếm tài liệu..." oninput="filterDocs(this.value)">
+                </div>
+                <div class="flex gap-2 overflow-x-auto pb-4 mb-2 filter-tags">
+                    <button class="filter-tag active px-4 py-2 bg-brand-primary text-white rounded-xl text-sm font-bold whitespace-nowrap" onclick="filterByTag('all', this)">Tất cả</button>
+                    <button class="filter-tag px-4 py-2 bg-dark-card text-gray-400 rounded-xl text-sm font-bold whitespace-nowrap border border-dark-border hover:bg-dark-hover" onclick="filterByTag('Toán', this)">Toán</button>
+                    <button class="filter-tag px-4 py-2 bg-dark-card text-gray-400 rounded-xl text-sm font-bold whitespace-nowrap border border-dark-border hover:bg-dark-hover" onclick="filterByTag('Lý', this)">Vật Lý</button>
+                    <button class="filter-tag px-4 py-2 bg-dark-card text-gray-400 rounded-xl text-sm font-bold whitespace-nowrap border border-dark-border hover:bg-dark-hover" onclick="filterByTag('Anh', this)">Tiếng Anh</button>
+                </div>
+                <div id="libraryContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+            </div>
+
+            <!-- TAB: EXAM -->
+            <div id="tab-exam" class="tab-content hidden max-w-5xl mx-auto">
+                <div id="examListContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Exams injected by JS -->
+                </div>
+            </div>
+
+            <!-- TAB: LEADERBOARD -->
+            <div id="tab-leaderboard" class="tab-content hidden max-w-4xl mx-auto">
+                <div class="bg-dark-card border border-dark-border rounded-2xl p-4">
+                    <h3 class="text-xl font-bold text-white mb-4 text-center text-brand-gold"><i class="fas fa-trophy mr-2"></i> Bảng Xếp Hạng Top 50</h3>
+                    <ul id="lbList" class="space-y-2">
+                        <!-- LB Items injected by JS -->
+                    </ul>
+                </div>
+            </div>
+
+            <!-- TAB: FRIENDS -->
+            <div id="tab-friends" class="tab-content hidden max-w-4xl mx-auto">
+                <div class="flex gap-2 mb-6">
+                    <input type="text" id="friendSearchInput" class="flex-1 bg-dark-card border border-dark-border rounded-xl px-4 py-3 text-white outline-none focus:border-brand-primary" placeholder="Nhập username (vd: nhan_cute)..." onkeypress="if(event.key==='Enter') searchFriend()">
+                    <button class="bg-brand-primary text-white px-6 rounded-xl font-bold hover:bg-blue-600" onclick="searchFriend()">Tìm</button>
+                </div>
+                <div id="friendResult" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+            </div>
+
+            <!-- TAB: SHOP -->
+            <div id="tab-shop" class="tab-content hidden max-w-5xl mx-auto">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Static Items -->
+                     <div class="bg-dark-card p-5 rounded-2xl border border-brand-gold flex flex-col items-center text-center relative overflow-hidden group">
                         <div class="absolute inset-0 bg-brand-gold/5"></div>
                         <span class="bg-brand-gold text-black text-xs font-bold px-2 py-1 rounded absolute top-3 right-3">VIP TUẦN</span>
                         <div class="w-16 h-16 bg-brand-gold/20 text-brand-gold rounded-full flex items-center justify-center text-3xl mb-4"><i class="fas fa-star"></i></div>
@@ -249,102 +321,160 @@
                             <div class="text-brand-gold font-bold text-xl mb-3"><i class="fas fa-coins"></i> 150</div>
                             <button class="w-full py-2 bg-brand-gold text-black font-bold rounded-xl hover:bg-yellow-500" onclick="buyItem(150, 'Gói VIP 1 Tuần', 'vip')">Mua Ngay</button>
                         </div>
-                    </div>
-                    <!-- Các vật phẩm khác sẽ được JS tải vào đây -->
-                    <div id="dynamic-shop-items" class="contents"></div>
+                     </div>
+
+                     <!-- Dynamic Items Container -->
+                     <div id="dynamic-shop-items" class="contents"></div> 
+
+                     <!-- More Static -->
+                     <div class="bg-dark-card p-5 rounded-2xl border border-dark-border flex flex-col items-center text-center">
+                        <div class="w-16 h-16 bg-brand-purple/20 text-brand-purple rounded-full flex items-center justify-center text-3xl mb-4"><i class="fas fa-palette"></i></div>
+                        <h3 class="text-lg font-bold text-white">Đổi Màu Tên</h3>
+                        <p class="text-xs text-gray-400 mb-4">Nổi bật trên BXH</p>
+                        <div class="mt-auto w-full">
+                            <div class="text-brand-gold font-bold text-xl mb-3"><i class="fas fa-coins"></i> 300</div>
+                            <button class="w-full py-2 bg-brand-purple text-white font-bold rounded-xl hover:bg-purple-600" onclick="buyItem(300, 'Đổi Màu Tên', 'item')">Mua Ngay</button>
+                        </div>
+                     </div>
                 </div>
             </div>
 
         </div>
     </main>
 
-    <!-- ==================== RIGHT SIDEBAR (CỘT BÊN PHẢI) ==================== -->
+    <!-- ==================== RIGHT SIDEBAR (300px) ==================== -->
     <aside class="w-[300px] bg-dark-sidebar border-l border-dark-border hidden 2xl:flex flex-col z-20 shrink-0 p-6">
-        <!-- Lịch Học Tương Tác -->
+        <!-- Calendar -->
         <div class="mb-8">
-            <div class="flex justify-between items-center mb-4">
-                <h4 id="calMonthYear" class="font-bold text-white">Tháng 12, 2025</h4>
-                <div class="flex gap-1">
-                    <button class="text-gray-500 hover:text-white p-1"><i class="fas fa-chevron-left"></i></button>
-                    <button class="text-gray-500 hover:text-white p-1"><i class="fas fa-chevron-right"></i></button>
-                </div>
+            <h4 class="font-bold text-white mb-4">Lịch Học</h4>
+            <div class="grid grid-cols-7 gap-1 text-center text-xs text-gray-500 font-bold mb-2"><span>T2</span><span>T3</span><span>T4</span><span>T5</span><span>T6</span><span>T7</span><span>CN</span></div>
+            <div class="grid grid-cols-7 gap-1 text-center text-sm font-medium text-gray-400">
+                <span class="opacity-30 p-1">29</span><span class="opacity-30 p-1">30</span>
+                <span class="hover:bg-dark-hover rounded p-1 cursor-pointer">1</span>
+                <span class="bg-brand-primary text-white rounded-lg shadow-glow-blue p-1">2</span>
+                <span class="hover:bg-dark-hover rounded p-1 cursor-pointer">3</span>
+                <span class="hover:bg-dark-hover rounded p-1 cursor-pointer">4</span>
+                <span class="hover:bg-dark-hover rounded p-1 cursor-pointer">5</span>
             </div>
-            <div class="grid grid-cols-7 gap-1 text-center text-xs text-gray-500 font-bold mb-2"><span>CN</span><span>T2</span><span>T3</span><span>T4</span><span>T5</span><span>T6</span><span>T7</span></div>
-            <div id="calendarGrid" class="grid grid-cols-7 gap-1 text-center text-sm font-medium text-gray-400">
-                <!-- JS sẽ tự động tạo ngày vào đây -->
-            </div>
-            <!-- Thông tin sự kiện khi bấm vào ngày -->
-            <div id="calEventInfo" class="mt-4 bg-dark-card p-3 rounded-xl border border-dark-border hidden">
-                <h5 class="text-sm font-bold text-white mb-1" id="calSelectedDate">Ngày 12/12</h5>
-                <div class="space-y-2" id="calEventContent">
-                    <!-- Nội dung sự kiện -->
+            <div class="mt-4 bg-dark-card p-3 rounded-xl border border-dark-border flex gap-3 items-center">
+                <div class="bg-brand-danger/20 text-brand-danger p-2 rounded-lg text-center min-w-[40px]">
+                    <span class="block text-[10px] font-bold uppercase">Dec</span><span class="block text-lg font-bold">07</span>
                 </div>
+                <div><h5 class="text-sm font-bold text-white">Thi thử Tiếng Anh</h5><p class="text-[10px] text-gray-500">20:00 - 21:00</p></div>
             </div>
         </div>
 
-        <!-- BXH Nhỏ (Sync dữ liệu thật) -->
+        <!-- Mini Leaderboard -->
         <div class="flex-1 overflow-y-auto">
             <h4 class="font-bold text-white mb-4 flex justify-between">Top Học Sinh <span class="text-brand-primary text-xs cursor-pointer hover:underline" onclick="switchTab('leaderboard')">Xem tất cả</span></h4>
+            <!-- ID để JS render dữ liệu thật vào đây -->
             <div class="space-y-3" id="miniLeaderboardList">
                 <p class="text-center text-xs text-gray-500">Đang tải...</p>
             </div>
         </div>
     </aside>
 
-    <!-- ==================== MOBILE NAV BOTTOM (THANH MENU DƯỚI CHO ĐT) ==================== -->
+    <!-- ==================== MOBILE NAV BOTTOM ==================== -->
     <div class="fixed bottom-0 left-0 w-full bg-dark-sidebar/95 backdrop-blur border-t border-dark-border p-2 flex justify-around xl:hidden z-40 pb-safe">
         <button class="m-nav-item flex flex-col items-center text-brand-primary p-2" onclick="switchTab('dashboard')"><i class="fas fa-home text-xl mb-1"></i><span class="text-[10px]">Home</span></button>
         <button class="m-nav-item flex flex-col items-center text-gray-500 p-2" onclick="switchTab('library')"><i class="fas fa-folder-open text-xl mb-1"></i><span class="text-[10px]">Tài liệu</span></button>
         <button class="m-nav-item flex flex-col items-center text-gray-500 p-2" onclick="switchTab('exam')"><i class="fas fa-file-signature text-xl mb-1"></i><span class="text-[10px]">Thi thử</span></button>
+        <button class="m-nav-item flex flex-col items-center text-gray-500 p-2" onclick="switchTab('friends')"><i class="fas fa-search text-xl mb-1"></i><span class="text-[10px]">Tìm bạn</span></button>
         <button class="m-nav-item flex flex-col items-center text-gray-500 p-2" onclick="switchTab('shop')"><i class="fas fa-store text-xl mb-1"></i><span class="text-[10px]">Shop</span></button>
     </div>
 
-    <!-- ==================== MODAL (HỘP THOẠI) & GIAO DIỆN THI ==================== -->
-    
-    <!-- Giao diện làm bài thi (Full màn hình) -->
-    <div id="examInterface" class="fixed inset-0 z-[100] bg-dark-main hidden flex-col">
-        <div class="h-16 bg-dark-card border-b border-dark-border flex items-center justify-between px-4 shrink-0">
-            <div class="flex items-center gap-3">
-                <button onclick="quitExam()" class="text-gray-400 hover:text-white"><i class="fas fa-arrow-left text-xl"></i></button>
-                <span id="examSubjectName" class="font-bold text-white text-lg truncate max-w-[200px]">Bài thi</span>
+    <!-- ==================== MODALS ==================== -->
+
+    <!-- User Profile Modal -->
+    <div id="userProfileModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+        <div class="bg-dark-card w-full max-w-sm rounded-3xl p-6 border border-dark-border relative modal-animate shadow-2xl">
+            <button class="absolute top-4 right-4 text-gray-400 hover:text-white" onclick="closeUserProfile()"><i class="fas fa-times text-xl"></i></button>
+            <div class="flex flex-col items-center">
+                <div id="upAvatar" class="w-24 h-24 rounded-full bg-gradient-to-tr from-brand-primary to-brand-purple flex items-center justify-center text-4xl font-bold text-white mb-4 border-4 border-dark-card shadow-lg">U</div>
+                <h2 id="upName" class="text-2xl font-bold text-white flex items-center gap-1">User Name</h2>
+                <p id="upUsername" class="text-brand-primary text-sm mb-4">@username</p>
+                <p id="upBio" class="text-gray-400 text-center text-sm mb-6 bg-dark-main/50 p-3 rounded-xl w-full">...</p>
+                <div class="flex gap-4 w-full mb-6">
+                    <div class="flex-1 bg-dark-main p-3 rounded-xl text-center border border-dark-border">
+                        <div id="upLvl" class="text-xl font-bold text-white">1</div><div class="text-xs text-gray-500">Level</div>
+                    </div>
+                    <div class="flex-1 bg-dark-main p-3 rounded-xl text-center border border-dark-border">
+                        <div id="upXp" class="text-xl font-bold text-white">0</div><div class="text-xs text-gray-500">XP</div>
+                    </div>
+                </div>
+                <button id="btnAddFriend" class="w-full py-3 bg-brand-primary text-white rounded-xl font-bold hover:bg-blue-600 transition" onclick="sendFriendRequest()"><i class="fas fa-user-plus mr-2"></i> Kết Bạn</button>
             </div>
-            <div class="bg-brand-danger/10 text-brand-danger px-3 py-1 rounded-full border border-brand-danger/20 font-mono font-bold flex items-center gap-2">
-                <i class="far fa-clock"></i> <span id="examTimer">00:00</span>
-            </div>
-        </div>
-        <div class="flex-1 overflow-y-auto p-4 pb-24" id="examScrollArea">
-            <div id="questionsList" class="max-w-3xl mx-auto space-y-6"></div>
-        </div>
-        <div class="absolute bottom-0 left-0 w-full p-4 bg-dark-card border-t border-dark-border flex justify-end">
-            <button class="bg-brand-success text-white px-8 py-3 rounded-xl font-bold shadow-lg shadow-brand-success/30 hover:scale-105 transition" onclick="submitExam()">Nộp Bài</button>
         </div>
     </div>
 
-    <!-- Modal Nạp Xu -->
+    <!-- Recharge Modal -->
     <div id="rechargeModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
         <div class="bg-dark-card w-full max-w-md rounded-3xl p-6 border border-dark-border relative modal-animate shadow-2xl">
             <div class="flex justify-between items-center mb-6">
                 <h3 class="text-xl font-bold text-white">Nạp Xu</h3>
                 <button class="text-gray-400 hover:text-white" onclick="closeRechargeModal()"><i class="fas fa-times text-xl"></i></button>
             </div>
-            <div class="grid grid-cols-2 gap-3">
-                <button class="p-4 bg-dark-main border border-dark-border rounded-xl hover:border-brand-primary transition text-left" onclick="recharge(100)">
-                    <div class="text-brand-primary font-bold">100 Xu</div><div class="text-xs text-gray-500">10,000đ</div>
-                </button>
-                <button class="p-4 bg-dark-main border border-dark-border rounded-xl hover:border-brand-primary transition text-left" onclick="recharge(500)">
-                    <div class="text-brand-primary font-bold">500 Xu</div><div class="text-xs text-gray-500">50,000đ</div>
-                </button>
+            
+            <div class="flex bg-dark-main p-1 rounded-xl mb-6">
+                <button class="flex-1 py-2 rounded-lg text-sm font-bold bg-dark-card text-white shadow" onclick="switchRechargeTab('quick')">Gói Nhanh</button>
+                <button class="flex-1 py-2 rounded-lg text-sm font-bold text-gray-400 hover:text-white" onclick="switchRechargeTab('ticket')">Nhập Mã</button>
+            </div>
+
+            <div id="recharge-quick" class="recharge-option active block">
+                <div id="admin-banks"></div> <!-- Dynamic Bank Info -->
+                <div class="grid grid-cols-2 gap-3">
+                    <button class="p-4 bg-dark-main border border-dark-border rounded-xl hover:border-brand-primary transition text-left" onclick="recharge(100)">
+                        <div class="text-brand-primary font-bold">100 Xu</div><div class="text-xs text-gray-500">10,000đ</div>
+                    </button>
+                    <button class="p-4 bg-dark-main border border-dark-border rounded-xl hover:border-brand-primary transition text-left" onclick="recharge(500)">
+                        <div class="text-brand-primary font-bold">500 Xu</div><div class="text-xs text-gray-500">50,000đ</div>
+                    </button>
+                    <button class="p-4 bg-dark-main border border-dark-border rounded-xl hover:border-brand-primary transition text-left" onclick="recharge(1000)">
+                        <div class="text-brand-primary font-bold">1,000 Xu</div><div class="text-xs text-gray-500">100,000đ</div>
+                    </button>
+                    <button class="p-4 bg-gradient-to-r from-brand-gold to-yellow-600 rounded-xl text-black font-bold text-left" onclick="recharge(5000)">
+                        <div>5,000 Xu</div><div class="text-xs opacity-75">500,000đ</div>
+                    </button>
+                </div>
+            </div>
+
+            <div id="recharge-ticket" class="recharge-option hidden">
+                <input type="text" id="ticketCode" class="w-full bg-dark-main border border-dark-border rounded-xl p-4 text-white outline-none focus:border-brand-primary mb-4" placeholder="Nhập mã quà tặng...">
+                <button class="w-full py-3 bg-brand-primary text-white rounded-xl font-bold" onclick="submitTicket()">Xác Nhận</button>
             </div>
         </div>
     </div>
 
-    <!-- ==================== JAVASCRIPT ==================== -->
+    <!-- Exam Interface (Full Screen) -->
+    <div id="examInterface" class="fixed inset-0 z-[100] bg-dark-main hidden flex flex-col">
+        <div class="h-16 bg-dark-card border-b border-dark-border flex items-center justify-between px-4 shrink-0">
+            <div class="flex items-center gap-3">
+                <button onclick="quitExam()" class="text-gray-400 hover:text-white"><i class="fas fa-arrow-left text-xl"></i></button>
+                <span id="examSubjectName" class="font-bold text-white text-lg truncate max-w-[200px]">Tên bài thi</span>
+            </div>
+            <div class="bg-brand-danger/10 text-brand-danger px-3 py-1 rounded-full border border-brand-danger/20 font-mono font-bold flex items-center gap-2">
+                <i class="far fa-clock"></i> <span id="examTimer">00:00</span>
+            </div>
+        </div>
+        
+        <div class="flex-1 overflow-y-auto p-4 pb-24">
+            <div id="questionsList" class="max-w-3xl mx-auto space-y-6"></div>
+        </div>
+
+        <div class="absolute bottom-6 right-6">
+            <button class="bg-brand-success text-white px-8 py-3 rounded-full font-bold shadow-lg shadow-brand-success/30 hover:scale-105 transition" onclick="submitExam()">
+                <i class="fas fa-paper-plane mr-2"></i> Nộp Bài
+            </button>
+        </div>
+    </div>
+
+
+    <!-- ==================== JAVASCRIPT LOGIC ==================== -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, doc, getDoc, updateDoc, increment, collection, query, orderBy, limit, getDocs, where, addDoc, onSnapshot, deleteDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // Cấu hình Firebase (Giữ nguyên)
         const firebaseConfig = {
             apiKey: "AIzaSyDFzSBZjJS5RvCL9Ax7xRrk6q_WsNGkh_s",
             authDomain: "hubschoolvn-db841.firebaseapp.com",
@@ -359,355 +489,671 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
         let currentUser = null;
+        let currentViewedUser = null;
 
-        // --- HÀM TẠO TÍCH XANH META VERIFIED ---
+        // --- HELPER: RENDER VERIFIED BADGE (META STYLE) ---
         const VERIFIED_USERS = ['lenhanzxc', 'lenhanismee'];
         function getVerifiedHtml(username) {
             if (VERIFIED_USERS.includes(username)) {
-                // Icon răng cưa xanh + dấu tích trắng ở giữa
                 return `<span class="relative inline-block ml-1 align-middle" title="Verified">
-                    <div class="relative w-4 h-4 flex items-center justify-center">
-                        <i class="fas fa-certificate text-blue-500 text-lg absolute"></i>
-                        <i class="fas fa-check text-white text-[8px] font-bold relative z-10"></i>
-                    </div>
+                    <i class="fas fa-certificate text-blue-500 text-lg"></i>
+                    <i class="fas fa-check text-white text-[10px] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-bold"></i>
                 </span>`;
             }
             return '';
         }
 
-        // --- KHỞI TẠO & LẮNG NGHE DỮ LIỆU ---
+        // --- NEW: TOGGLE MOBILE NAV FUNCTION ---
+        window.toggleMobileNav = () => {
+            const sidebar = document.getElementById('mainSidebar');
+            const overlay = document.getElementById('mobileOverlay');
+            
+            if (sidebar.classList.contains('-translate-x-full')) {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+            }
+        }
+
         onAuthStateChanged(auth, async (user) => {
             if(user) {
                 currentUser = user;
                 listenToUserData(user.uid);
                 initShopListener();
-                loadMiniLeaderboard();
-                generateCalendar();
-                renderRecommendations();
+                initPaymentListener();
+                initSystemNotiListener();
+                initNotificationListener(user.uid);
+                loadMiniLeaderboard(); // Load right sidebar LB
             } else {
                 window.location.replace('login.html');
             }
         });
 
-        // --- 1. ĐỒNG BỘ DỮ LIỆU USER (REAL-TIME) ---
+        // 1. DATA LISTENER
         function listenToUserData(uid) {
             onSnapshot(doc(db, "users", uid), (docSnap) => {
                 if(docSnap.exists()) {
                     const data = docSnap.data();
                     
-                    // Profile Info
-                    document.getElementById('userName').innerHTML = (data.fullname || "Học viên") + getVerifiedHtml(data.username);
-                    document.getElementById('userAvatar').innerText = (data.avatarEmoji || (data.fullname ? data.fullname.charAt(0) : "U"));
+                    // User Name with Verified Badge
+                    const nameEl = document.getElementById('userName');
+                    nameEl.innerHTML = (data.fullname || "Học viên") + getVerifiedHtml(data.username);
+                    
+                    const avtEl = document.getElementById('userAvatar');
+                    avtEl.innerText = (data.avatarEmoji || (data.fullname ? data.fullname.charAt(0) : "U"));
+                    
                     document.getElementById('userXu').innerText = data.xu || 0;
                     
-                    // Sync Stats (Lấy từ Firebase)
-                    document.getElementById('statStreak').innerText = data.streak || 0;
-                    document.getElementById('statQuestions').innerText = data.questionsDone || 0;
-                    document.getElementById('statHours').innerText = (data.studyHours || 0).toFixed(1) + 'h';
-                    document.getElementById('statRank').innerText = data.rankText || "Tập sự"; 
+                    const crowns = document.querySelectorAll('.vip-crown');
+                    if (data.isVIP) {
+                        crowns.forEach(el => el.classList.remove('hidden'));
+                        crowns.forEach(el => el.style.display = 'flex'); 
+                    }
 
-                    // XP Bar Logic
                     const nextLevel = (data.level || 1) * 1000;
                     const percent = Math.min(((data.xp || 0) / nextLevel) * 100, 100);
                     if(document.getElementById('xpBar')) document.getElementById('xpBar').style.width = percent + "%";
+                    
                     if(document.getElementById('userLv')) document.getElementById('userLv').innerText = data.level || 1;
                     if(document.getElementById('userXp')) document.getElementById('userXp').innerText = data.xp || 0;
 
-                    // Kích hoạt VIP nếu có
-                    if (data.isVIP) {
-                        document.querySelectorAll('.vip-crown').forEach(el => { el.classList.remove('hidden'); el.style.display = 'flex'; });
-                    }
+                    let rankName = "Tập Sự";
+                    const lvl = data.level || 1;
+                    if (lvl >= 5) rankName = "Học Giả";
+                    if (lvl >= 10) rankName = "Chuyên Gia";
+                    if (lvl >= 50) rankName = "Tiến Sĩ";
+                    document.getElementById('userRankTitle').innerText = rankName;
 
-                    document.getElementById('loadingOverlay').style.display = 'none';
+                    const loading = document.getElementById('loadingOverlay');
+                    if(loading) { 
+                        loading.style.opacity = '0'; 
+                        setTimeout(() => loading.style.display = 'none', 500); 
+                    }
                 }
             });
         }
 
-        // --- 2. HỆ THỐNG ĐỀ XUẤT (LỚP 12 CHUẨN 2025) ---
-        const EXAM_TYPES = [
-            { id: 'math_12_quick', title: 'Toán 12 - Tốc độ', type: 'quick', time: 15, xp: 45, icon: 'fa-square-root-alt', color: 'brand-gold' },
-            { id: 'phys_12_mid', title: 'Vật Lý 12 - Giữa Kỳ', type: 'midterm', time: 45, xp: 150, icon: 'fa-atom', color: 'brand-primary' },
-            { id: 'chem_12_mid', title: 'Hóa Học 12 - Giữa Kỳ', type: 'midterm', time: 45, xp: 150, icon: 'fa-flask', color: 'brand-purple' },
-            { id: 'lit_12_final', title: 'Ngữ Văn 12 - Cuối Kỳ', type: 'literature', time: 120, xp: 300, icon: 'fa-feather-alt', color: 'brand-danger' }
-        ];
-
-        function renderRecommendations() {
-            const container = document.getElementById('recommendationContainer');
-            container.innerHTML = EXAM_TYPES.map(exam => `
-                <div class="bg-dark-card p-5 rounded-2xl border border-dark-border relative group hover:border-${exam.color} hover:shadow-glow-${exam.color === 'brand-gold' ? 'gold' : 'blue'} transition-all cursor-pointer" onclick="startExam('${exam.id}')">
-                    <span class="absolute top-3 right-3 text-[10px] font-bold px-2 py-0.5 rounded bg-gray-700 text-gray-300 uppercase">${exam.type === 'quick' ? 'Nhanh' : (exam.type === 'literature' ? 'Tự luận' : 'Giữa kỳ')}</span>
-                    <div class="flex gap-4 mb-4">
-                        <div class="w-14 h-14 rounded-xl bg-${exam.color}/10 text-${exam.color} flex items-center justify-center text-2xl"><i class="fas ${exam.icon}"></i></div>
-                        <div>
-                            <h4 class="text-lg font-bold text-white">${exam.title}</h4>
-                            <div class="text-xs text-gray-400 mt-1 flex gap-3">
-                                <span><i class="far fa-clock"></i> ${exam.time}p</span> 
-                                <span><i class="fas fa-star"></i> +${exam.xp} XP</span>
-                            </div>
-                        </div>
-                    </div>
-                    <button class="w-full py-2.5 rounded-xl bg-${exam.color} text-white font-bold shadow-lg shadow-${exam.color}/30 text-sm">Làm Bài Ngay</button>
-                </div>
-            `).join('');
-        }
-
-        // --- 3. HỆ THỐNG THI CỬ (ĐA DẠNG CÂU HỎI) ---
-        let currentExam = null;
-        let timerInterval = null;
-
-        // Dữ liệu giả lập câu hỏi (Mock Data)
-        const MOCK_QUESTIONS = {
-            'math_12_quick': Array.from({length: 20}, (_, i) => ({ type: 'mcq', q: `Hàm số y = f(x) có bảng biến thiên như hình. Số nghiệm của f(x) = ${i}?`, opts: ['1', '2', '3', '4'], ans: 0 })),
-            'phys_12_mid': [
-                // Phần 1: 20 câu trắc nghiệm 4 lựa chọn
-                ...Array.from({length: 20}, (_, i) => ({ type: 'mcq', q: `[P1] Một vật dao động điều hòa với biên độ A = ${i+2}cm. Quỹ đạo là:`, opts: [`${(i+2)*2}cm`, `${i+2}cm`, '0cm', 'Vô cùng'], ans: 0 })),
-                // Phần 2: 6 câu Đúng Sai (Mỗi câu 4 ý nhỏ)
-                ...Array.from({length: 6}, (_, i) => ({ type: 'tf_group', q: `[P2] Câu ${i+1}: Cho mạch điện R,L,C nối tiếp. Nhận định sau đây đúng hay sai?`, 
-                    items: [
-                        { text: "Điện áp tức thời u sớm pha hơn i", ans: true },
-                        { text: "Công suất tiêu thụ cực đại khi cộng hưởng", ans: true },
-                        { text: "Tổng trở Z luôn lớn hơn R", ans: false },
-                        { text: "Điện áp hiệu dụng U = U_R + U_L + U_C", ans: false }
-                    ]
-                })),
-                // Phần 3: 4 câu trả lời ngắn
-                ...Array.from({length: 4}, (_, i) => ({ type: 'short', q: `[P3] Câu ${i+1}: Tính chu kỳ T (s) biết f = ${50+i}Hz. (Điền số thập phân)`, ans: (1/(50+i)).toFixed(2) }))
-            ],
-            'chem_12_mid': [
-                ...Array.from({length: 20}, (_, i) => ({ type: 'mcq', q: `Este X có CTPT C4H8O2. Số đồng phân là:`, opts: ['2', '3', '4', '5'], ans: 2 })),
-                ...Array.from({length: 6}, (_, i) => ({ type: 'tf_group', q: `Phát biểu về Cacbohydrat:`, items: [{text:"Glucozo có tráng bạc", ans:true}, {text:"Saccarozo là đường đôi", ans:true}, {text:"Tinh bột tan tốt trong nước lạnh", ans:false}, {text:"Xenlulozo có cấu trúc mạch phân nhánh", ans:false}] })),
-                ...Array.from({length: 4}, (_, i) => ({ type: 'short', q: `Số nguyên tử Oxi trong phân tử Glucozơ là:`, ans: '6' }))
-            ],
-            'lit_12_final': [
-                { type: 'section_header', text: 'I. ĐỌC HIỂU (3.0 điểm)' },
-                { type: 'mcq', q: 'Câu 1: Phương thức biểu đạt chính của đoạn trích?', opts: ['Nghị luận', 'Biểu cảm', 'Tự sự', 'Miêu tả'], ans: 0 },
-                { type: 'mcq', q: 'Câu 2: Phong cách ngôn ngữ của văn bản?', opts: ['Báo chí', 'Nghệ thuật', 'Khoa học', 'Chính luận'], ans: 3 },
-                { type: 'short', q: 'Câu 3: Chỉ ra biện pháp tu từ trong câu văn in đậm.', ans: '' },
-                { type: 'essay_short', q: 'Câu 4: Anh/chị có đồng tình với ý kiến tác giả không? Vì sao? (Viết khoảng 5-7 dòng)', height: 3 },
-                { type: 'section_header', text: 'II. LÀM VĂN (7.0 điểm)' },
-                { type: 'essay', q: 'Câu 1 (2.0đ): Viết đoạn văn (200 chữ) trình bày suy nghĩ về ý nghĩa của việc sống cống hiến.', height: 6 },
-                { type: 'essay', q: 'Câu 2 (5.0đ): Phân tích hình tượng người lái đò trong tùy bút "Người lái đò Sông Đà" của Nguyễn Tuân.', height: 12 }
-            ]
-        };
-
-        window.startExam = (id) => {
-            const meta = EXAM_TYPES.find(e => e.id === id) || { title: 'Bài Thi', time: 15, xp: 30 };
-            const questions = MOCK_QUESTIONS[id] || MOCK_QUESTIONS['math_12_quick']; 
-            currentExam = { ...meta, questions };
-
-            document.getElementById('examSubjectName').innerText = meta.title;
-            const list = document.getElementById('questionsList');
-            list.innerHTML = "";
-
-            questions.forEach((q, i) => {
-                let html = '';
-                
-                if (q.type === 'section_header') {
-                    html = `<div class="text-xl font-bold text-brand-gold mt-6 mb-4 border-b border-gray-700 pb-2">${q.text}</div>`;
-                } else {
-                    html = `<div class="bg-dark-card p-5 rounded-2xl border border-dark-border mb-4">`;
-                    if(q.type !== 'section_header') html += `<div class="font-bold text-white text-md mb-3">${q.q}</div>`;
-
-                    if (q.type === 'mcq') {
-                        html += `<div class="grid grid-cols-1 md:grid-cols-2 gap-3">${q.opts.map((o, idx) => `
-                            <label class="flex items-center p-3 rounded-xl bg-dark-main border border-dark-border cursor-pointer hover:bg-dark-hover"><input type="radio" name="q${i}" class="w-5 h-5 accent-brand-primary mr-3"> <span class="text-gray-300 text-sm">${o}</span></label>
-                        `).join('')}</div>`;
-                    } else if (q.type === 'tf_group') {
-                        // True/False Grouped (New Format 2025)
-                        html += `<div class="space-y-2">`;
-                        q.items.forEach((item, idx) => {
-                            html += `
-                            <div class="flex items-center justify-between p-3 bg-dark-main rounded-xl border border-dark-border">
-                                <span class="text-sm text-gray-300 flex-1 mr-4">${String.fromCharCode(97+idx)}) ${item.text}</span>
-                                <div class="flex gap-4 shrink-0">
-                                    <label class="flex items-center gap-1 cursor-pointer"><input type="radio" name="q${i}_${idx}" value="T" class="w-4 h-4 accent-green-500"> <span class="text-xs font-bold text-green-500">Đúng</span></label>
-                                    <label class="flex items-center gap-1 cursor-pointer"><input type="radio" name="q${i}_${idx}" value="F" class="w-4 h-4 accent-red-500"> <span class="text-xs font-bold text-red-500">Sai</span></label>
-                                </div>
-                            </div>`;
-                        });
-                        html += `</div>`;
-                    } else if (q.type === 'short') {
-                        html += `<input type="text" class="w-full bg-dark-main border border-dark-border rounded-xl p-3 text-white outline-none focus:border-brand-primary" placeholder="Nhập đáp án của bạn...">`;
-                    } else if (q.type === 'essay' || q.type === 'essay_short') {
-                        html += `<textarea rows="${q.height || 5}" class="w-full bg-dark-main border border-dark-border rounded-xl p-3 text-white outline-none focus:border-brand-primary text-sm" placeholder="Làm bài tại đây..."></textarea>`;
-                    }
-                    html += `</div>`;
-                }
-                list.insertAdjacentHTML('beforeend', html);
-            });
-
-            document.getElementById('examInterface').classList.remove('hidden');
-            document.getElementById('examInterface').classList.add('flex');
-            startTimer(meta.time * 60);
-        }
-
-        function startTimer(duration) {
-            let timer = duration, minutes, seconds;
-            const display = document.getElementById('examTimer');
-            clearInterval(timerInterval);
-            timerInterval = setInterval(function () {
-                minutes = parseInt(timer / 60, 10);
-                seconds = parseInt(timer % 60, 10);
-                minutes = minutes < 10 ? "0" + minutes : minutes;
-                seconds = seconds < 10 ? "0" + seconds : seconds;
-                display.textContent = minutes + ":" + seconds;
-                if (--timer < 0) { window.submitExam(); }
-            }, 1000);
-        }
-
-        window.submitExam = async () => {
-            clearInterval(timerInterval);
-            // Mock Grading: Random Score for demo
-            const score = (Math.random() * (9.5 - 6.0) + 6.0).toFixed(1); 
-            const earnedXP = Math.floor(currentExam.xp * (score/10));
-            
-            // Sync Stats Update Realtime
-            if(currentUser) {
-                await updateDoc(doc(db, "users", currentUser.uid), { 
-                    xp: increment(earnedXP),
-                    questionsDone: increment(20), // Mock count
-                    studyHours: increment(currentExam.time / 60) // Add fractions of hours
-                });
-            }
-
-            alert(`Nộp bài thành công!\nĐiểm giả lập: ${score}/10\nBạn nhận được +${earnedXP} XP`);
-            document.getElementById('examInterface').classList.add('hidden');
-            document.getElementById('examInterface').classList.remove('flex');
-        }
-
-        window.quitExam = () => { if(confirm("Thoát? Kết quả sẽ không lưu.")) { clearInterval(timerInterval); document.getElementById('examInterface').classList.add('hidden'); document.getElementById('examInterface').classList.remove('flex'); } }
-
-        // --- 4. LỊCH HỌC TƯƠNG TÁC (INTERACTIVE CALENDAR) ---
-        function generateCalendar() {
-            const grid = document.getElementById('calendarGrid');
-            const info = document.getElementById('calEventInfo');
-            const dateTitle = document.getElementById('calSelectedDate');
-            const eventContent = document.getElementById('calEventContent');
-            grid.innerHTML = "";
-            
-            const today = new Date();
-            const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
-            const startDay = new Date(today.getFullYear(), today.getMonth(), 1).getDay();
-
-            // Empty slots
-            for(let i=0; i<startDay; i++) grid.innerHTML += `<span></span>`;
-
-            // Days
-            for(let i=1; i<=daysInMonth; i++) {
-                const isToday = i === today.getDate();
-                const div = document.createElement('div');
-                div.className = `calendar-day p-1 rounded text-center text-sm ${isToday ? 'today text-brand-primary border border-brand-primary' : 'text-gray-400'}`;
-                div.innerText = i;
-                
-                // Mock events (Chẵn lẻ)
-                if(i % 2 !== 0 || i === today.getDate()) div.classList.add('has-event');
-
-                div.onclick = () => {
-                    document.querySelectorAll('.calendar-day').forEach(el => { el.classList.remove('active', 'bg-brand-primary', 'text-white'); });
-                    div.classList.add('active', 'bg-brand-primary', 'text-white');
-                    div.classList.remove('text-gray-400');
-                    
-                    info.classList.remove('hidden');
-                    dateTitle.innerText = `Lịch học ngày ${i}/${today.getMonth()+1}`;
-                    
-                    // Generate Mock Events based on date
-                    let eventsHtml = '';
-                    if (i % 2 !== 0) {
-                        eventsHtml += `
-                            <div class="flex items-center gap-2 text-xs text-gray-300"><span class="w-2 h-2 rounded-full bg-brand-danger"></span> 19:30 - Thi thử Toán 12</div>
-                            <div class="flex items-center gap-2 text-xs text-gray-300"><span class="w-2 h-2 rounded-full bg-brand-success"></span> 21:00 - Nộp bài Hóa</div>
-                        `;
-                    } else {
-                        eventsHtml += `
-                            <div class="flex items-center gap-2 text-xs text-gray-300"><span class="w-2 h-2 rounded-full bg-brand-purple"></span> 20:00 - Livestream Lý</div>
-                        `;
-                    }
-                    eventContent.innerHTML = eventsHtml;
-                };
-                grid.appendChild(div);
-            }
-        }
-
-        // --- 5. SHOP LOGIC (REAL) ---
+        // 2. SHOP LISTENER
         function initShopListener() {
             onSnapshot(collection(db, "items"), (snapshot) => {
                 let dynContainer = document.getElementById('dynamic-shop-items');
                 if(!dynContainer) return;
+
                 let html = '';
                 snapshot.forEach(doc => {
                     const item = doc.data();
-                    html += `<div class="bg-dark-card p-5 rounded-2xl border border-dark-border flex flex-col items-center text-center">
-                        <div class="w-16 h-16 bg-brand-primary/10 text-brand-primary rounded-full flex items-center justify-center text-3xl mb-4">${item.emoji || '📦'}</div>
-                        <h3 class="text-lg font-bold text-white">${item.name}</h3>
-                        <p class="text-xs text-gray-400 mb-4">Kho: ${item.stock}</p>
-                        <div class="mt-auto w-full">
-                            <div class="text-brand-gold font-bold text-xl mb-3">${item.price} <i class="fas fa-coins"></i></div>
-                            <button class="w-full py-2 bg-dark-main border border-dark-border text-white font-bold rounded-xl hover:bg-white hover:text-black transition" onclick="buyItem(${item.price}, '${item.name}', 'item')">Mua</button>
-                        </div></div>`;
+                    html += `
+                        <div class="bg-dark-card p-5 rounded-2xl border border-dark-border flex flex-col items-center text-center">
+                            <div class="w-16 h-16 bg-brand-primary/10 text-brand-primary rounded-full flex items-center justify-center text-3xl mb-4">${item.emoji || '📦'}</div>
+                            <h3 class="text-lg font-bold text-white">${item.name}</h3>
+                            <p class="text-xs text-gray-400 mb-4">Kho: ${item.stock}</p>
+                            <div class="mt-auto w-full">
+                                <div class="text-brand-gold font-bold text-xl mb-3">
+                                    ${item.salePrice ? `<span class="line-through text-gray-500 text-sm mr-2">${item.price}</span> <span class="text-brand-danger">${item.salePrice}</span>` : item.price} <i class="fas fa-coins"></i>
+                                </div>
+                                <button class="w-full py-2 bg-dark-main border border-dark-border text-white font-bold rounded-xl hover:bg-white hover:text-black transition" onclick="buyDynamicItem('${doc.id}', ${item.salePrice || item.price}, '${item.name}')">Mua</button>
+                            </div>
+                        </div>
+                    `;
                 });
                 dynContainer.innerHTML = html;
             });
         }
 
-        window.buyItem = async (price, name, type) => {
+        window.buyDynamicItem = async (id, price, name) => {
             const curXu = parseInt(document.getElementById('userXu').innerText);
             if(curXu < price) return alert("Không đủ Xu!");
-            if(confirm(`Mua ${name} với giá ${price} Xu?`)) {
-                const updates = { xu: increment(-price) };
-                if(type === 'vip') updates.isVIP = true;
-                
-                await updateDoc(doc(db, "users", currentUser.uid), updates);
-                alert("Giao dịch thành công!");
+            if(confirm("Mua " + name + " với giá " + price + " Xu?")) {
+                await updateDoc(doc(db, "users", currentUser.uid), { xu: increment(-price) });
+                alert("Mua thành công!");
             }
         }
 
-        // --- 6. MINI LEADERBOARD SYNC ---
-        async function loadMiniLeaderboard() {
-            const container = document.getElementById('miniLeaderboardList');
-            if(!container) return;
-            const q = query(collection(db, "users"), orderBy("xp", "desc"), limit(5));
-            onSnapshot(q, (snap) => {
-                container.innerHTML = "";
-                let rank = 1;
-                snap.forEach(doc => {
-                    const u = doc.data();
-                    let color = rank === 1 ? 'text-brand-gold' : (rank === 2 ? 'text-gray-300' : (rank === 3 ? 'text-orange-500' : 'text-gray-500'));
-                    container.insertAdjacentHTML('beforeend', `
-                        <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-dark-hover transition">
-                            <span class="font-bold w-4 text-center ${color}">${rank}</span>
-                            <div class="w-8 h-8 rounded-full bg-dark-main border border-dark-border text-white flex items-center justify-center font-bold text-xs">${u.avatarEmoji||u.fullname.charAt(0)}</div>
-                            <div class="flex-1 min-w-0">
-                                <p class="text-sm text-white font-bold truncate flex items-center gap-1">${u.fullname} ${getVerifiedHtml(u.username)}</p>
-                                <p class="text-xs text-gray-500">${u.xp} XP</p>
+        // 3. PAYMENT LISTENER
+        function initPaymentListener() {
+            onSnapshot(collection(db, "payment_info"), (snapshot) => {
+                const adminBanks = document.getElementById('admin-banks');
+                if(!adminBanks) return;
+                
+                let html = '<p class="text-sm text-brand-secondary font-bold mb-3">Thông tin chuyển khoản:</p>';
+                if(snapshot.empty) html = '';
+
+                snapshot.forEach(doc => {
+                    const p = doc.data();
+                    html += `
+                        <div class="bg-white/5 p-3 rounded-xl mb-3 flex items-center gap-3 border border-white/10">
+                            <img src="${p.qrUrl}" class="w-14 h-14 object-cover bg-white rounded-lg" onclick="window.open(this.src)">
+                            <div>
+                                <div class="text-green-400 font-bold text-sm">${p.bankName}</div>
+                                <div class="text-white font-mono font-bold text-lg tracking-wide">${p.number}</div>
+                                <div class="text-gray-400 text-xs">${p.owner}</div>
                             </div>
-                        </div>`);
-                    rank++;
+                        </div>
+                    `;
                 });
+                adminBanks.innerHTML = html;
             });
         }
 
-        // --- HELPERS (UI) ---
-        window.switchTab = (tab) => {
-            document.querySelectorAll('.tab-content').forEach(el => { el.classList.remove('block'); el.classList.add('hidden'); });
-            document.getElementById('tab-' + tab).classList.remove('hidden'); document.getElementById('tab-' + tab).classList.add('block');
-            document.querySelectorAll('.nav-item').forEach(el => { el.classList.remove('active-nav'); el.classList.add('text-gray-400'); });
-            document.getElementById('nav-'+tab).classList.add('active-nav'); document.getElementById('nav-'+tab).classList.remove('text-gray-400');
-            const titles = { 'dashboard': 'Tổng Quan', 'library': 'Kho Tài Liệu', 'exam': 'Thi Thử', 'friends': 'Tìm Bạn', 'leaderboard': 'BXH', 'shop': 'Cửa Hàng' };
-            document.getElementById('pageTitle').innerText = titles[tab];
+        // 4. SYSTEM NOTI LISTENER
+        function initSystemNotiListener() {
+            const q = query(collection(db, "notifications"), orderBy("date", "desc"), limit(5));
+            onSnapshot(q, (snapshot) => {
+                const notifList = document.getElementById('notifList');
+                if(!notifList) return;
+
+                let sysContainer = document.getElementById('sys-notifs');
+                if(!sysContainer) {
+                    sysContainer = document.createElement('div');
+                    sysContainer.id = 'sys-notifs';
+                    notifList.prepend(sysContainer); 
+                }
+
+                let sysHtml = '';
+                snapshot.forEach(doc => {
+                    const n = doc.data();
+                    sysHtml += `
+                        <div class="p-3 border-l-4 border-brand-primary bg-brand-primary/10 mb-1">
+                            <div class="flex gap-3">
+                                <div class="w-8 h-8 rounded-full bg-brand-primary text-white flex items-center justify-center shrink-0"><i class="fas fa-bullhorn text-xs"></i></div>
+                                <div>
+                                    <strong class="text-white text-sm block">${n.title}</strong>
+                                    <p class="text-gray-400 text-xs">${n.content}</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                sysContainer.innerHTML = sysHtml;
+
+                if(!snapshot.empty) {
+                    const badge = document.getElementById('notifCount');
+                    badge.classList.remove('hidden');
+                    badge.innerText = '!';
+                }
+            });
+        }
+
+        // FRIEND NOTIFICATIONS
+        window.toggleNotifPanel = () => {
+            const panel = document.getElementById('notifPanel');
+            panel.classList.toggle('hidden');
+            panel.classList.toggle('flex');
         };
-        window.openRechargeModal = () => { document.getElementById('rechargeModal').classList.remove('hidden'); document.getElementById('rechargeModal').classList.add('flex'); }
-        window.closeRechargeModal = () => { document.getElementById('rechargeModal').classList.add('hidden'); document.getElementById('rechargeModal').classList.remove('flex'); }
-        window.recharge = async (amount) => { 
-            if(confirm(`Nạp ${amount} Xu?`)) { 
-                await updateDoc(doc(db, "users", currentUser.uid), { xu: increment(amount) }); 
-                alert("Nạp thành công!"); closeRechargeModal(); 
+
+        function initNotificationListener(uid) {
+            onSnapshot(collection(db, "users", uid, "notifications"), (snapshot) => {
+                const list = document.getElementById('notifList');
+                let friendHtml = "";
+                let count = 0;
+                snapshot.forEach(doc => {
+                    const n = doc.data();
+                    count++;
+                    if(n.type === 'friend_request') {
+                        friendHtml += `
+                        <div class="p-3 border-b border-dark-border flex gap-3 items-start">
+                            <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-400 to-purple-500 text-white flex items-center justify-center font-bold shrink-0 text-sm">${n.fromAvatar}</div>
+                            <div class="flex-1">
+                                <p class="text-sm text-gray-300"><strong>${n.fromName}</strong> gửi kết bạn.</p>
+                                <div class="flex gap-2 mt-2">
+                                    <button class="px-3 py-1 bg-brand-primary text-white text-xs rounded hover:bg-blue-600" onclick="handleRequest('${doc.id}', '${n.fromUid}', true)">Chấp nhận</button>
+                                    <button class="px-3 py-1 border border-gray-600 text-gray-400 text-xs rounded hover:bg-white hover:text-black" onclick="handleRequest('${doc.id}', '${n.fromUid}', false)">Xóa</button>
+                                </div>
+                            </div>
+                        </div>`;
+                    }
+                });
+                
+                let friendContainer = document.getElementById('friend-reqs');
+                if(!friendContainer) {
+                    friendContainer = document.createElement('div');
+                    friendContainer.id = 'friend-reqs';
+                    list.appendChild(friendContainer);
+                }
+                friendContainer.innerHTML = friendHtml;
+
+                const badge = document.getElementById('notifCount');
+                if(count > 0) {
+                    badge.innerText = count;
+                    badge.classList.remove('hidden');
+                }
+            });
+        }
+
+        window.handleRequest = async (id, fromUid, accept) => {
+            if(accept) alert("Đã kết bạn!");
+            await deleteDoc(doc(db, "users", currentUser.uid, "notifications", id));
+        }
+
+        // FRIENDS SEARCH
+        window.searchFriend = async () => {
+            const input = document.getElementById('friendSearchInput').value.trim();
+            const container = document.getElementById('friendResult');
+            container.innerHTML = '<p class="text-center text-gray-500 w-full col-span-2">Đang tìm...</p>';
+            if(!input) return;
+            const q = query(collection(db, "users"), where("username", "==", input));
+            const snapshot = await getDocs(q);
+            container.innerHTML = "";
+            if(snapshot.empty) container.innerHTML = '<p class="text-center text-brand-danger w-full col-span-2">Không tìm thấy!</p>';
+            else {
+                snapshot.forEach(doc => {
+                    const u = doc.data();
+                    const div = document.createElement('div');
+                    div.className = 'bg-dark-card p-4 rounded-xl border border-dark-border cursor-pointer hover:border-brand-primary transition flex items-center gap-4';
+                    div.onclick = () => openUserProfile(doc.id, u);
+                    
+                    // Add verified badge here
+                    const badgeHtml = getVerifiedHtml(u.username);
+                    
+                    div.innerHTML = `
+                        <div class="w-12 h-12 rounded-full bg-dark-main border border-dark-border flex items-center justify-center text-xl font-bold text-white">${u.avatarEmoji || u.fullname.charAt(0)}</div>
+                        <div>
+                            <h4 class="font-bold text-white flex items-center gap-1">${u.fullname} ${badgeHtml}</h4>
+                            <p class="text-xs text-gray-500">@${u.username}</p>
+                            <div class="text-xs text-brand-primary mt-1">Lv.${u.level || 1} • ${u.xp || 0} XP</div>
+                        </div>`;
+                    container.appendChild(div);
+                });
+            }
+        }
+
+        window.openUserProfile = (uid, data) => {
+            if(uid === currentUser.uid) return;
+            currentViewedUser = uid;
+            document.getElementById('upAvatar').innerText = data.avatarEmoji || data.fullname.charAt(0);
+            
+            // Add Verified Badge
+            document.getElementById('upName').innerHTML = data.fullname + getVerifiedHtml(data.username);
+            
+            document.getElementById('upUsername').innerText = "@" + data.username;
+            document.getElementById('upBio').innerText = data.bio || "Chưa có tiểu sử";
+            document.getElementById('upLvl').innerText = data.level || 1;
+            document.getElementById('upXp').innerText = data.xp || 0;
+            
+            const modal = document.getElementById('userProfileModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        window.closeUserProfile = () => {
+            const modal = document.getElementById('userProfileModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        window.sendFriendRequest = async () => {
+            if(!currentViewedUser) return;
+            const btn = document.getElementById('btnAddFriend');
+            btn.innerText = "Đang gửi...";
+            try {
+                const mySnap = await getDoc(doc(db, "users", currentUser.uid));
+                await addDoc(collection(db, "users", currentViewedUser, "notifications"), {
+                    type: 'friend_request', fromUid: currentUser.uid, fromName: mySnap.data().fullname,
+                    fromAvatar: mySnap.data().avatarEmoji || mySnap.data().fullname.charAt(0),
+                    timestamp: new Date().toISOString()
+                });
+                alert("Đã gửi lời mời!");
+                btn.innerText = "Đã Gửi"; btn.disabled = true;
+            } catch(e) { alert("Lỗi gửi!"); btn.innerText = "Kết Bạn"; }
+        }
+
+        // EXAM DATA
+        const EXAM_DATA = [
+            { id: 'math_12_hk1', title: 'Toán 12 - Cuối Kỳ 1', time: 90, xp: 200, difficulty: 'Khó', questions: [
+                {q:"Hàm số y = x^3 - 3x^2 + 1 đồng biến trên khoảng nào?", opts:["(-∞; 0) và (2; +∞)", "(0; 2)", "(-∞; 2)", "(2; +∞)"], ans:0},
+                {q:"Thể tích khối lăng trụ có diện tích đáy B và chiều cao h là:", opts:["V = Bh", "V = 1/3 Bh", "V = 3Bh", "V = 1/2 Bh"], ans:0},
+                {q:"Nghiệm của phương trình 2^x = 8 là:", opts:["x = 3", "x = 2", "x = 4", "x = 1"], ans:0},
+                {q:"Tập xác định của hàm số y = log(x-1) là:", opts:["(1; +∞)", "[1; +∞)", "(-∞; 1)", "R\\{1}"], ans:0},
+                {q:"Cho khối nón có bán kính đáy r=3, chiều cao h=4. Thể tích khối nón là:", opts:["12π", "36π", "4π", "16π"], ans:0}
+            ]},
+            { id: 'math_11_trig', title: 'Toán 11 - Lượng Giác', time: 45, xp: 120, difficulty: 'TB', questions: [
+                {q:"Phương trình sin(x) = 1 có nghiệm là:", opts:["x = π/2 + k2π", "x = kπ", "x = π + k2π", "x = -π/2 + k2π"], ans:0},
+                {q:"Hàm số nào sau đây là hàm số chẵn?", opts:["y = cos(x)", "y = sin(x)", "y = tan(x)", "y = cot(x)"], ans:0},
+                {q:"Giá trị lớn nhất của hàm số y = 2sin(x) + 1 là:", opts:["3", "1", "2", "0"], ans:0}
+            ]},
+            { id: 'phy_12_osc', title: 'Vật Lý 12 - Dao Động', time: 45, xp: 120, difficulty: 'TB', questions: [
+                {q:"Một vật dao động điều hòa với phương trình x = 4cos(2πt + π/3) cm. Biên độ dao động là:", opts:["4 cm", "2 cm", "8 cm", "4π cm"], ans:0},
+                {q:"Công thức tính chu kỳ con lắc đơn là:", opts:["T = 2π√(l/g)", "T = 2π√(g/l)", "T = √(l/g)", "T = 2π√(m/k)"], ans:0},
+                {q:"Khi xảy ra hiện tượng cộng hưởng cơ thì:", opts:["Biên độ dao động đạt giá trị cực đại", "Tần số dao động bằng tần số riêng", "Cả A và B đều đúng", "Năng lượng dao động không đổi"], ans:2}
+            ]},
+            { id: 'phy_11_elec', title: 'Vật Lý 11 - Điện Trường', time: 30, xp: 80, difficulty: 'Dễ', questions: [
+                {q:"Đơn vị của điện tích là:", opts:["Coulomb (C)", "Vôn (V)", "Ampe (A)", "Jun (J)"], ans:0},
+                {q:"Hai điện tích cùng dấu thì:", opts:["Đẩy nhau", "Hút nhau", "Không tác dụng lực", "Hút hoặc đẩy tùy khoảng cách"], ans:0}
+            ]},
+            { id: 'chem_12_est', title: 'Hóa 12 - Este & Lipit', time: 45, xp: 130, difficulty: 'TB', questions: [
+                {q:"Chất nào sau đây là este?", opts:["CH3COOC2H5", "CH3COOH", "C2H5OH", "CH3CHO"], ans:0},
+                {q:"Thủy phân este trong môi trường kiềm được gọi là phản ứng:", opts:["Xà phòng hóa", "Tráng gương", "Este hóa", "Trùng ngưng"], ans:0},
+                {q:"Công thức tổng quát của este no, đơn chức, mạch hở là:", opts:["CnH2nO2 (n≥2)", "CnH2n+2O", "CnH2nO", "CnH2n-2O2"], ans:0}
+            ]},
+            { id: 'bio_12_gen', title: 'Sinh 12 - Di Truyền', time: 40, xp: 110, difficulty: 'TB', questions: [
+                {q:"Mã di truyền có tính chất nào sau đây?", opts:["Tính phổ biến", "Tính thoái hóa", "Tính đặc hiệu", "Cả 3 ý trên"], ans:3},
+                {q:"Đơn phân cấu tạo nên ADN là:", opts:["Nucleotit", "Axit amin", "Glucozơ", "Axit béo"], ans:0},
+                {q:"Quá trình nhân đôi ADN diễn ra theo nguyên tắc:", opts:["Bổ sung và bán bảo toàn", "Bổ sung và bảo toàn", "Khuôn mẫu", "Ngẫu nhiên"], ans:0}
+            ]},
+            { id: 'eng_12_gen', title: 'Tiếng Anh 12 - Tổng Hợp', time: 60, xp: 150, difficulty: 'Khó', questions: [
+                {q:"She _______ to school every day.", opts:["goes", "go", "going", "went"], ans:0},
+                {q:"If I _______ you, I would study harder.", opts:["were", "am", "was", "have been"], ans:0},
+                {q:"Synonym of 'Happy':", opts:["Joyful", "Sad", "Angry", "Bored"], ans:0},
+                {q:"I haven't seen him _______ 2010.", opts:["since", "for", "in", "at"], ans:0},
+                {q:"He is interested _______ learning English.", opts:["in", "on", "at", "of"], ans:0}
+            ]},
+            { id: 'it_11_py', title: 'Tin Học 11 - Python', time: 45, xp: 140, difficulty: 'Khó', questions: [
+                {q:"Trong Python, hàm dùng để in ra màn hình là:", opts:["print()", "cout <<", "System.out.println", "printf"], ans:0},
+                {q:"Kết quả của 10 // 3 trong Python là:", opts:["3", "3.333", "1", "3.0"], ans:0},                {q:"Kiểu dữ liệu danh sách trong Python gọi là:", opts:["List", "Array", "Dictionary", "Tuple"], ans:0}
+            ]},
+            { id: 'tech_agri', title: 'CN Nông Nghiệp', time: 30, xp: 90, difficulty: 'Dễ', questions: [
+                {q:"Vai trò của rừng là:", opts:["Điều hòa khí hậu", "Cung cấp gỗ", "Giữ đất, giữ nước", "Cả 3 ý trên"], ans:3},
+                {q:"Phân bón hữu cơ có đặc điểm:", opts:["Hiệu quả chậm nhưng bền", "Hiệu quả nhanh", "Dễ tan", "Gây ô nhiễm"], ans:0}
+            ]},
+            { id: 'tech_ind', title: 'CN Công Nghiệp', time: 30, xp: 90, difficulty: 'Dễ', questions: [
+                {q:"Trong bản vẽ kĩ thuật, nét liền đậm dùng để vẽ:", opts:["Đường bao thấy", "Đường tâm", "Đường kích thước", "Đường gióng"], ans:0},
+                {q:"Vật liệu cơ khí phổ biến nhất là:", opts:["Kim loại đen (thép, gang)", "Nhựa", "Gỗ", "Cao su"], ans:0}
+            ]},
+            { id: 'civic_12', title: 'GDCD/KTPL 12', time: 40, xp: 100, difficulty: 'TB', questions: [
+                {q:"Cơ quan quyền lực nhà nước cao nhất là:", opts:["Quốc hội", "Chính phủ", "Tòa án", "Viện kiểm sát"], ans:0},
+                {q:"Công dân có quyền bầu cử khi đủ:", opts:["18 tuổi", "21 tuổi", "16 tuổi", "20 tuổi"], ans:0},
+                {q:"Nghĩa vụ quân sự áp dụng cho công dân nam từ:", opts:["18 đến 25 tuổi (hoặc 27)", "20 đến 30 tuổi", "17 đến 25 tuổi", "18 đến 40 tuổi"], ans:0}
+            ]},
+            { id: 'civic_10', title: 'Kinh Tế Pháp Luật 10', time: 30, xp: 80, difficulty: 'Dễ', questions: [
+                {q:"Thị trường là nơi diễn ra hoạt động:", opts:["Mua và bán", "Sản xuất", "Tiêu dùng", "Quản lý"], ans:0},
+                {q:"Thuế là nguồn thu chủ yếu của:", opts:["Ngân sách nhà nước", "Doanh nghiệp", "Hộ gia đình", "Tổ chức từ thiện"], ans:0}
+            ]}
+        ];
+
+        // INIT EXAM LIST (Tailwind Styled)
+        const examList = document.getElementById('examListContainer');
+        EXAM_DATA.forEach(exam => {
+            const div = document.createElement('div');
+            // Tailwind Classes for Card
+            div.className = 'bg-dark-card p-5 rounded-2xl border border-dark-border relative group hover:-translate-y-1 transition-all hover:border-brand-primary/30';
+            
+            let iconClass = 'fa-book';
+            let iconColor = 'text-gray-400';
+            let bgIcon = 'bg-gray-800';
+            
+            if(exam.id.includes('math')) { iconClass = 'fa-square-root-alt'; iconColor = 'text-brand-gold'; bgIcon = 'bg-brand-gold/10'; }
+            else if(exam.id.includes('phy')) { iconClass = 'fa-atom'; iconColor = 'text-brand-primary'; bgIcon = 'bg-brand-primary/10'; }
+            else if(exam.id.includes('chem')) { iconClass = 'fa-flask'; iconColor = 'text-brand-purple'; bgIcon = 'bg-brand-purple/10'; }
+            else if(exam.id.includes('bio')) { iconClass = 'fa-dna'; iconColor = 'text-brand-success'; bgIcon = 'bg-brand-success/10'; }
+            else if(exam.id.includes('eng')) { iconClass = 'fa-language'; iconColor = 'text-pink-500'; bgIcon = 'bg-pink-500/10'; }
+            
+            div.innerHTML = `
+                <span class="absolute top-3 right-3 text-[10px] font-bold px-2 py-0.5 rounded bg-gray-700 text-gray-300">${exam.difficulty}</span>
+                <div class="w-12 h-12 rounded-xl ${bgIcon} ${iconColor} flex items-center justify-center text-xl mb-3"><i class="fas ${iconClass}"></i></div>
+                <h3 class="font-bold text-white text-lg mb-1">${exam.title}</h3>
+                <div class="flex gap-3 text-xs text-gray-500 mb-4">
+                    <span><i class="fas fa-clock mr-1"></i> ${exam.time}p</span> 
+                    <span><i class="fas fa-star mr-1"></i> +${exam.xp} XP</span>
+                </div>
+                <button class="w-full py-2 rounded-lg bg-dark-main border border-dark-border text-white font-bold hover:bg-brand-primary hover:border-brand-primary transition text-sm" onclick="window.startExam('${exam.id}')">Làm Bài</button>`;
+            examList.appendChild(div);
+        });
+
+        // EXAM LOGIC
+        let currentExam = null;
+        let timerInterval = null;
+        let userAnswers = {};
+
+        window.startExam = (id) => {
+            if (id === 'random') {
+                 // Logic chọn đề ngẫu nhiên từ EXAM_DATA
+                 const randIndex = Math.floor(Math.random() * EXAM_DATA.length);
+                 window.startExam(EXAM_DATA[randIndex].id);
+                 return;
+            }
+
+            const exam = EXAM_DATA.find(e => e.id === id);
+            currentExam = exam;
+            userAnswers = {};
+            document.getElementById('examSubjectName').innerText = exam.title;
+            const list = document.getElementById('questionsList');
+            list.innerHTML = "";
+            
+            exam.questions.forEach((q, i) => {
+                const card = document.createElement('div');
+                card.className = 'bg-dark-card p-6 rounded-2xl border border-dark-border';
+                card.innerHTML = `
+                    <div class="font-bold text-white text-lg mb-4">Câu ${i+1}: ${q.q}</div>
+                    <div class="grid gap-3">
+                        ${q.opts.map((o, idx) => `
+                        <label class="flex items-center p-3 rounded-xl bg-dark-main border border-dark-border cursor-pointer hover:bg-dark-hover transition">
+                            <input type="radio" name="q${i}" value="${idx}" onchange="window.selectAnswer(${i}, ${idx})" class="w-5 h-5 accent-brand-primary mr-3"> 
+                            <span class="text-gray-300">${o}</span>
+                        </label>`).join('')}
+                    </div>`;
+                list.appendChild(card);
+            });
+
+            document.getElementById('examInterface').classList.remove('hidden');
+            document.getElementById('examInterface').classList.add('flex');
+            
+            let timeLeft = exam.time * 60;
+            const timerEl = document.getElementById('examTimer');
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+                const s = (timeLeft % 60).toString().padStart(2, '0');
+                timerEl.innerText = `${m}:${s}`;
+                if(timeLeft <= 0) window.submitExam();
+            }, 1000);
+        }
+
+        window.selectAnswer = (qIdx, ansIdx) => { userAnswers[qIdx] = ansIdx; }
+
+        window.quitExam = () => { 
+            if(confirm("Thoát bài thi? Kết quả sẽ không được lưu.")) { 
+                clearInterval(timerInterval); 
+                document.getElementById('examInterface').classList.add('hidden');
+                document.getElementById('examInterface').classList.remove('flex');
             } 
         }
-        window.toggleMobileNav = () => {
-            const sb = document.getElementById('mainSidebar'); const ov = document.getElementById('mobileOverlay');
-            if(sb.classList.contains('-translate-x-full')) { sb.classList.remove('-translate-x-full'); ov.classList.remove('hidden'); }
-            else { sb.classList.add('-translate-x-full'); ov.classList.add('hidden'); }
+
+        window.submitExam = async () => {
+            clearInterval(timerInterval);
+            let correct = 0;
+            currentExam.questions.forEach((q, i) => { if(userAnswers[i] === q.ans) correct++; });
+            const xpEarned = Math.floor((correct / currentExam.questions.length) * currentExam.xp);
+            
+            if(xpEarned > 0) {
+                await updateDoc(doc(db, "users", currentUser.uid), { xp: increment(xpEarned) });
+            }
+            
+            alert(`Kết quả: ${correct}/${currentExam.questions.length} câu đúng.\nBạn nhận được +${xpEarned} XP!`);
+            document.getElementById('examInterface').classList.add('hidden');
+            document.getElementById('examInterface').classList.remove('flex');
         }
+
+        // LIBRARY LOGIC
+        const DOCUMENTS = [
+            { title: "Đề thi Toán 2024", subject: "Toán", type: "PDF", filename: "toan.pdf" },
+            { title: "Công thức Vật Lý", subject: "Lý", type: "PDF", filename: "ly.pdf" }
+        ];
+
+        function renderDocs(data) {
+            const container = document.getElementById('libraryContainer');
+            container.innerHTML = "";
+            data.forEach(d => {
+                const div = document.createElement('div');
+                div.className = 'bg-dark-card p-5 rounded-2xl border border-dark-border group hover:border-brand-secondary/50 transition';
+                div.innerHTML = `
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="w-10 h-10 bg-brand-secondary/10 text-brand-secondary rounded-lg flex items-center justify-center text-xl"><i class="fas fa-book"></i></div>
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-brand-secondary/20 text-brand-secondary">${d.type}</span>
+                    </div>
+                    <h3 class="font-bold text-white mb-1">${d.title}</h3>
+                    <p class="text-xs text-gray-500 mb-4">${d.subject}</p>
+                    <button class="w-full py-2 bg-dark-main text-gray-300 rounded-lg text-sm font-bold border border-dark-border hover:bg-brand-secondary hover:text-white hover:border-brand-secondary transition" onclick="alert('Tải ${d.filename}')">Tải Xuống</button>`;
+                container.appendChild(div);
+            });
+        }
+        renderDocs(DOCUMENTS);
+        window.filterDocs = (val) => renderDocs(DOCUMENTS.filter(d => d.title.toLowerCase().includes(val.toLowerCase())));
+        window.filterByTag = (tag, btn) => {
+            document.querySelectorAll('.filter-tag').forEach(b => {
+                b.classList.remove('bg-brand-primary', 'text-white');
+                b.classList.add('bg-dark-card', 'text-gray-400');
+            });
+            btn.classList.remove('bg-dark-card', 'text-gray-400');
+            btn.classList.add('bg-brand-primary', 'text-white');
+            if(tag==='all') renderDocs(DOCUMENTS); else renderDocs(DOCUMENTS.filter(d => d.subject === tag));
+        }
+
+        // LEADERBOARD LOGIC (Main Tab)
+        async function loadLeaderboard() {
+            const q = query(collection(db, "users"), orderBy("xp", "desc"), limit(50));
+            const snap = await getDocs(q);
+            const list = document.getElementById('lbList');
+            list.innerHTML = "";
+            let rank = 1;
+            snap.forEach(doc => {
+                const u = doc.data();
+                let colorClass = 'text-gray-500';
+                if(rank===1) colorClass = 'text-brand-gold';
+                if(rank===2) colorClass = 'text-gray-300';
+                if(rank===3) colorClass = 'text-orange-600';
+
+                // Add verified badge here
+                const badgeHtml = getVerifiedHtml(u.username);
+
+                list.insertAdjacentHTML('beforeend', `
+                    <li class="flex items-center p-3 rounded-xl bg-dark-main border border-dark-border gap-4">
+                        <div class="font-black text-xl w-6 text-center ${colorClass}">${rank}</div>
+                        <div class="w-10 h-10 rounded-full bg-dark-card flex items-center justify-center font-bold text-white border border-dark-border">${u.avatarEmoji||u.fullname.charAt(0)}</div>
+                        <div class="flex-1 min-w-0">
+                            <div class="font-bold text-white truncate flex items-center gap-1">${u.fullname} ${badgeHtml}</div>
+                            <div class="text-xs text-gray-500 truncate">@${u.username}</div>
+                        </div>
+                        <div class="font-bold text-brand-secondary">${u.xp} XP</div>
+                    </li>`);
+                rank++;
+            });
+        }
+
+        // --- NEW: MINI LEADERBOARD FOR SIDEBAR ---
+        async function loadMiniLeaderboard() {
+            const container = document.getElementById('miniLeaderboardList');
+            if (!container) return;
+            
+            try {
+                const q = query(collection(db, "users"), orderBy("xp", "desc"), limit(5));
+                const snap = await getDocs(q);
+                container.innerHTML = "";
+                
+                let rank = 1;
+                snap.forEach(doc => {
+                    const u = doc.data();
+                    let colorClass = 'text-gray-500';
+                    if(rank===1) colorClass = 'text-brand-gold';
+                    if(rank===2) colorClass = 'text-gray-300';
+                    if(rank===3) colorClass = 'text-orange-600';
+
+                    const badgeHtml = getVerifiedHtml(u.username);
+
+                    container.insertAdjacentHTML('beforeend', `
+                        <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-dark-hover transition">
+                            <span class="font-bold w-4 text-center ${colorClass}">${rank}</span>
+                            <div class="w-8 h-8 rounded-full bg-dark-main border border-dark-border text-white flex items-center justify-center font-bold text-xs">
+                                ${u.avatarEmoji || u.fullname.charAt(0)}
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm text-white font-bold truncate flex items-center gap-1">${u.fullname} ${badgeHtml}</p>
+                                <p class="text-xs text-gray-500">${u.xp} XP</p>
+                            </div>
+                        </div>
+                    `);
+                    rank++;
+                });
+            } catch (e) {
+                console.error("Error loading mini LB", e);
+                container.innerHTML = '<p class="text-center text-xs text-red-500">Lỗi tải BXH</p>';
+            }
+        }
+
+        // SHOP & RECHARGE MODALS
+        window.openRechargeModal = () => {
+            const modal = document.getElementById('rechargeModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+        window.closeRechargeModal = () => {
+            const modal = document.getElementById('rechargeModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+        window.switchRechargeTab = (tab) => {
+            if(tab === 'quick') {
+                document.getElementById('recharge-quick').classList.remove('hidden');
+                document.getElementById('recharge-ticket').classList.add('hidden');
+            } else {
+                document.getElementById('recharge-quick').classList.add('hidden');
+                document.getElementById('recharge-ticket').classList.remove('hidden');
+            }
+        }
+        window.recharge = async (amount) => {
+            if(confirm(`Nạp ${amount} Xu?`)) {
+                await updateDoc(doc(db, "users", currentUser.uid), { xu: increment(amount) });
+                alert("Thành công!"); 
+                closeRechargeModal();
+            }
+        }
+        window.submitTicket = async () => {
+            if(document.getElementById('ticketCode').value === "ONLYADMIN") {
+                await updateDoc(doc(db, "users", currentUser.uid), { xu: increment(500) });
+                alert("Nhận 500 Xu!"); 
+                closeRechargeModal();
+            } else alert("Mã sai!");
+        }
+        window.buyItem = async (price, name, type) => {
+            const cur = parseInt(document.getElementById('userXu').innerText);
+            if(cur < price) return alert("Không đủ Xu!");
+            if(confirm(`Mua ${name}?`)) {
+                const updates = { xu: increment(-price) };
+                
+                if(type === 'vip') {
+                    updates.isVIP = true;
+                } else {
+                    // For generic items, we can store them in an array or subcollection
+                    // Simple implementation: just mark a flag or add to inventory array if existed
+                    // For this demo, we just deduct coins and show success
+                    // In a real app: await addDoc(collection(db, "users", currentUser.uid, "inventory"), { name: name, date: new Date() });
+                }
+
+                await updateDoc(doc(db, "users", currentUser.uid), updates);
+                alert("Đã mua thành công: " + name);
+            }
+        }
+
+        // NAVIGATION
+        window.switchTab = (tab) => {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(el => {
+                el.classList.add('hidden');
+                el.classList.remove('block');
+            });
+            // Show selected tab
+            const target = document.getElementById('tab-' + tab);
+            if(target) {
+                target.classList.remove('hidden');
+                target.classList.add('block');
+            }
+
+            // Update Active State Sidebar
+            document.querySelectorAll('.nav-item').forEach(el => {
+                el.classList.remove('active-nav');
+                el.classList.add('text-gray-400', 'hover:bg-dark-hover', 'hover:text-white');
+            });
+            // Reset mobile nav
+            document.querySelectorAll('.m-nav-item').forEach(el => el.classList.remove('text-brand-primary'));
+
+            const titles = { 'dashboard': 'Tổng Quan', 'library': 'Kho Tài Liệu', 'exam': 'Thi Thử', 'friends': 'Tìm Bạn', 'leaderboard': 'BXH', 'shop': 'Cửa Hàng' };
+            const titleEl = document.getElementById('pageTitle');
+            if(titleEl) titleEl.innerText = titles[tab];
+            
+            if(tab === 'leaderboard') loadLeaderboard();
+        }
+
         window.logout = () => signOut(auth).then(() => window.location.href = 'index.html');
     </script>
 </body>
